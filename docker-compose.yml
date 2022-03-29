@@ -2,7 +2,9 @@ version: '3.8'
 
 services:
   web:
-    build: ./backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - ./backend/:/usr/src/app/backend
@@ -16,12 +18,20 @@ services:
     image: postgres:13.0-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data/
-    environment:
-      - POSTGRES_USER=kanaha
-      - POSTGRES_PASSWORD=kanaha
-      - POSTGRES_DB=bst_django_dev
+    env_file:
+      - ./.env.dev.db
     ports:
       - "5435:5432"
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./frontend/:/usr/src/app/frontend
+    depends_on:
+      - web
+    ports:
+      - 3000:3000
 
 volumes:
   postgres_data:

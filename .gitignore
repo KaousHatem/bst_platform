@@ -41,3 +41,7 @@
 /backend/logistic/migrations/
 /backend/project/migrations/
 /backend/user_control/migrations/
+
+
+.env.prod
+.env.prod.db
