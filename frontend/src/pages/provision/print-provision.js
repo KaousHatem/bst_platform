@@ -9,7 +9,6 @@ import {  Select, MenuItem, Box, Button, Container, Grid, Link, TextField, Typog
 import HeaderProvision from '../../components/provision/pdf/header-provision'
 import BodyProvision from '../../components/provision/pdf/body-provision'
 import FooterProvision from '../../components/provision/pdf/footer-provision'
-import QRCode from "react-qr-code";
 import QRGenerator from '../../components/provision/pdf/qr-generator'
 
 import ProvisionProvider from '../../services/provision-provider'
