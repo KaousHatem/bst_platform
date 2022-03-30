@@ -33,14 +33,6 @@
 /backend/db.sqlite3
 
 
-/backend/bst_django/__pycache__/
-/backend/logistic/__pycache__/
-/backend/project/__pycache__/
-/backend/user_control/__pycache__/
-
-/backend/logistic/migrations/
-/backend/project/migrations/
-/backend/user_control/migrations/
 
 
 .env.prod
