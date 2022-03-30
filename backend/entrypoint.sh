@@ -19,9 +19,9 @@ if [ "$DJANGO_SUPERUSER_USERNAME" ]
 then
     python manage.py createsuperuser \
         --no-input \
-        --username $DJANGO_SUPERUSER_USERNAME \
-        --email $DJANGO_SUPERUSER_EMAIL
+        --username $DJANGO_SUPERUSER_USERNAME
 fi
+# with django v4.0.3 does not accept --email as argument
 
 
 exec "$@"
