@@ -80,7 +80,7 @@ export const DashboardNavbar = (props) => {
           </Tooltip>
           }
           
-          <Tooltip title="Notifications">
+          <Tooltip title="Notification">
             <IconButton sx={{ ml: 1 }}>
               <Badge
                 badgeContent={4}

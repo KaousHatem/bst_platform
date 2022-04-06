@@ -34,6 +34,7 @@ class CategorySerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Category
 		fields = [
+				'id',
 				'ref',
 				'name',
 				'created_by']

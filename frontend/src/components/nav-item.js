@@ -19,7 +19,7 @@ export const NavItem = (props) => {
       }}
       {...others}
     >
-      <NextLink
+      { href && <NextLink
         href={href}
         passHref
       >
@@ -58,7 +58,45 @@ export const NavItem = (props) => {
             {title}
           </Box>
         </Box>
-      </NextLink>
+      </NextLink> || 
+      
+      <Box
+          component="a"
+          disableRipple
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            backgroundColor: active && 'rgba(255,255,255, 0.08)',
+            borderRadius: 1,
+            color: active ? 'secondary.main' : 'neutral.300',
+            fontWeight: active && 'fontWeightBold',
+            justifyContent: 'center',
+            px: 3,
+            textAlign: 'center',
+            textDecoration: 'None',
+            textTransform: 'none',
+            width: '100%',
+            '&:hover': {
+              backgroundColor: 'rgba(255,255,255, 0.08)'
+            }
+          }}
+        >
+          <IconButton
+            sx={{
+              '&:hover': {
+                  background: 'none',
+              },
+            }}
+          >
+            {icon}
+          </IconButton>
+            
+          <Box sx={{ flexGrow: 1 }}>
+            {title}
+          </Box>
+        </Box>
+    }
+     
     </ListItem>
   );
 };

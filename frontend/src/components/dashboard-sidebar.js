@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
-import { Box, Button,Avatar, Divider, Drawer, Typography, useMediaQuery } from '@mui/material';
+import { Box, Button,Avatar, Divider, Drawer, Typography, useMediaQuery, Popover, ListItem, MenuList, MenuItem } from '@mui/material';
 import { UserCircle as UserCircleIcon } from '../icons/user-circle';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { ChartBar as ChartBarIcon } from '../icons/chart-bar';
@@ -20,8 +20,11 @@ import { Trucks as TrucksIcon} from '../icons/trucks';
 import { Copy as CopyIcon} from '../icons/copy';
 import { Exit as ExitIcon} from '../icons/exit';
 import { Logout as LogoutIcon} from '../icons/logout';
+import { Project as ProjectIcon} from '../icons/project';
 import { Logo } from './logo';
 import { NavItem } from './nav-item';
+import { SubNavItem } from './sub-nav-item';
+
 
 import AuthProvider from '../services/auth-provider';
 
@@ -29,6 +32,32 @@ import UXAccess from '../utils/ux-access';
 
 
 export const DashboardSidebar = (props) => {
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl1, setAnchorEl1] = useState(null);
+  
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClick1 = (event) => {
+    setAnchorEl1(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleClose1 = () => {
+    setAnchorEl1(null);
+  };
+
+  const openPop = Boolean(anchorEl);
+  const id = openPop ? 'simple-popover' : undefined;
+
+  const openPop1 = Boolean(anchorEl1);
+  const id1 = openPop1 ? 'simple-popover' : undefined;
+
   const { open, onClose } = props;
   const router = useRouter();
   const [role, setRole] = useState(localStorage.getItem("role"))
@@ -108,11 +137,47 @@ export const DashboardSidebar = (props) => {
             title='Tableau de Bordss'
           />
           { UXAccess.hasProductAccess() && <NavItem
-            key='Articles'
+            key='Stock'
             icon={(<CopyIcon fontSize="large" />)}
-            href="/products/list-product"
-            title="Articles"
+            // href="/products/list-product"
+            title="Stock"
+            aria-describedby={id1}
+            onClick={handleClick1}
           />}
+          <Popover
+            id={id}
+            sx={{
+              ml:1.5
+            }}
+            open={openPop1}
+            anchorEl={anchorEl1}
+            onClose={handleClose1}
+            anchorOrigin={{
+              vertical: 'center',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'center',
+              horizontal: 'left',
+            }}
+            disableRestoreFocus
+            marginThreshold={20}
+          >
+            <Box
+              sx={{
+                backgroundColor:'neutral.900',
+                color: '#FFFFFF',
+
+              }}
+            >
+            <MenuList>
+              <SubNavItem href='/products/list-product' title='List des Articles'/>
+              <SubNavItem href='/category' title='List des Categories'/>
+              <SubNavItem href='#' title='Inventaire'/>
+            </MenuList>
+            </Box>
+            
+          </Popover>
           <NavItem
             key='Logistique'
             icon={(<TrucksIcon fontSize="large" />)}
@@ -120,11 +185,48 @@ export const DashboardSidebar = (props) => {
             title='Logistique'
           />
           {UXAccess.hasCategoryAccess() && <NavItem
-            key='Groupes'
-            icon={(<CopyIcon fontSize="large" />)}
-            href="/provision/list-provision"
-            title='Groupes'
-          />}
+            key='Projets'
+            icon={(<ProjectIcon fontSize="large" />)}
+            // href="#"
+            title='Projets'
+            aria-describedby={id}
+            onClick={handleClick}
+          />
+              
+        }
+          <Popover
+            id={id}
+            sx={{
+              ml:1.5
+            }}
+            open={openPop}
+            anchorEl={anchorEl}
+            onClose={handleClose}
+            anchorOrigin={{
+              vertical: 'center',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'center',
+              horizontal: 'left',
+            }}
+            disableRestoreFocus
+            marginThreshold={20}
+          >
+            <Box
+              sx={{
+                width:100,
+                backgroundColor:'neutral.900',
+                color: '#FFFFFF',
+
+              }}
+            >
+            <MenuList>
+            <SubNavItem href='/project/location' title='Sites'/>
+            </MenuList>
+            </Box>
+            
+          </Popover>
           <NavItem
             key='Se Deconnecter'
             icon={(<LogoutIcon fontSize="large" />)}

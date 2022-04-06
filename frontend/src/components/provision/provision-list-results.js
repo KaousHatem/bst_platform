@@ -136,9 +136,7 @@ export const ProvisionListResults = ({ provision_list, ...rest }) => {
     router.push(data);
   }
 
-  useEffect(() => {
-    console.log(provisions)
-  },[])
+  
 
   return (
     <Box {...rest}>
