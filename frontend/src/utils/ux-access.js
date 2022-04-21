@@ -59,6 +59,14 @@ class UXAccess {
 
 	}
 
+	hasPurchaseRequestApproveAccess = () => {
+		const ROLES_ACCESS = [ROLES_LIST.ADMIN]
+		const role = localStorage.getItem('role')
+
+		return ROLES_ACCESS.includes(role)
+
+	}
+
 
 
 }

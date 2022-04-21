@@ -27,7 +27,7 @@ export const ProductAddToolbar = (props) => (
         sx={{ m: 1 }}
         variant="h4"
       >
-        Ajouter Article
+        Article
       </Typography>
       <Box sx={{ m: 1 }}>
         

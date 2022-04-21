@@ -34,12 +34,13 @@ const ProvisionPage = () => {
     const router = useRouter()
     const [svgQrCode, setSvgQrCode] = useState()
     const [value, setValue] = useState('eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NDUwMTEyMTQsInVzZXJfaWQiOjF9.SsgZbjD_58LEoOEMxOFO9CB_uOcze3MFgJUisUG3TsY')
-    const [provisionId, setProvisionId] = useState(router.query.provisionId)
+    const [provisionId, setProvisionId] = useState(router.query.id)
     const [provision, setProvision] = useState()
 
 
 
     useEffect(()=>{
+        console.log(provisionId)
         if(provisionId){
           ProvisionProvider.getProvisions(provisionId).then(
             (response) => {

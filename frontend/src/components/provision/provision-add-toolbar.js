@@ -86,13 +86,25 @@ export const ProvisionAddToolbar = ({props, isAddPage=false, handleReject, handl
 
   const handlePrint = () => {
     if(provisionId){
+      // const data = {
+      //  pathname: '/provision/print-provision',
+      //  query:{'provisionId':provisionId},
+      // }
+      // router.push(data);
+      const url = '/provision/print-provision?id='+provisionId
+      window.open(url, "_blank")
+    }
+    
+  }
+
+  const handleAddPurchaseRequest = () => {
+    if(provisionId){
       const data = {
-       pathname: '/provision/print-provision',
+       pathname: '/purchase-request/add-purchase-request',
        query:{'provisionId':provisionId}
       }
       router.push(data);
     }
-    
   }
 
 
@@ -110,7 +122,7 @@ export const ProvisionAddToolbar = ({props, isAddPage=false, handleReject, handl
         sx={{ m: 1 }}
         variant="h4"
       >
-        AJOUTER DEMANDE D`&apos;`APPRO
+        DEMANDE D`&apos;`APPRO
       </Typography>
       <Box sx={{ m: 1 }}>
         <Button
@@ -162,6 +174,7 @@ export const ProvisionAddToolbar = ({props, isAddPage=false, handleReject, handl
             Rejecter la demande
           </MenuItem>}
           <MenuItem 
+            onClick={handleAddPurchaseRequest}
           >
             <InsertDriveFileIcon />
             Creer une demande d`&apos;`achat (coming)

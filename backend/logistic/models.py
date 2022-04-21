@@ -78,6 +78,9 @@ class Provision(models.Model):
 
 	class Meta:
 		ordering = ('id',)
+		permissions = (
+            ("approve_provision", "Can approve provision"),
+        )
 
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
@@ -98,8 +101,6 @@ class Provision(models.Model):
 
 		if (self.status != '0') or (self.__original_status == '0' and self.__original_status != self.status):
 			today = datetime.datetime.now()
-			print('save',self.__ref)
-			print('save',self.ref)
 			if self.__ref == "" or self.__ref == None:
 				self.created_on = self.updated_on
 				if Provision.objects.filter(~Q(ref=None)):
@@ -127,19 +128,70 @@ class ProvisionProductRel(models.Model):
 
 
 class PurchaseRequest(models.Model):
-	status = models.CharField(max_length=220)
+	STATUS = (
+		('0', _("DRAFT")),
+		('1', _("NEW")),
+		('4', _("DROP")),
+		('9', _("APPROVED")),
+	)
+	ref = models.CharField(max_length=20, unique=True, null=True)
+	status = models.CharField(_("status"),max_length=220, default="new",choices=STATUS)
 	created_on = models.DateTimeField(auto_now_add=True)
 	updated_on = models.DateTimeField(auto_now=True)
 	provision = models.ForeignKey(Provision, on_delete=models.CASCADE)
 	is_approved = models.BooleanField(default=False)
 	created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE,related_name='purchase_created_by',)
 	approved_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE,related_name='purchase_approved_by', null=True, blank=True, default=None)
+	approved_on = models.DateTimeField(null=True, blank=True)
+
+	__ref = None
+	__original_status = None
+
+	class Meta:
+		ordering = ('id',)
+		permissions = (
+            ("approve_purchaserequest", "Can approve purchase request"),
+        )
+
+	@classmethod
+	def from_db(cls, db, field_names, values):
+		instance = super().from_db(db, field_names, values)
+		instance.__original_status = instance.status
+		instance.__ref = instance.ref
+		return instance
+
+	def save(self, *args, **kwargs):
+		new = False
+		if self.status == '9' and self.__original_status=='1':
+			self.approved_on=datetime.datetime.now()
+		if (self.status != '0') or (self.__original_status == '0' and self.__original_status != self.status):
+			today = datetime.datetime.now()
+			if self.__ref == "" or self.__ref == None:
+				new = True
+				if PurchaseRequest.objects.filter(~Q(ref=None)):
+					# self.id = Provision.objects.all().last().id + 1
+					last_ref = PurchaseRequest.objects.filter(~Q(ref=None)).order_by('ref').last().ref.split('/')[0]
+					last_ref_int = int(last_ref)
+					self.ref = str(last_ref_int+1).zfill(4) + '/' + str(today.year)
+				else:
+					self.ref = str(1).zfill(4) + '/' + str(today.year)
+				
+			else:
+				self.ref = self.__ref
+		super(PurchaseRequest, self).save(*args, **kwargs)
+		self.__original_status = self.status
+		if new:
+			self.created_on = self.updated_on
+			try:
+				super(PurchaseRequest, self).save(*args, **kwargs)
+			except:
+				pass
+
 
 class PurchaseReqProductRel(models.Model):
-	product = models.ForeignKey(Product, on_delete=models.CASCADE)
-	purchaseRequest = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
-	unit = models.CharField(max_length=50)
-	quantity = models.IntegerField()
+	provisionProduct = models.ForeignKey(ProvisionProductRel, on_delete=models.CASCADE, default=0)
+	purchaseRequest = models.ForeignKey(PurchaseRequest,related_name='purchaseReqProducts' , on_delete=models.CASCADE)
+
 
 class Supplier(models.Model):
 	name = models.CharField(max_length=220)

@@ -10,6 +10,7 @@ from rest_framework.permissions import IsAuthenticated,DjangoModelPermissions
 from rest_framework import status
 from rest_framework.response import Response
 
+
 from rest_framework_csv import parsers as p
 
 import csv
@@ -25,9 +26,13 @@ from .models import (
     Product, 
     Provision, 
     Category,
-    ProvisionProductRel
+    ProvisionProductRel,
+    PurchaseRequest,
+    PurchaseReqProductRel,
     
 )
+
+from user_control.models import CustomUser
 
 from .role_filters import UserRoleFilter,LogisticAdminRoleFilter, AdminRoleFilter
 
@@ -36,6 +41,12 @@ from .serializers import  (
     ProvisionSerializer, 
     CategorySerializer,
     ProvisionProductSerializer,
+    PurchaseRequestSerializer,
+    PurchaseRequestListingSerializer,
+    PurchaseReqProductListingSerializer,
+    PurchaseRequestRetrieveSerializer,
+    PurchaseReqProductSerializer,
+    PurchaseRequestStatusActionSerializer
     
 )
 
@@ -47,7 +58,7 @@ from .serializers import  (
 class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes=[HasPermission]
+    # permission_classes=[HasPermission]
 
     @action(detail=False, methods=['get'])
     def last(self, request):
@@ -194,13 +205,54 @@ class ProvisionViewSet(RoleFilterModelViewSet):
         # data = self.serializer_class(obj).data
         return Response({'message':"Approved"}, status=201)
 
+
+    @action(methods=['GET'],detail=False)
+    def list_only_approved(self, request):
+        qs = self.queryset.filter(status='9')
+
+        if qs:
+            data = self.serializer_class(qs,many=True).data
+            data_final=[]
+            for i in data:
+                can_add_purchase_request = False
+                for provisionProduct in i['provisionProducts']:
+                    p = PurchaseReqProductRel.objects.filter(provisionProduct=provisionProduct['id'])
+
+                    if not(p):
+                        can_add_purchase_request=True
+                        break
+                if can_add_purchase_request:
+                    data_final.append(i)
+                
+
+            return Response(data_final, status=status.HTTP_200_OK)
+        else:
+            return Response({'message':"There is no approved provision"}, status=status.HTTP_200_OK)
+
+    @action(methods=['GET'],detail=True)
+    def get_product_in_purchase(self, request, pk):
+        qs = self.queryset.filter(id=pk)
+
+        if qs:
+            data = self.serializer_class(qs.first()).data
+            data_final=[]
+            for provisionProduct in data['provisionProducts']:
+                can_add_purchase_request = False
+                p = PurchaseReqProductRel.objects.filter(provisionProduct=provisionProduct['id'])
+                if p:
+                    data_final.append(provisionProduct)
+
+            return Response(data_final, status=status.HTTP_200_OK)
+        else:
+            return Response({'message':"There is no approved provision"}, status=status.HTTP_200_OK)
+
         
 
 
 class ProvisionProductViewSet(ModelViewSet):
     queryset = ProvisionProductRel.objects.all()
     serializer_class = ProvisionProductSerializer
-    permission_classes=[HasPermission]
+    # permission_classes=[HasPermission]
 
     def get_queryset(self):
         return ProvisionProductRel.objects.all()
@@ -241,6 +293,125 @@ class ProvisionProductViewSet(ModelViewSet):
             return Response({'message':"Only Draft provision can be edited"}, status=400)
         return super(ProvisionProductViewSet, self).destroy(request, pk)
 
+
+
+class PurchaseReqViewSet(ModelViewSet):
+    queryset = PurchaseRequest.objects.all().order_by('-created_on')
+    serializer_class = PurchaseRequestSerializer
+    permission_classes=[HasPermission]
+    # role_filter_classes = [UserRoleFilter,LogisticAdminRoleFilter,AdminRoleFilter]
+    # filterset_class = (ProvisionFilter)
+
+    def get_serializer_class(self):
+        print(self.action)
+        if self.action == 'list':
+            return PurchaseRequestListingSerializer
+        if self.action == 'retrieve':
+            return PurchaseRequestRetrieveSerializer
+        if self.action == 'status_update':
+            return PurchaseRequestStatusActionSerializer
+        return super().get_serializer_class()
+
+    def create(self, request):
+        token = request.META.get('HTTP_AUTHORIZATION')
+        user = decodeJWT(token)
+        # print('create',user)
+        serializer = self.get_serializer(data=request.data)
+        try:
+            serializer.is_valid(raise_exception=True)
+
+        except:
+            return Response({'message':serializer.errors}, status=400)
+
+        serializer.save(created_by=user)
+
+        return Response(serializer.data, status = 201)
+    
+    def update(self, request, pk):
+        print(request.data)
+        serializer = self.get_serializer(data=request.data)
+        try:
+            serializer.is_valid(raise_exception=True)
+            print(serializer.data)
+
+        except:
+            print(serializer.errors)
+            return Response({'message':serializer.errors}, status=400)
+
+        return super(PurchaseReqViewSet, self).update(request,pk)
+
+    @action(methods=['put'],detail=True, serializer_class=PurchaseRequestStatusActionSerializer)
+    def approve(self, request, pk=None):
+        print(pk)
+        token = request.META.get('HTTP_AUTHORIZATION')
+        user = decodeJWT(token)
+        if not(pk):
+            return Response({'message':"Pk field is required"}, status=400)
+            
+            if not(qs):
+                return Response({'message':"Purchase request does not exist"}, status=400)
+                
+        qs = self.queryset.filter(id=pk)
+        obj = qs.first()
+        obj.approved_by = user
+        obj.status = '9'
+        obj.save()
+        # data = self.serializer_class(obj).data
+        return Response({'message':"Approved"}, status=201)
+
+    @action(methods=['put'],detail=True)
+    def status_update(self, request, pk=None):
+        # print(self.action)
+        if not(pk):
+            return Response({'message':"Pk field is required"}, status=400)
+            
+            if not(qs):
+                return Response({'message':"Purchase request does not exist"}, status=400)
+        print(request.data)
+        serializer = self.get_serializer(data=request.data) 
+        try:
+            serializer.is_valid(raise_exception=True)
+        except:
+            print(serializer.errors)
+            return Response({'message':serializer.errors}, status=400)   
+        qs = self.queryset.filter(id=pk)
+        obj = qs.first()
+        if serializer.data:
+            obj.status = serializer.data['status']
+        obj.save()
+        # data = self.serializer_class(obj).data
+        return Response({'message':"status_updated"}, status=201)
+
+
+class PurchaseReqProductViewSet(ModelViewSet):
+    queryset = PurchaseReqProductRel.objects.all()
+    serializer_class = PurchaseReqProductSerializer
+    # permission_classes=[HasPermission]
+    # role_filter_classes = [UserRoleFilter,LogisticAdminRoleFilter,AdminRoleFilter]
+    # filterset_class = (ProvisionFilter)
+    def get_queryset(self):
+        return PurchaseReqProductRel.objects.all()
+
+    def get_serializer(self, *args, **kwargs):
+        if isinstance(kwargs.get('data', {}), list):
+            kwargs['many'] = True
+
+        return super(PurchaseReqProductViewSet, self).get_serializer(*args, **kwargs)
+
+    def create(self, request):
+
+        serializer = self.get_serializer(data=request.data)
+        try:
+            serializer.is_valid(raise_exception=True)
+            print(serializer.data)
+
+        except:
+            print(serializer.errors)
+            return Response({'message':serializer.errors}, status=400)
+
+        return super(PurchaseReqProductViewSet, self).create(request)
+
+   
 
 
 # @api_view(['POST'])

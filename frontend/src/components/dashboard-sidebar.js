@@ -35,6 +35,7 @@ export const DashboardSidebar = (props) => {
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorEl1, setAnchorEl1] = useState(null);
+  const [anchorElLog, setAnchorElLog] = useState(null);
   
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -42,6 +43,10 @@ export const DashboardSidebar = (props) => {
 
   const handleClick1 = (event) => {
     setAnchorEl1(event.currentTarget);
+  };
+
+  const handleClickLog = (event) => {
+    setAnchorElLog(event.currentTarget);
   };
 
   const handleClose = () => {
@@ -52,11 +57,18 @@ export const DashboardSidebar = (props) => {
     setAnchorEl1(null);
   };
 
+  const handleCloseLog = () => {
+    setAnchorElLog(null);
+  };
+
   const openPop = Boolean(anchorEl);
   const id = openPop ? 'simple-popover' : undefined;
 
   const openPop1 = Boolean(anchorEl1);
   const id1 = openPop1 ? 'simple-popover' : undefined;
+
+  const openPopLog = Boolean(anchorElLog);
+  const idLog = openPopLog ? 'simple-popover' : undefined;
 
   const { open, onClose } = props;
   const router = useRouter();
@@ -134,7 +146,7 @@ export const DashboardSidebar = (props) => {
             key='Tableau de Bord'
             icon={(<ChartHistBarIcon  fontSize="large"/>)}
             href="/"
-            title='Tableau de Bordss'
+            title='Tableau de Bord'
           />
           { UXAccess.hasProductAccess() && <NavItem
             key='Stock'
@@ -173,17 +185,57 @@ export const DashboardSidebar = (props) => {
             <MenuList>
               <SubNavItem href='/products/list-product' title='List des Articles'/>
               <SubNavItem href='/category' title='List des Categories'/>
-              <SubNavItem href='#' title='Inventaire'/>
+              <SubNavItem href='#' title='Inventaire (coming soon)'/>
             </MenuList>
             </Box>
             
           </Popover>
+
+
           <NavItem
             key='Logistique'
             icon={(<TrucksIcon fontSize="large" />)}
-            href="/provision"
+            // href="/provision"
             title='Logistique'
+            aria-describedby={idLog}
+            onClick={handleClickLog}
           />
+
+          <Popover
+            id={idLog}
+            sx={{
+              ml:1.5
+            }}
+            open={openPopLog}
+            anchorEl={anchorElLog}
+            onClose={handleCloseLog}
+            anchorOrigin={{
+              vertical: 'center',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'center',
+              horizontal: 'left',
+            }}
+            disableRestoreFocus
+            marginThreshold={20}
+          >
+            <Box
+              sx={{
+                backgroundColor:'neutral.900',
+                color: '#FFFFFF',
+
+              }}
+            >
+            <MenuList>
+              <SubNavItem href='/provision' title='Demandes D`approvisionnement'/>
+              <SubNavItem href='/purchase-request' title='Demandes D`achat'/>
+            </MenuList>
+            </Box>
+            
+          </Popover>
+
+
           {UXAccess.hasCategoryAccess() && <NavItem
             key='Projets'
             icon={(<ProjectIcon fontSize="large" />)}

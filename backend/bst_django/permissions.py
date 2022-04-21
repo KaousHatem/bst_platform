@@ -38,13 +38,13 @@ class HasPermission(permissions.DjangoModelPermissions):
 		'PATCH': ['%(app_label)s.change_%(model_name)s'],
 		'DELETE': ['%(app_label)s.delete_%(model_name)s'],
 	}
-
-
+	
 	def get_required_permissions(self, method, model_cls):
 		"""
 		Given a model and an HTTP method, return the list of permission
 		codes that the user is required to have.
 		"""
+
 		kwargs = {
 			'app_label': model_cls._meta.app_label,
 			'model_name': model_cls._meta.model_name
@@ -57,6 +57,7 @@ class HasPermission(permissions.DjangoModelPermissions):
 
 
 	def has_permission(self, request, view):
+		print(view.action)
 		# get auth_token that was generated on login post
 		try:
 			auth_token = request.META.get("HTTP_AUTHORIZATION", None)

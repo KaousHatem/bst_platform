@@ -1,4 +1,4 @@
-import {provisionUrl,provisionApproveUrl} from '../utils/networks'
+import {provisionUrl,provisionApproveUrl, provisionOnlyApprovedUrl} from '../utils/networks'
 import axios from "axios";
 
 
@@ -6,26 +6,7 @@ import axios from "axios";
 class ProvisionProvider {
 
     
-    // login2( username, password ) {
-    //     const request = new Request(LoginUrl, {
-    //         method: 'POST',
-    //         body: JSON.stringify({ username, password }),
-    //         headers: new Headers({ 'Content-Type': 'application/json',}),
-    //     });
-    //     return fetch(request)
-    //         .then(response => {
-    //             if (response.status < 200 || response.status >= 300) {
-    //                 throw new Error(response.statusText);
-    //             }
-    //             return response.json();
-    //         })
-    //         .then(auth => {
-    //             localStorage.setItem('auth', JSON.stringify(auth));
-    //         })
-    //         .catch(() => {
-    //             throw new Error('Network error')
-    //         });
-    // }
+
 
     getProvisions(pk=-1) {
         const token = localStorage.getItem('auth')
@@ -42,6 +23,48 @@ class ProvisionProvider {
         }
         return axios
             .get(url, config)
+            .then(response => {
+                if (response.status < 200 || response.status >= 300) {
+                    throw new Error(response.statusText);
+                }
+                return response;
+            })
+            .catch((error) => {
+                throw new Error('Network error')
+            });
+    }
+
+    getOnlyApprovedProvisions() {
+        const token = localStorage.getItem('auth')
+        
+        const config = {
+        headers: {
+        Authorization: `Bearer ${token}`
+        }}
+        
+        return axios
+            .get(provisionOnlyApprovedUrl, config)
+            .then(response => {
+                if (response.status < 200 || response.status >= 300) {
+                    throw new Error(response.statusText);
+                }
+                return response;
+            })
+            .catch((error) => {
+                throw new Error('Network error')
+            });
+    }
+
+    getProductInPurchase(pk) {
+        const token = localStorage.getItem('auth')
+        
+        const config = {
+        headers: {
+        Authorization: `Bearer ${token}`
+        }}
+        
+        return axios
+            .get(provisionUrl+pk+'/get_product_in_purchase', config)
             .then(response => {
                 if (response.status < 200 || response.status >= 300) {
                     throw new Error(response.statusText);

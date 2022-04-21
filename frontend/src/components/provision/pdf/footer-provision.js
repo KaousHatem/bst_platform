@@ -65,9 +65,7 @@ const FooterProvision = ({value,provision}) => {
         return (day+'/'+month+'/'+year)
     }
 
-    useEffect(()=>{
-        console.log(document.getElementById(value).toDataURL())
-    })
+ 
     
     return(
     <View style={styles.footerContainer}>

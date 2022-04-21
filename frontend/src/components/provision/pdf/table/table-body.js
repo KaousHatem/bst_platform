@@ -23,9 +23,7 @@ const styles = StyleSheet.create({
 
 
 const TableBody = ({provisionProducts ,delay}) => {
-    useEffect(()=> {
-        console.log(provisionProducts)
-    })
+
     
     return(
         <View style={styles.container}>

@@ -91,7 +91,7 @@ export const CategoryAddToolbar = ({props}) => {
         sx={{ m: 1 }}
         variant="h4"
       >
-        AJOUTER UNE CATEGORIE
+        CATEGORIE
       </Typography>
       <Box sx={{ m: 1 }}>
         <Button

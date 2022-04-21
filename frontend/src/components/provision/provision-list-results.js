@@ -14,7 +14,9 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  Typography
+  Typography,
+  Menu,
+  MenuItem
 } from '@mui/material';
 import { getInitials } from '../../utils/get-initials';
 
@@ -28,7 +30,11 @@ import ProvisionsProvider from '../../services/provision-provider'
 import {ProvisionDeleteDialog} from './provision-delete-dialog'
 import {ProvisionFilter} from './provision-filter'
 
+
+
 export const ProvisionListResults = ({ provision_list, ...rest }) => {
+
+
   const [selectedProvisionIds, setSelectedProvisionIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
@@ -57,6 +63,10 @@ export const ProvisionListResults = ({ provision_list, ...rest }) => {
 
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [provisionIdDelete, setProvisionIdDelete] = useState(-1)
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const menuOpen = Boolean(anchorEl);
+  const [clickedId, setClickedId] = useState(-1)
   
   const handleClose = () => {
     setDeleteOpen(false)
@@ -134,6 +144,29 @@ export const ProvisionListResults = ({ provision_list, ...rest }) => {
      query:{'provisionId':provision.id}
     }
     router.push(data);
+  }
+
+  const handleClickMenu = (event, id) => {
+    setClickedId(id)
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
+
+  const handlePrint = () => {
+
+  }
+
+  const handleAddPurchaseRequest = () => {
+    if(clickedId){
+      const data = {
+       pathname: '/purchase-request/add-purchase-request',
+       query:{'provisionId':clickedId}
+      }
+      router.push(data);
+    }
   }
 
   
@@ -254,7 +287,25 @@ export const ProvisionListResults = ({ provision_list, ...rest }) => {
                         sx={{
                           mx:1
                         }}
+                        id="edit-btn"
+                        aria-haspopup="true"
+                        aria-controls={menuOpen ? 'provision-menu' : undefined}
+                        aria-expanded={menuOpen ? 'true' : undefined}
+                        onClick={(event) => handleClickMenu(event, provision.id)}
                       />
+                      <Menu
+                        id="provision-menu"
+                        anchorEl={anchorEl}
+                        open={menuOpen}
+                        onClose={handleCloseMenu}
+                        MenuListProps={{
+                          'aria-labelledby': 'edit-btn',
+                        }}
+                      >
+                        <MenuItem onClick={(event) => {}}>Imprimer</MenuItem>
+                        <MenuItem onClick={handleAddPurchaseRequest}>Ajouter une demande d'achat</MenuItem>
+                        
+                      </Menu>
 
                     </Box>
                     

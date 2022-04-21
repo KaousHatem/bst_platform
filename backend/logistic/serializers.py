@@ -6,6 +6,8 @@ from .models import (
 	Provision, 
 	Category,
 	ProvisionProductRel,
+	PurchaseRequest,
+	PurchaseReqProductRel,
 	
 )
 from project.models import Location
@@ -159,8 +161,190 @@ class ProvisionSerializer(serializers.ModelSerializer):
 		print(validated_data)
 		return Provision.objects.create(**validated_data)
 
+class ProvisionSerializerListing(serializers.ModelSerializer):
+	destination = serializers.SlugRelatedField(queryset = Location.objects.all() ,slug_field='name')
+	class Meta:
+		model = Provision
+		fields = [
+				'id',
+				'ref',
+				'destination',
+				'delay',
+				]
 
 
+	def create(self, validated_data):
+		print(validated_data)
+		return Provision.objects.create(**validated_data)
 
 
+class PurchaseReqProductSerializer(serializers.ModelSerializer):
+
+	class Meta:
+		model = PurchaseReqProductRel
+		fields = [
+				'id',
+				'purchaseRequest',
+				'provisionProduct',
+				]
+
+class PurchaseReqProductListingSerializer(serializers.ModelSerializer):
+	provisionProduct = ProvisionProductListingSerializer(read_only=True)
+	class Meta:
+		model = PurchaseReqProductRel
+		fields = [
+				'id',
+				'purchaseRequest',
+				'provisionProduct',
+				]
+
+
+class PurchaseRequestListingSerializer(serializers.ModelSerializer):
+	# purchaseReqProducts = PurchaseReqProductListingSerializer(many=True,read_only=True)
+	created_by = CustomUserListSerializer(read_only=True,required=False)
+	# approved_by = CustomUserListSerializer(read_only=True,required=False)
+	provision = ProvisionSerializerListing(read_only=True,required=False)
+	class Meta:
+		model = PurchaseRequest
+		fields = [
+				'id',
+				'ref',
+				'status',
+				'created_on',
+				# 'updated_on',
+				# 'purchaseReqProducts',
+				'provision',
+				'created_by',
+				# 'approved_by',
+				# 'approved_on'
+				]
+		extra_kwargs = {
+		   'purchaseReqProducts': {
+			  'read_only': True
+		   },
+		   'ref': {
+			  'required': False
+		   },
+		   'approved_by': {
+			  'required': False
+		   },
+		   'created_by': {
+			  'required': False
+		   }
+		   ,
+		   'approved_on': {
+			  'read_only': True
+		   }
+		}
+
+
+	def create(self, validated_data):
+		print(validated_data)
+		return PurchaseRequest.objects.create(**validated_data)
+
+class PurchaseRequestRetrieveSerializer(serializers.ModelSerializer):
+	purchaseReqProducts = PurchaseReqProductListingSerializer(many=True,read_only=True)
+	created_by = CustomUserListSerializer(read_only=True,required=False)
+	approved_by = CustomUserListSerializer(read_only=True,required=False)
+	provision = ProvisionSerializer(read_only=True,required=False)
+	class Meta:
+		model = PurchaseRequest
+		fields = [
+				'id',
+				'ref',
+				'status',
+				'created_on',
+				'updated_on',
+				'purchaseReqProducts',
+				'provision',
+				'created_by',
+				'approved_by',
+				'approved_on'
+				]
+		extra_kwargs = {
+		   'purchaseReqProducts': {
+			  'read_only': True
+		   },
+		   'ref': {
+			  'required': False
+		   },
+		   'approved_by': {
+			  'required': False
+		   },
+		   'created_by': {
+			  'required': False
+		   }
+		   ,
+		   'approved_on': {
+			  'read_only': True
+		   }
+		}
+
+
+	def create(self, validated_data):
+		print(validated_data)
+		return PurchaseRequest.objects.create(**validated_data)
+
+
+class PurchaseRequestSerializer(serializers.ModelSerializer):
+	purchaseReqProducts = PurchaseReqProductListingSerializer(many=True,read_only=True)
+	created_by = CustomUserListSerializer(read_only=True,required=False)
+	approved_by = CustomUserListSerializer(read_only=True,required=False)
+	class Meta:
+		model = PurchaseRequest
+		fields = [
+				'id',
+				'ref',
+				'status',
+				'created_on',
+				'updated_on',
+				'purchaseReqProducts',
+				'provision',
+				'created_by',
+				'approved_by',
+				'approved_on'
+				]
+		extra_kwargs = {
+		   'purchaseReqProducts': {
+			  'read_only': True
+		   },
+		   'ref': {
+			  'required': False
+		   },
+		   'approved_by': {
+			  'required': False
+		   },
+		   'created_by': {
+			  'required': False
+		   }
+		   ,
+		   'approved_on': {
+			  'read_only': True
+		   }
+		}
+
+
+	def create(self, validated_data):
+		print(validated_data)
+		return PurchaseRequest.objects.create(**validated_data)
+
+
+class PurchaseRequestStatusActionSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = PurchaseRequest
+		fields = [
+				'id',
+				'ref',
+				'status',
+				]
+		extra_kwargs = {
+		   'ref': {
+			  'required': False
+		   }
+		}
+
+
+	def create(self, validated_data):
+		print(validated_data)
+		return PurchaseRequest.objects.create(**validated_data)
 		
