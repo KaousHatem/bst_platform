@@ -95,8 +95,11 @@ const AddPurchaseRequest = () => {
 
     const response = await ProvisionProvider.getOnlyApprovedProvisions()
     if (response.data){
-      setProvisions(response.data)  
-      provisions = response.data    
+      if (!response.data.message) {
+        setProvisions(response.data)  
+        provisions = response.data  
+      }
+        
     }
     console.log(provisions)
 
@@ -181,10 +184,11 @@ const AddPurchaseRequest = () => {
                         onChange={handleProvisionChange}
                         disabled={selecetedProducts.length !== 0}
                       >
-                        {provisions && provisions.slice(0,provisions.length).map((provision) => (
+                        {provisions.length && provisions.slice(0,provisions.length).map((provision) => (
                           <MenuItem key={provision.ref} 
                           value={provision.id}>{provision.ref}</MenuItem>
-                        ))}
+                        ))|| <MenuItem key={0} 
+                          value={0} disabled>aucune demande d'appro</MenuItem>}
                       </Select>
                     </Grid>
                   </Grid>
