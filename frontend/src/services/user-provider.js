@@ -131,7 +131,8 @@ class UserProvider {
                 return response;
             })
             .catch((error) => {
-                throw new Error('Network error')
+                // throw new Error('Network error')
+                return false
             });
     }
 

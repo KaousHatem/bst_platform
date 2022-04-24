@@ -284,6 +284,7 @@ export const DashboardSidebar = (props) => {
             icon={(<LogoutIcon fontSize="large" />)}
             href="/login"
             title='Se Deconnecter'
+            onClick={()=>{AuthProvider.logout()}}
           />
         </Box>
       </Box>

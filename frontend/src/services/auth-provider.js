@@ -58,6 +58,7 @@ class AuthProvider {
     }
     
     logout(){
+        console.log("ex")
     localStorage.clear()
     // localStorage.removeItem('role')
 }

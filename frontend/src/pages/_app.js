@@ -10,6 +10,7 @@ import { theme } from '../theme';
 
 import { useState, useEffect } from 'react';
 import AuthProvider from '../services/auth-provider'
+import UserProvider from '../services/user-provider'
 
 import { useRouter } from 'next/router';
 
@@ -45,11 +46,13 @@ const App = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function authCheck(url) {
+  async function authCheck(url){
     // redirect to login page if accessing a private page and not logged in 
     const publicPaths = ['/login'];
     const path = url.split('?')[0];
-    if (!AuthProvider.getCurrentUser() && !publicPaths.includes(path)) {
+    const response = await UserProvider.getMeUser()
+    if ((!response && !publicPaths.includes(path))) {
+
         setAuthorized(false);
         router.push({
             pathname: '/login',
