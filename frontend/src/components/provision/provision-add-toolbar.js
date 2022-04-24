@@ -86,11 +86,6 @@ export const ProvisionAddToolbar = ({props, isAddPage=false, handleReject, handl
 
   const handlePrint = () => {
     if(provisionId){
-      // const data = {
-      //  pathname: '/provision/print-provision',
-      //  query:{'provisionId':provisionId},
-      // }
-      // router.push(data);
       const url = '/provision/print-provision?id='+provisionId
       window.open(url, "_blank")
     }
@@ -128,7 +123,7 @@ export const ProvisionAddToolbar = ({props, isAddPage=false, handleReject, handl
         <Button
           color="primary"
           variant="outlined"
-          href = '/provision/list-provision'
+          href = '/provision'
           sx={{ mr: 4 }}
         >
           Retour
@@ -167,18 +162,18 @@ export const ProvisionAddToolbar = ({props, isAddPage=false, handleReject, handl
             <PrintIcon />
             Imprimer la demande
           </MenuItem>}
-          { !isAddPage && (provisionStatus!=='0' && provisionStatus!=="9") && UXAccess.hasProvisionRejectAccess() && <MenuItem 
+          { !isAddPage && (provisionStatus!=='0' && provisionStatus!=="9" && provisionStatus!=="4") && UXAccess.hasProvisionRejectAccess() && <MenuItem 
             onClick={handleReject}
           >
             <CancelIcon />
             Rejecter la demande
           </MenuItem>}
-          <MenuItem 
+        { !isAddPage && (provisionStatus!=='0' && provisionStatus!=="1" && provisionStatus!=="4") &&  <MenuItem 
             onClick={handleAddPurchaseRequest}
           >
             <InsertDriveFileIcon />
-            Creer une demande d`&apos;`achat (coming)
-          </MenuItem>
+            Creer une demande d'achat
+          </MenuItem>}
         </StyledMenu>
         { (!provisionStatus || provisionStatus==='0') && <Button
           color="info"

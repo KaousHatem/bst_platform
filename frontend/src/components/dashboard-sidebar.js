@@ -183,8 +183,8 @@ export const DashboardSidebar = (props) => {
               }}
             >
             <MenuList>
-              <SubNavItem href='/products/list-product' title='List des Articles'/>
-              <SubNavItem href='/category' title='List des Categories'/>
+              <SubNavItem href='/products/list-product' title='Articles'/>
+              <SubNavItem href='/category' title='Categories'/>
               <SubNavItem href='#' title='Inventaire (coming soon)'/>
             </MenuList>
             </Box>
@@ -228,8 +228,8 @@ export const DashboardSidebar = (props) => {
               }}
             >
             <MenuList>
-              <SubNavItem href='/provision' title='Demandes D`approvisionnement'/>
-              <SubNavItem href='/purchase-request' title='Demandes D`achat'/>
+              <SubNavItem href='/provision' title='Approvisionnement'/>
+              <SubNavItem href='/purchase-request' title='Achat'/>
             </MenuList>
             </Box>
             

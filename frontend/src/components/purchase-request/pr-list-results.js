@@ -283,15 +283,15 @@ export const PRListResults = ({ purchaseReqList, ...rest}) => {
                         }}
                         onClick = {(event) => {handleClickEdit(event, purchaseRequest)}}
                        />
-                        
-                       </>
-                    }
-                    <DeleteIcon 
+                       <DeleteIcon 
                         sx={{
                           mx:1
                         }}
                         onClick = {(event) => {handleDeleteOpen(event, purchaseRequest.id)}}
                       />
+                       </>
+                    }
+                   
 
                     <ThreeDotsIcon 
                         sx={{
