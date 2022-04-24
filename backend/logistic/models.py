@@ -24,6 +24,9 @@ class Category(models.Model):
 		super(Category, self).save(*args, **kwargs)
 
 
+class Unit(models.Model):
+	ref = models.CharField(max_length=20, unique=True, null=True)
+	name = models.CharField(max_length=220)
 
 class Product(models.Model):
 	sku = models.CharField(max_length=20, unique=True)
@@ -52,6 +55,12 @@ class Product(models.Model):
 			else:
 				self.sku = self.get_category_ref() + str(1).zfill(7)
 		super(Product, self).save(*args, **kwargs)
+
+# class UnitConversion(models.Model):
+# 	product = models.ForeignKey(Product, on_delete=models.CASCADE)
+# 	base_unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
+# 	to_unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
+# 	multiplier = models.FloatField()
 
 
 class Provision(models.Model):

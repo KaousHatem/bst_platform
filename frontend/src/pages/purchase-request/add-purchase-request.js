@@ -181,7 +181,7 @@ const AddPurchaseRequest = () => {
                         onChange={handleProvisionChange}
                         disabled={selecetedProducts.length !== 0}
                       >
-                        {provisions.slice(0,provisions.length).map((provision) => (
+                        {provisions && provisions.slice(0,provisions.length).map((provision) => (
                           <MenuItem key={provision.ref} 
                           value={provision.id}>{provision.ref}</MenuItem>
                         ))}
