@@ -8,6 +8,8 @@ from .models import (
 	ProvisionProductRel,
 	PurchaseRequest,
 	PurchaseReqProductRel,
+	Unit,
+	UnitConversion
 	
 )
 from project.models import Location
@@ -46,11 +48,53 @@ class CategorySerializer(serializers.ModelSerializer):
 		   }
 		}
 
+class UnitSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Unit
+		fields = [
+			'id',
+			'ref',
+			'name',
+		]
+
+class UnitListingSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Unit
+		fields = [
+			'ref',
+		]
+
+
+
+class UnitConversionSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = UnitConversion
+		fields = [
+			'id',
+			'product',
+			'base_unit',
+			'to_unit',
+			'multiplier'
+		]
+
+class UnitConversionListingSerializer(serializers.ModelSerializer):
+	base_unit = UnitListingSerializer()
+	to_unit = UnitListingSerializer()
+	class Meta:
+		model = UnitConversion
+		fields = [
+			'id',
+			'product',
+			'base_unit',
+			'to_unit',
+			'multiplier'
+		]
 
 class ProductSerializer(serializers.ModelSerializer):
 	category = serializers.SlugRelatedField(queryset = Category.objects.all() ,slug_field='ref')
 	created_by = CustomUserListSerializer(read_only=True,required=False)
-	# category = CategorySerializer()
+	base_unit = UnitListingSerializer()
+	unit_converions = UnitConversionListingSerializer(many=True,read_only=True)
 	class Meta:
 		model = Product
 		fields = [
@@ -59,18 +103,22 @@ class ProductSerializer(serializers.ModelSerializer):
 				'name',
 				'description',
 				'status',
-				'unit',
+				'base_unit',
+				'unit_converions',
 				'category',
 				'created_by'
 				]
 		extra_kwargs = {
+			'unit_converions': {
+			  'read_only': True
+		   },
 		   'sku': {
 			  'required': False
 		   },
 		   'description': {
 			  'required': False
 		   },
-		   'unit': {
+		   'base_unit': {
 			  'required': False
 		   },
 		   'status': {

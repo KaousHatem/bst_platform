@@ -29,6 +29,8 @@ from .models import (
     ProvisionProductRel,
     PurchaseRequest,
     PurchaseReqProductRel,
+    Unit,
+    UnitConversion,
     
 )
 
@@ -46,7 +48,9 @@ from .serializers import  (
     PurchaseReqProductListingSerializer,
     PurchaseRequestRetrieveSerializer,
     PurchaseReqProductSerializer,
-    PurchaseRequestStatusActionSerializer
+    PurchaseRequestStatusActionSerializer,
+    UnitSerializer,
+    UnitConversionSerializer
     
 )
 
@@ -74,12 +78,21 @@ class CategoryViewSet(ModelViewSet):
 
 
 
+class UnitViewSet(ModelViewSet):
+    queryset = Unit.objects.all()
+    serializer_class = UnitSerializer
+    # permission_classes = [HasPermission]
+
+class UnitConversionViewSet(ModelViewSet):
+    queryset = UnitConversion.objects.all()
+    serializer_class = UnitConversionSerializer
+    # permission_classes = [HasPermission]
 
 
 class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    permission_classes=[HasPermission]
+    # permission_classes=[HasPermission]
     filterset_class = (ProductFilter)
     # permission_classes=[IsStockManagerReadOnly]
     # parser_classes = [p.CSVParser]

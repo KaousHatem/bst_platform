@@ -20,7 +20,7 @@ class ProductFilter(filters.FilterSet):
         model = Product
         fields = {
             'category': ['exact'],
-            'unit': ['exact']
+            'base_unit': ['exact']
             }
 
 

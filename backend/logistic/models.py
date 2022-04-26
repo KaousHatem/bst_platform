@@ -28,12 +28,13 @@ class Unit(models.Model):
 	ref = models.CharField(max_length=20, unique=True, null=True)
 	name = models.CharField(max_length=220)
 
+
 class Product(models.Model):
 	sku = models.CharField(max_length=20, unique=True)
 	name = models.CharField(max_length=220)
 	description = models.CharField(max_length=220, null=True, blank=True,)
 	status = models.BooleanField(default=True)
-	unit = models.CharField(max_length=50)
+	base_unit = models.ForeignKey(Unit, on_delete=models.CASCADE,null=True, blank=True,)
 	category = models.ForeignKey(Category, on_delete=models.CASCADE)
 	created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 	created_on = models.DateTimeField(auto_now_add=True)
@@ -56,11 +57,13 @@ class Product(models.Model):
 				self.sku = self.get_category_ref() + str(1).zfill(7)
 		super(Product, self).save(*args, **kwargs)
 
-# class UnitConversion(models.Model):
-# 	product = models.ForeignKey(Product, on_delete=models.CASCADE)
-# 	base_unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
-# 	to_unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
-# 	multiplier = models.FloatField()
+class UnitConversion(models.Model):
+	product = models.ForeignKey(Product, related_name='unit_converions', on_delete=models.CASCADE)
+	base_unit = models.ForeignKey(Unit, on_delete=models.CASCADE,related_name='unit_conversion_base_unit')
+	to_unit = models.ForeignKey(Unit, on_delete=models.CASCADE,related_name='unit_conversion_to_unit')
+	multiplier = models.FloatField()
+
+
 
 
 class Provision(models.Model):

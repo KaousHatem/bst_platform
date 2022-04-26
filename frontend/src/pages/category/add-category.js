@@ -34,8 +34,8 @@ const AddCategory = () => {
     }
     if (e.target.ref.value){
       data = {
-        'ref': e.target.ref.value.length(),
-        ...rest
+        'ref': e.target.ref.value,
+        ...data
       }
     }
     console.log(data)
