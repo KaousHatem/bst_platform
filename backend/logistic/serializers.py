@@ -93,7 +93,7 @@ class UnitConversionListingSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
 	category = serializers.SlugRelatedField(queryset = Category.objects.all() ,slug_field='ref')
 	created_by = CustomUserListSerializer(read_only=True,required=False)
-	base_unit = UnitListingSerializer()
+	base_unit = serializers.SlugRelatedField(queryset = Unit.objects.all() ,slug_field='ref')
 	unit_converions = UnitConversionListingSerializer(many=True,read_only=True)
 	class Meta:
 		model = Product
@@ -135,6 +135,7 @@ class ProductSerializer(serializers.ModelSerializer):
 			raise serializers.ValidationError('No category input found')
 		category_obj = Category.objects.get(ref=category)
 		validated_data.update({'category':category_obj})
+
 		return Product.objects.create(**validated_data)
 
 

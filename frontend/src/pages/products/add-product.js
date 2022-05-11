@@ -4,33 +4,44 @@ import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { Select, MenuItem, Box, Button, Container, Grid, Link, TextField, Typography, Card, CardContent, } from '@mui/material';
+import { Select, MenuItem, Box, Button, Container, Grid, Link, TextField, Typography, Card, CardContent, IconButton,Stack} from '@mui/material';
 import InputLabel from '@mui/material/InputLabel';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+
 import { ProductAddToolbar } from '../../components/product/product-add-toolbar';
 import { DashboardLayout } from '../../components/dashboard-layout';
+import { UnitAddDialog } from '../../components/product/unit-add-dialog'
 
 import CategoryProvider from '../../services/category-provider'
 import ProductProvider from '../../services/product-provider'
+import UnitProvider from '../../services/unit-provider'
 
 
 const AddProduct = () => {
 
+  const [loading, setLoading] = useState(true)
   const [categories, setCategories] = useState([])
+  const [units, setUnits] = useState([])
   const [sku, setSku] = useState("")
   const [id, setId] = useState("")
   const router = useRouter();
 
+  const [open, setOpen] = useState(false)
+
   useEffect(() => {
-    CategoryProvider.getCategories().then(
-        (response) => {
-          console.log(response)
-          setCategories(response.data)
+    Promise.all([
+      CategoryProvider.getCategories(),
+      ProductProvider.getLastProduct(),
+      UnitProvider.getUnits(),
+      ]).then((responses) => {
+        console.log(responses)
+        if(responses.length){
+          setLoading(false)
+          setCategories(responses[0].data)
+          setId(("0000000"+(responses[1].data.id+1)).slice(-7))
+          setUnits(responses[2].data)
         }
-      )
-    ProductProvider.getLastProduct().then(
-      (response) => {
-        setId(("0000000"+(response.data.id+1)).slice(-7))
       })
   },[])
 
@@ -39,13 +50,15 @@ const AddProduct = () => {
     setSku(category.ref+id)
   }
 
+
+
   const handleOnSubmit = (e) => {
     e.preventDefault();
     console.log(e.target.category.value)
     const data = {
       name: e.target.name.value,
       category: e.target.category.value,
-      unit: e.target.unit.value,
+      base_unit: e.target.unit.value,
     }
 
     if(e.target.description.value){
@@ -64,7 +77,15 @@ const AddProduct = () => {
       )
   }
   
-  return (
+  const handleUnitRefresh = () => {
+    UnitProvider.getUnits().then(
+      (response) => {
+        setUnits(response.data)
+      })
+  }
+
+
+  return ( !loading && 
     <>
     <Head>
       <title>
@@ -94,7 +115,7 @@ const AddProduct = () => {
                   </InputLabel>
                   <TextField
                     fullWidth
-                    margin="normal"
+                    margin="dense"
                     name="sku"
                     type="text"
                     variant="outlined"
@@ -106,7 +127,7 @@ const AddProduct = () => {
                   </InputLabel>
                   <TextField
                     fullWidth
-                    margin="normal"
+                    margin="dense"
                     name="name"
                     type="text"
                     variant="outlined"
@@ -117,10 +138,10 @@ const AddProduct = () => {
                   <Select
                     fullWidth
                     name="category"
-                    margin="normal"
+                    margin="dense"
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
-                    defaultValue={1}
+                    defaultValue={""}
                     onChange={handleCategorySelector}
                     sx={{
                       my: 2
@@ -137,7 +158,7 @@ const AddProduct = () => {
                   </InputLabel>
                   <TextField
                     fullWidth
-                    margin="normal"
+                    margin="dense"
                     name="description"
                     type="text"
                     variant="outlined"
@@ -145,21 +166,35 @@ const AddProduct = () => {
                   <InputLabel>
                     Unité 
                   </InputLabel>
-                  <Select
-                    fullWidth
-                    name="unit"
-                    margin="normal"
-                    defaultValue={"U"}
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
+                  
+                  <Stack
+                    direction="row"
+                    spacing={2}
                     sx={{
-                      my: 2
-                    }} 
+                        my: 2
+                      }} 
                   >
-                    <MenuItem value={"U"}>U</MenuItem>
-                    <MenuItem value={"KG"}>KG</MenuItem>
-                    <MenuItem value={"M"}>M</MenuItem>
-                  </Select>
+                    <Select
+                      fullWidth
+                      name="unit"
+                      margin="normal"
+                      defaultValue={""}
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                    >
+                      {units.slice(0,units.length).map((unit) => (
+                        <MenuItem 
+                        key={unit.ref} 
+                        value={unit.ref}>{unit.name}</MenuItem>
+                        ))}
+                    </Select>
+                    <IconButton aria-label="fingerprint" 
+                    color="secondary" 
+                    onClick={() => setOpen(true)}
+                    >
+                      <AddCircleIcon />
+                    </IconButton>
+                  </Stack>
                 </form>
               </Box>
             </CardContent>
@@ -167,6 +202,7 @@ const AddProduct = () => {
         </Box>
       </Container>
     </Box>
+    <UnitAddDialog open={open} setOpen={setOpen} handleUnitRefresh={handleUnitRefresh}/>
   </>
   );
 };

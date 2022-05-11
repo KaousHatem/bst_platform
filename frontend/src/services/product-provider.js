@@ -29,16 +29,22 @@ class ProductProvider {
 
 
 
-    getProducts() {
+    getProducts(pk=-1) {
         const token = localStorage.getItem('auth')
         
         const config = {
         headers: {
         Authorization: `Bearer ${token}`
         }}
+
+        var url = productUrl
+        if(pk !== -1){
+            url = productUrl + pk
+            
+        }
         
         return axios
-            .get(productUrl, config)
+            .get(url, config)
             .then(response => {
                 if (response.status < 200 || response.status >= 300) {
                     throw new Error(response.statusText);

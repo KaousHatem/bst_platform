@@ -31,21 +31,9 @@ class Products extends React.Component{
       ProductProvider.getProducts(),
       CategoryProvider.getCategories()
       ]).then((responses) => {
-        console.log(responses)
         this.setState({products : responses[0].data,categories : responses[1].data, loading: false})
       })
-    // ProductProvider.getProducts().then(
-    //   (response) => {
-    //     this.setState({products : response.data, productsLoading: false,  ...this.state})
-    //     console.log(this.state)
-    //   }
-    // )
-
-    // CategoryProvider.getCategories().then(
-    //   (response) => {
-    //      this.setState({categories : response.data, categoriesLoading:false,  ...this.state})
-    //   }
-    //   )
+    
   }
  
   render() {

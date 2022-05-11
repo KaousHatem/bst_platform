@@ -112,7 +112,7 @@ export const ProductListResults = ({ product, categories, ...rest }) => {
   const handleClickEdit = (e,product) => {
     router.push({ 
      pathname: '/products/edit-product',
-     query: product
+     query: {id:product.id}
     });
   }
 
@@ -158,12 +158,6 @@ export const ProductListResults = ({ product, categories, ...rest }) => {
       })
     setAnchorEl(null);
   }
-
-  useEffect(() => {
-    console.log(categories)
-  })
-
-  
 
   return (
     <Card {...rest}>
@@ -234,7 +228,7 @@ export const ProductListResults = ({ product, categories, ...rest }) => {
                   <TableCell
                     align="center"
                   >
-                    {product.unit === '' && '-' || product.unit}
+                    {product.base_unit === '' && '-' || product.base_unit}
                   </TableCell>
                   <TableCell>
                     {product.description === null && '-' || product.description}
@@ -320,5 +314,5 @@ export const ProductListResults = ({ product, categories, ...rest }) => {
 };
 
 ProductListResults.propTypes = {
-  products: PropTypes.array.isRequired
+  product: PropTypes.array.isRequired
 };

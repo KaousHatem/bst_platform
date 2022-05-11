@@ -4,19 +4,26 @@ import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { Select, MenuItem, Box, Button, Container, Grid, Link, TextField, Typography, Card, CardContent, } from '@mui/material';
+import { Select, MenuItem, Box, Button, Container, Grid, Link, TextField, Typography, Card, CardContent, IconButton,Stack } from '@mui/material';
 import InputLabel from '@mui/material/InputLabel';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+
 import { ProductAddToolbar } from '../../components/product/product-add-toolbar';
 import { DashboardLayout } from '../../components/dashboard-layout';
 
 import CategoryProvider from '../../services/category-provider'
 import ProductProvider from '../../services/product-provider'
+import UnitProvider from '../../services/unit-provider'
 
 
 const EditProduct = (props) => {
 
+  const router = useRouter();
+  const [loading, setLoading] = useState(true)
   const [categories, setCategories] = useState([])
+  const [units, setUnits] = useState([])
+
 
   const [sku, setSku] = useState("")
   const [name, setName] = useState("")
@@ -24,24 +31,28 @@ const EditProduct = (props) => {
   const [description, setDescription] = useState("")
   const [unit, setUnit] = useState("")
 
-  const [id, setId] = useState("")
-  const router = useRouter();
+  const [id, setId] = useState(router.query.id)
   const [product, setProduct] = useState({})
 
 
   useEffect(() => {
-    CategoryProvider.getCategories().then(
-        (response) => {
-          setCategories(response.data)
+    if(id && JSON.stringify(product) === "{}"){
+      Promise.all([
+      CategoryProvider.getCategories(),
+      ProductProvider.getProducts(id),
+      UnitProvider.getUnits(),
+      ]).then((responses) => {
+        console.log(responses)
+        if(responses.length){
+          setCategories(responses[0].data)
+          setProduct(responses[1].data)
+          setUnits(responses[2].data)
+          setLoading(false)
         }
-      )
-    // setProduct(router.query)
-    setSku(router.query.sku)
-    setName(router.query.name)
-    setCategory(router.query.category)
-    setDescription(router.query.description)
-    setUnit(router.query.unit)
-    setId(router.query.id)
+      })
+    }
+    
+
   },[])
 
   const handleCategorySelector = (e) => {
@@ -53,10 +64,9 @@ const EditProduct = (props) => {
     e.preventDefault();
     console.log(e.target.category.value)
     const data = {
-      sku: sku,
       name: e.target.name.value,
       category: e.target.category.value,
-      unit: e.target.unit.value,
+      base_unit: e.target.unit.value,
     }
 
     if(e.target.description.value){
@@ -76,6 +86,7 @@ const EditProduct = (props) => {
   }
   
   return (
+    !loading &&
     <>
     <Head>
       <title>
@@ -109,7 +120,7 @@ const EditProduct = (props) => {
                     name="sku"
                     type="text"
                     variant="outlined"
-                    value={sku}
+                    value={product.sku}
                     disabled
                   />
                   <InputLabel>
@@ -120,10 +131,8 @@ const EditProduct = (props) => {
                     margin="normal"
                     name="name"
                     type="text"
-                    value={name}
                     variant="outlined"
-                    onChange={(e) => {
-                      setName(e.target.value)}}
+                    defaultValue={product.name}
                   />
                   <InputLabel>
                     Groupe 
@@ -134,10 +143,7 @@ const EditProduct = (props) => {
                     margin="normal"
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
-                    // defaultValue={parseInt(product.category)}
-                    value={category}
-                    onChange={(e) => {
-                      setCategory(e.target.value)}}
+                    defaultValue={product.category}
                     sx={{
                       my: 2
                     }} 
@@ -157,32 +163,40 @@ const EditProduct = (props) => {
                     name="description"
                     type="text"
                     variant="outlined"
-                    value={description}
-                    onChange={(e) => {
-                      setDescription(e.target.value)}}
+                    defaultValue={product.description}
 
                   />
                   <InputLabel>
                     Unité 
                   </InputLabel>
-                  <Select
-                    fullWidth
-                    name="unit"
-                    margin="normal"
-                    // defaultValue={''+product.unit}
-                    value={unit}
-                    onChange={(e) => {
-                      setUnit(e.target.value)}}
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
+                  <Stack
+                    direction="row"
+                    spacing={2}
                     sx={{
-                      my: 2
-                    }} 
+                        my: 2
+                      }} 
                   >
-                    <MenuItem value={"U"}>U</MenuItem>
-                    <MenuItem value={"KG"}>KG</MenuItem>
-                    <MenuItem value={"M"}>M</MenuItem>
-                  </Select>
+                    <Select
+                      fullWidth
+                      name="unit"
+                      margin="normal"
+                      defaultValue={product.base_unit}
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                    >
+                      {units.slice(0,units.length).map((unit) => (
+                        <MenuItem 
+                        key={unit.ref} 
+                        value={unit.ref}>{unit.name}</MenuItem>
+                        ))}
+                    </Select>
+                    <IconButton aria-label="fingerprint" 
+                    color="secondary" 
+                    onClick={() => setOpen(true)}
+                    >
+                      <AddCircleIcon />
+                    </IconButton>
+                  </Stack>
                 </form>
               </Box>
             </CardContent>

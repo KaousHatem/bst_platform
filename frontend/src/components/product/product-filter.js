@@ -157,7 +157,7 @@ export const ProductFilter = ({products, setFilteredProducts, categories, ...pro
                   onChange={handleChangeUnitFilter}
                 >
                 { unit_text.map((unit)=>(
-                    unit!=='-1' && <MenuItem value={unit}>{unit}</MenuItem>
+                    unit!=='-1' && <MenuItem key={unit} value={unit}>{unit}</MenuItem>
                   ))
                   
                 }
