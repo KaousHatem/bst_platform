@@ -1,0 +1,1 @@
+export const CONNECTION_ERROR = "Probleme de connexion, Veuillez de ressayer"

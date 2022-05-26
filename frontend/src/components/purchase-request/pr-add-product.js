@@ -27,6 +27,8 @@ import {
   Alert,
   Collapse,
   Snackbar,
+  Select,
+  MenuItem,
 
 } from '@mui/material';
 import { getInitials } from '../../utils/get-initials';
@@ -37,6 +39,11 @@ import {ThreeDots as ThreeDotsIcon} from '../../icons/three-dots'
 import {Edit as EditIcon} from '../../icons/edit'
 import {Delete as DeleteIcon} from '../../icons/delete'
 import {Save as SaveIcon} from '../../icons/save'
+import {Done as DoneIcon} from '../../icons/done'
+import {Convert as ConvertIcon} from '../../icons/convert'
+
+import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded';
+import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 
 
 import Label from '../Label';
@@ -44,33 +51,28 @@ import Label from '../Label';
 import {PRProductAddDialog} from './pr-product-add-dialog'
 
 
-export const PRAddProduct = ({provisionProducts,selecetedProducts, setSelectedProducts, isDraft=true, productInPurchase,...rest}) => {
+export const PRAddProduct = ({provisionProducts, selecetedProducts, setSelectedProducts, isDraft=true, productInPurchase, doneModeProducts, setDoneModeProducts,...rest}) => {
   const [selectedProductIds, setSelectedProductIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
 
   
-  let [savedModeProducts, setSavedModeProducts] = useState(selecetedProducts.map((product)=>{return(selecetedProducts.indexOf(product))}))
+  
 
-  const handleOnEdit = (event, product) => {
-    console.log(selecetedProducts)
-    if( savedModeProducts.includes(selecetedProducts.indexOf(product)) ){
-      const newArray = savedModeProducts.filter((item) => item !== selecetedProducts.indexOf(product))
-      setSavedModeProducts(newArray)
+  const handleOnConvert = (event, product) => {
+        console.log(doneModeProducts)
+    if( doneModeProducts.includes(product.productProvision.id) ){
+      const newArray = doneModeProducts.filter((item) => item !== product.productProvision.id)
+      setDoneModeProducts(newArray)
     }
   }
 
-  const handleOnSave = (event, product) => {
-    if( !savedModeProducts.includes(selecetedProducts.indexOf(product)) ){
-      if (product.quantity && product.quantity > 0){
-        setSavedModeProducts([ ...savedModeProducts , selecetedProducts.indexOf(product)])
-      } else {
-        setQuantityOpen(true)
-        // alert("Veuillez saisir la quantité de l'article")
-      }
-      
+  const handleOnDone = (event, product) => {
+
+    console.log(doneModeProducts)
+    if( !doneModeProducts.includes(product.productProvision.id) ){
+      setDoneModeProducts([ ...doneModeProducts , product.productProvision.id]) 
     }
-    
   }
 
   const handleSelectAll = (event) => {
@@ -125,14 +127,50 @@ export const PRAddProduct = ({provisionProducts,selecetedProducts, setSelectedPr
     setQuantityOpen(false)
   }
 
+  const handleUnitChange = (event,product) => {
+
+    if(event.target.value === product.productProvision.product.base_unit){
+      const fact_to_unit = product.productProvision.product.unit_conversions.find((convret_unit)=>{
+        return convret_unit.to_unit.ref === product.unit
+      }).multiplier
+      console.log(fact_to_unit)
+      const new_quantity = product.quantity*fact_to_unit
+      product.quantity = new_quantity
+    }else if(product.unit === product.productProvision.product.base_unit){
+      const fact_to_unit = product.productProvision.product.unit_conversions.find((convret_unit)=>{
+        return convret_unit.to_unit.ref === event.target.value
+      }).multiplier
+      console.log(fact_to_unit)
+      const new_quantity = product.quantity/fact_to_unit
+      product.quantity = new_quantity
+    }else{
+      const fact_to_unit = product.productProvision.product.unit_conversions.find((convret_unit)=>{
+        return convret_unit.to_unit.ref === event.target.value
+      }).multiplier
+      const fact_from_unit = product.productProvision.product.unit_conversions.find((convret_unit)=>{
+        return convret_unit.to_unit.ref === product.unit
+      }).multiplier
+
+      const base_quantity = product.quantity * fact_from_unit
+      const new_quantity = base_quantity / fact_to_unit
+      product.quantity = new_quantity
+    }
+
+    
+
+    product.unit = event.target.value;
+    setSelectedProducts([...selecetedProducts]);
+
+    console.log(product)
+
+  }
+
 
   const handleQuantityChange = (e, product) => {
     const tmp_selecetedProducts = selecetedProducts
     tmp_selecetedProducts[tmp_selecetedProducts.indexOf(product)].quantity = e.target.value
     setSelectedProducts(tmp_selecetedProducts)
   }
-
- 
 
   return (
 
@@ -159,7 +197,8 @@ export const PRAddProduct = ({provisionProducts,selecetedProducts, setSelectedPr
           setOpen={setOpen} 
           selectedProducts={selecetedProducts} 
           setSelectedProducts={setSelectedProducts}
-          productInPurchase = {productInPurchase}/>}
+          productInPurchase = {productInPurchase}
+          setDoneModeProducts={setDoneModeProducts}/>}
           <Table>
             <TableHead sx={{
               backgroundColor: '#F4F7FC',
@@ -167,17 +206,6 @@ export const PRAddProduct = ({provisionProducts,selecetedProducts, setSelectedPr
             }} 
             >
               <TableRow>
-                <TableCell padding="checkbox">
-                  <Checkbox
-                    checked={selectedProductIds.length === selecetedProducts.length}
-                    color="primary"
-                    indeterminate={
-                      selectedProductIds.length > 0
-                      && selectedProductIds.length < selecetedProducts.length
-                    }
-                    onChange={handleSelectAll}
-                  />
-                </TableCell>
                 <TableCell>
                   Sku
                 </TableCell>
@@ -199,27 +227,39 @@ export const PRAddProduct = ({provisionProducts,selecetedProducts, setSelectedPr
               {selecetedProducts.slice(0, limit).map((product) => (
                 <TableRow
                   hover
-                  key={product.id}
-                  selected={selectedProductIds.indexOf(product.id) !== -1}
+                  key={product.productProvision.id}
                   
                 >
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                      checked={selectedProductIds.indexOf(product.id) !== -1}
-                      onChange={(event) => handleSelectOne(event, product.id)}
-                      value="true"
-                    />
+                  <TableCell>
+                    {product.productProvision.product.sku}
                   </TableCell>
                   <TableCell>
-                    {product.product.sku}
-                  </TableCell>
-                  <TableCell>
-                    {product.product.name}
+                    {product.productProvision.product.name}
                   </TableCell>
                   <TableCell
                     align="center"
-                  >
-                    {product.product.unit}
+                  >{
+                    doneModeProducts.includes(product.productProvision.id) &&
+                    product.unit ||
+                    <Select
+                      fullWidth
+                      name="unit"
+                      margin="normal"
+                      defaultValue={product.unit}
+                      onChange={event => handleUnitChange(event,product)}
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                    >
+                       <MenuItem 
+                        key={product.productProvision.product.base_unit}
+                        value={product.productProvision.product.base_unit}>{product.productProvision.product.base_unit}</MenuItem>
+                      
+                      {product.productProvision.product.unit_conversions && product.productProvision.product.unit_conversions.map((unit)=>(
+                        <MenuItem 
+                          key={unit.to_unit.ref}
+                          value={unit.to_unit.ref} >{unit.to_unit.ref}</MenuItem>))}
+                    </Select>
+                  }
                   </TableCell>
                   <TableCell align="center">
                     {product.quantity}
@@ -234,12 +274,28 @@ export const PRAddProduct = ({provisionProducts,selecetedProducts, setSelectedPr
                           display: 'flex'
                       }}
                     >
+                    {
+                      doneModeProducts.includes(product.productProvision.id) &&
+                      <ConvertIcon 
+                        sx={{
+                          mx:1
+                        }}
+                        onClick={(event) => handleOnConvert(event,product)}
+                      /> ||
+                      <DoneIcon 
+                        sx={{
+                          mx:1
+                        }}
+                        onClick={(event) => handleOnDone(event,product)}
+                      />
+
+                    }
                       <DeleteIcon 
                         sx={{
                           mx:1
                         }}
                         onClick={(event) => {
-                          setSelectedProducts(selecetedProducts.filter((row) => {return row.id !== product.id}))
+                          setSelectedProducts(selecetedProducts.filter((row) => {return row.productProvision.id !== product.productProvision.id}))
                         }}
                       />
               

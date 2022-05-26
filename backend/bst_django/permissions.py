@@ -57,7 +57,7 @@ class HasPermission(permissions.DjangoModelPermissions):
 
 
 	def has_permission(self, request, view):
-		print(view.action)
+		# print(view.action)
 		# get auth_token that was generated on login post
 		try:
 			auth_token = request.META.get("HTTP_AUTHORIZATION", None)

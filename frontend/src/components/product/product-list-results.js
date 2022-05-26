@@ -120,6 +120,7 @@ export const ProductListResults = ({ product, categories, ...rest }) => {
     setOpen(false)
     ProductProvider.deleteProduct(id).then(
         (response) => {
+          console.log(response)
           console.log('item: '+id+' is deleted')
           setProducts(filteredProducts.filter(function(product) {
             return product.id !== id

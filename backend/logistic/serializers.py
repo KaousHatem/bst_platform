@@ -78,8 +78,8 @@ class UnitConversionSerializer(serializers.ModelSerializer):
 		]
 
 class UnitConversionListingSerializer(serializers.ModelSerializer):
-	base_unit = UnitListingSerializer()
-	to_unit = UnitListingSerializer()
+	base_unit = UnitSerializer()
+	to_unit = UnitSerializer()
 	class Meta:
 		model = UnitConversion
 		fields = [
@@ -94,7 +94,7 @@ class ProductSerializer(serializers.ModelSerializer):
 	category = serializers.SlugRelatedField(queryset = Category.objects.all() ,slug_field='ref')
 	created_by = CustomUserListSerializer(read_only=True,required=False)
 	base_unit = serializers.SlugRelatedField(queryset = Unit.objects.all() ,slug_field='ref')
-	unit_converions = UnitConversionListingSerializer(many=True,read_only=True)
+	unit_conversions = UnitConversionListingSerializer(many=True,read_only=True)
 	class Meta:
 		model = Product
 		fields = [
@@ -104,7 +104,7 @@ class ProductSerializer(serializers.ModelSerializer):
 				'description',
 				'status',
 				'base_unit',
-				'unit_converions',
+				'unit_conversions',
 				'category',
 				'created_by'
 				]
@@ -140,9 +140,36 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 
+class PurchaseReqProductListSerializer(serializers.ListSerializer):
+	def update(self, instance, validated_data):
 
+		# Maps for id->instance and id->data item.
+
+		product_mapping = {product.id: product for product in instance}
+
+
+		data_mapping = {item['id']: item for item in validated_data}
+
+		# Perform creations and updates.
+		ret = []
+		for product_id, data in data_mapping.items():
+			product = product_mapping.get(product_id, None)
+
+			if product is None:
+				ret.append(self.child.create(data))
+			else:
+				ret.append(self.child.update(product, data))
+
+		# # Perform deletions.
+		# for book_id, book in book_mapping.items():
+		#     if book_id not in data_mapping:
+		#         book.delete()
+
+		return ret
 
 class ProvisionProductSerializer(serializers.ModelSerializer):
+	unit = serializers.SlugRelatedField(queryset = Unit.objects.all() ,slug_field='ref')
+	id = serializers.IntegerField(required=False)
 	class Meta:
 		model = ProvisionProductRel
 		fields = [
@@ -152,12 +179,13 @@ class ProvisionProductSerializer(serializers.ModelSerializer):
 				'unit',
 				'quantity',
 				]
-		# list_serializer_class = BulkCreateListSerializer
+		list_serializer_class = PurchaseReqProductListSerializer
 
 
 # this serializer is only used for provision listing
 class ProvisionProductListingSerializer(serializers.ModelSerializer):
 	product = ProductSerializer(read_only=True)
+	unit = UnitSerializer(read_only=True)
 	class Meta:
 		model = ProvisionProductRel
 		fields = [
@@ -174,6 +202,7 @@ class ProvisionSerializer(serializers.ModelSerializer):
 	# destination = serializers.RelatedField(read_only=True)
 	destination = serializers.SlugRelatedField(queryset = Location.objects.all() ,slug_field='name')
 	created_by = CustomUserListSerializer(read_only=True,required=False)
+	approved_by = CustomUserListSerializer(read_only=True,required=False)
 	class Meta:
 		model = Provision
 		fields = [
@@ -226,25 +255,62 @@ class ProvisionSerializerListing(serializers.ModelSerializer):
 		print(validated_data)
 		return Provision.objects.create(**validated_data)
 
+class PurchaseReqProductListSerializer(serializers.ListSerializer):
+	def update(self, instance, validated_data):
+
+		# Maps for id->instance and id->data item.
+
+		product_mapping = {product.id: product for product in instance}
+
+		data_mapping = {item['id']: item for item in validated_data}
+
+		# Perform creations and updates.
+		ret = []
+		for product_id, data in data_mapping.items():
+			product = product_mapping.get(product_id, None)
+
+			if product is None:
+				ret.append(self.child.create(data))
+			else:
+				ret.append(self.child.update(product, data))
+
+		# # Perform deletions.
+		# for book_id, book in book_mapping.items():
+		#     if book_id not in data_mapping:
+		#         book.delete()
+
+		return ret
 
 class PurchaseReqProductSerializer(serializers.ModelSerializer):
-
+	unit = serializers.SlugRelatedField(queryset = Unit.objects.all() ,slug_field='ref')
+	id = serializers.IntegerField(required=False)
 	class Meta:
 		model = PurchaseReqProductRel
 		fields = [
 				'id',
 				'purchaseRequest',
 				'provisionProduct',
+				'unit',
+				'quantity'
 				]
-
+		extra_kwargs = {
+		   'id': {
+			  'required': False
+		   },
+		}
+		list_serializer_class = PurchaseReqProductListSerializer
+	
 class PurchaseReqProductListingSerializer(serializers.ModelSerializer):
 	provisionProduct = ProvisionProductListingSerializer(read_only=True)
+	unit = UnitSerializer(read_only=True)
 	class Meta:
 		model = PurchaseReqProductRel
 		fields = [
 				'id',
 				'purchaseRequest',
 				'provisionProduct',
+				'unit',
+				'quantity'
 				]
 
 

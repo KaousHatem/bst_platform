@@ -91,7 +91,7 @@ const TableRow = ({num, product, delay_data, delay=false, last=false}) => {
                 <Text>{product.product.name}</Text>
             </View>
             <View style={[styles.unit, last && styles.last]}>
-                <Text>{product.product.unit}</Text>
+                <Text>{product.unit.ref}</Text>
             </View>
             <View style={[styles.qty, last && styles.last]}>
                 <Text>{product.quantity}</Text>

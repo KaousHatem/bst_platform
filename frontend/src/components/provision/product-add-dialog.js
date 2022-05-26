@@ -76,7 +76,8 @@ export const ProductAddDialog = ({open,  handleClickOpen, setOpen, selectedProdu
         })[0]
         const product_data = {
           data: product_i,
-          quantity: 10
+          quantity: 10,
+          unit: product_i.base_unit
         }
         return product_data
       } 

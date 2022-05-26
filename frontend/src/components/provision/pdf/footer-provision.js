@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import {Text, View, StyleSheet, Image } from '@react-pdf/renderer';
 import ItemsTable from './items-table'
 import bstLogo from '../../../../public/static/bst-logo.jpg'
+import { format } from 'date-fns'
 
 
 const styles = StyleSheet.create({
@@ -62,7 +63,7 @@ const FooterProvision = ({value,provision}) => {
     const getDate = (date) => {
         const [year, month, day] = date.split('-')
         console.log(day+'/'+month+'/'+year)
-        return (day+'/'+month+'/'+year)
+        return format(new Date(date),'yyyy/MM/dd')
     }
 
  
@@ -83,14 +84,14 @@ const FooterProvision = ({value,provision}) => {
         </View>
         <View style={styles.VisaLogistic}>
             <Text style={styles.text}>St. Logistique</Text>
-            <Text style={styles.text}>Date: {getDate(provision.approved_on)}</Text>
+            <Text style={styles.text}>Date: {provision.approved_on!==null && getDate(provision.approved_on)}</Text>
             <Text style={styles.text}>Visa:</Text>
-            <View style={styles.chop}>
+            {provision.approved_by!==null && <View style={styles.chop}>
                 <Image style={styles.qrCode} 
                 src={document.getElementById(value).toDataURL()}/>
                 <Image style={styles.logo}
                 src={bstLogo.src}/>
-            </View>
+            </View>}
         </View>
     </View>
   );

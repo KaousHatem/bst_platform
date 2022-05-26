@@ -38,7 +38,7 @@ import Label from '../Label';
 import ProductProvider from '../../services/product-provider'
 
 
-export const PRProductAddDialog = ({open,  handleClickOpen, setOpen, allProvisionProducts, selectedProducts, setSelectedProducts, productInPurchase}) => {
+export const PRProductAddDialog = ({open,  handleClickOpen, setOpen, allProvisionProducts, selectedProducts, setSelectedProducts, productInPurchase,setDoneModeProducts}) => {
 
   const [products, setProducts] = useState(allProvisionProducts)
   // const [searched, setSearched] = useState('')
@@ -64,17 +64,33 @@ export const PRProductAddDialog = ({open,  handleClickOpen, setOpen, allProvisio
   };
 
   const handleAddProductToProvision = () => {
-    
+    const newSelectedProduct = selectedProductIds.filter((i)=>{
+                          return !selectedProducts.map((product)=>{
+                                    return product.productProvision.id})
+                          .includes(i)})
+                        .map((i)=>{
+                          const productProvision = allProvisionProducts.find((row)=>{return row.id === i})
+                          return {
+                            productProvision: productProvision,
+                            quantity: productProvision.quantity,
+                            unit: productProvision.unit.ref
+                          }
+                        })
 
-    setSelectedProducts([...selectedProducts,...selectedProductIds.filter((i) => {return !selectedProducts.map((product)=>{
-      return product.id
-    }).includes(i)}).map(i => {
-        const product_i = allProvisionProducts.filter((row) => {
-          return(row.id === i)
-        })[0]
-        return product_i
-      } 
-    )])
+
+    setSelectedProducts((oldSelectedProducts)=>{return [...oldSelectedProducts, ...newSelectedProduct]})
+    
+    setDoneModeProducts((oldSelectedProducts)=>{return [...oldSelectedProducts, ...newSelectedProduct.map((product)=>{return product.productProvision.id}) ]})
+
+    // setSelectedProducts([...selectedProducts,...selectedProductIds.filter((i) => {return !selectedProducts.map((product)=>{
+    //   return product.id
+    // }).includes(i)}).map(i => {
+    //     const product_i = allProvisionProducts.filter((row) => {
+    //       return(row.id === i)
+    //     })[0]
+    //     return product_i
+    //   } 
+    // )])
 
     setLimit(10)
     setPage(0)
@@ -124,7 +140,7 @@ export const PRProductAddDialog = ({open,  handleClickOpen, setOpen, allProvisio
   },[allProvisionProducts])
 
   useEffect(()=>{
-    setSelectedProductIds(selectedProducts.map((row => {return(row.id)})))
+    setSelectedProductIds(selectedProducts.map((row => {return(row.productProvision.id)})))
 
   }, [selectedProducts])
 

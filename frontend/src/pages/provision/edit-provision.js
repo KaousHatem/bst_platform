@@ -5,7 +5,24 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import {  Select, MenuItem, Box, Button, Container, Grid, Link, TextField, Typography, Card, CardContent, } from '@mui/material';
+import {  
+  Select, 
+  MenuItem, 
+  Box, 
+  Button, 
+  Container, 
+  Grid, 
+  Link, 
+  TextField, 
+  Typography, 
+  Card, 
+  CardContent,
+  Backdrop,
+  CircularProgress,
+  Snackbar,
+  Alert, 
+} from '@mui/material';
+
 import {LocalizationProvider, DatePicker, AdapterDateFns} from '@mui/lab'
 import InputLabel from '@mui/material/InputLabel';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -33,6 +50,7 @@ const EditProvision = () => {
   const [value, setValue] = React.useState(new Date());
   const [locations, setLocations] = useState([])
   const [locationValue, setLocationValue] = React.useState(false);
+
   const [oldProducts, setOldProducts] = useState([])
   const [products, setProducts] = useState([])
 
@@ -43,6 +61,17 @@ const EditProvision = () => {
   const [provisionId, setProvisionId] = useState(router.query.provisionId)
   const [provision, setProvision] = useState({})
 
+  const [errorSBOpen, setErrorSBOpen] = useState(false)
+
+  const [loadingOpen, setLoadingOpen] = useState(false)
+  const [errorSBText, setErrorSBText] = useState("")
+
+
+  const CONNECTION_ERROR = "Probleme de connexion, Veuillez de ressayer"
+
+
+
+
   const handleChange = (newValue) => {
     setProvision({...provision,'delay':format(newValue,'yyyy-MM-dd')});
   };
@@ -50,6 +79,7 @@ const EditProvision = () => {
   const handleLocationChange = (newValue) => {
     setProvision({...provision,'destination':newValue.target.value})
   };
+
 
   const handleOnSubmit = (e, status) => {
     e.preventDefault();
@@ -59,90 +89,56 @@ const EditProvision = () => {
       status: status,
       ref: null
     }
+
+    const add_provision_product_list = products.filter((product)=>{return product.provisionProductId === undefined})
+                                            .map((product)=>{return {
+                                                product: product.data.id,
+                                                provision: provisionId,
+                                                unit: product.unit,
+                                                quantity: product.quantity
+                                            }})
+
+
+    const edit_provision_product_list = products.filter((product)=>{
+                                                                        const oldProduct = oldProducts.find(oldProduct=>{return oldProduct.provisionProductId === product.provisionProductId})
+                                                                        if (oldProduct !== undefined){
+                                                                          return product.unit !== oldProduct.unit || product.quantity !== oldProduct.quantity
+                                                                        }
+                                                                      })
+                                            .map((product)=>{return {
+                                              id: product.provisionProductId,
+                                              product: product.data.id,
+                                              provision: provisionId,
+                                              unit: product.unit,
+                                              quantity: product.quantity
+                                            }})
+
+ 
+
+    const delete_provision_product_list = oldProducts.filter((oldProduct)=>{return !products.map(product=>{return product.provisionProductId})
+                                                                                              .includes(oldProduct.provisionProductId)}) 
+                                                        .map(oldProduct=>{return oldProduct.provisionProductId})       
     
-
-    const provision_product_list = []
-
-    ProvisionProvider.editProvision(data,provisionId ).then(
-      (response) => {
-        console.log(response.data)
-       
+    setLoadingOpen(true)                                                   
+    Promise.all([
+      ProvisionProvider.editProvision(data,provisionId ),
+      add_provision_product_list.length && ProvisionProductProvider.addProvisionProduct(add_provision_product_list),
+      edit_provision_product_list.length && ProvisionProductProvider.bulkUpdateProvisionProduct(edit_provision_product_list),
+      delete_provision_product_list.length && ProvisionProductProvider.bulkDeleteProvisionProduct(delete_provision_product_list)
+      ]).then(
+      (responses)=>{
+        console.log(responses)
+        setLoadingOpen(false)
+        router.push('/provision');
       },
-      error => {
-        setSuccessUpdate(false)
-        alert(error.message)
-      }
-      )
-    console.log(oldProducts)
-    products.forEach((product) => {
-      if (product.provisionProductId !== undefined){
-        // const product_tmp = oldProducts.filter((item => {
-        //   return(item.provisionProductId === product.provisionProductId)}))[0]
-        const provisionProduct_tmp = {
-          product: product.data.id,
-          provision: provisionId,
-          unit: product.data.unit,
-          quantity: product.quantity
-        }
-        ProvisionProductProvider.editProvisionProduct(provisionProduct_tmp, product.provisionProductId).then(
-          (response) => {
-            // alert("done")
-            console.log(response.data)
-            // router.push('/provision/list-provision');
-          },
-          error => {
-
-            setSuccessUpdate(false)
-            alert(error.message)
-          }
-          )
-            // do the update
-      
-      }else {
-
-        const provisionProduct_tmp = {
-            product: product.data.id,
-            provision: provisionId,
-            unit: product.data.unit,
-            quantity: product.quantity
-          }
-        provision_product_list = [ ... provision_product_list, provisionProduct_tmp]
-        // add the product
-      }
-    })
-    if (provision_product_list.length){
-      ProvisionProductProvider.addProvisionProduct(provision_product_list).then(
-        (response) => {
-          // alert("done")
-          console.log(response.data)
-          // router.push('/provision/list-provision');
-        },
-        error => {
-          setSuccessUpdate(false)
-          alert(error.message)
-        }
-        )
-    }
-    const deleted_product = oldProducts.filter((row) => {return(!products.includes(row))})
-    if(deleted_product.length){
-      deleted_product.forEach((product) => {
-        ProvisionProductProvider.deleteProvisionProduct(product.provisionProductId).then(
-          (response) => {
-            console.log('provision_product '+product.provisionProductId.toString()+' deleted successfully')
-          },
-          (error) => {
-            setSuccessUpdate(false)
-            alert(error.message)
-          }
-          )
+      (errors)=>{
+        setLoadingOpen(false)
+        handleSBOpen(CONNECTION_ERROR)
       })
-    }
-    if(successUpdate){
-      alert("done")
-      router.push('/provision/list-provision');
-    }
-
   }
+
+
+    
 
   const handleApprove = () => {
     const data = {
@@ -178,37 +174,64 @@ const EditProvision = () => {
   }
 
 
+  const handleSBClose = () => {
+    setErrorSBOpen(false)
+  }
+
+  const handleSBOpen = (text) => {
+    setErrorSBText(text)
+    setErrorSBOpen(true)
+  }
+
+
   useEffect(  () => {
-    LocationProvider.getLocations().then(
-        (response) => {
-          console.log(response.data)
-          setLocations(response.data)
+    setLoadingOpen(true)
+    Promise.all([
+      LocationProvider.getLocations(),
+      (provisionId && JSON.stringify(provision) === "{}") && ProvisionProvider.getProvisions(provisionId)
+      ]).then(
+      responses=>{
+        setLocations(responses[0].data)
+        console.log(responses)
+        if(responses[1]){
+          setProvision(responses[1].data)
+          setOldProducts(responses[1].data.provisionProducts.map((provisionProduct) => {
+            return ({
+              data:provisionProduct.product,
+              quantity:provisionProduct.quantity, 
+              provisionProductId:provisionProduct.id, 
+              unit: provisionProduct.unit.ref
+            })
+          }))
+          setProducts(responses[1].data.provisionProducts.map((provisionProduct) => {
+            return ({
+              data:provisionProduct.product,
+              quantity:provisionProduct.quantity, 
+              provisionProductId:provisionProduct.id, 
+              unit: provisionProduct.unit.ref
+            })
+          }))
         }
+        setLoadingOpen(false)
+      },
+      errors=>{
+        console.log(errors)
+        setLoadingOpen(false)
+        handleSBOpen(CONNECTION_ERROR)
+      }
       )
-    if(provisionId && JSON.stringify(provision) === "{}"){
-      ProvisionProvider.getProvisions(provisionId).then(
-        (response) => {
-          setProvision(response.data)
-          console.log(response.data)
-          const product_list = response.data.provisionProducts.map((provisionProduct) => {
-            return ({data:provisionProduct.product,quantity:provisionProduct.quantity, provisionProductId:provisionProduct.id})
-          })
-          setOldProducts(product_list)
-          setProducts(product_list)
-        },
-        (error) => {
-          console.log(error)
-        }
-        )
-    }
-
-
-    
   },[])
 
   
   return (
     <>
+    <Backdrop
+      sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      open={loadingOpen}
+      onClick={()=>{setLoadingOpen(false)}}
+    >
+      <CircularProgress color="inherit" />
+    </Backdrop>
     <Head>
       <title>
         EURL BST | EDITER DEMANDE APPRO
@@ -270,7 +293,7 @@ const EditProvision = () => {
                         sx={{
                           my: 2
                         }} 
-                        value={provision.destination !== undefined && provision.destination}
+                        value={provision.destination}
                         onChange={handleLocationChange}
                         disabled={provision.status!=="0" || !UXAccess.hasAllLocationAccess()}
                       >
@@ -302,9 +325,63 @@ const EditProvision = () => {
                       />
                     </Grid>
                   </Grid>
+                  <Grid container 
+                  spacing={1} 
+                  columnSpacing={{ 
+                    xs: 1, sm: 2, md: 3 }}>
+                    <Grid item
+                      xs={3}>
+                        <InputLabel>
+                          Cree par
+                        </InputLabel>
+                        <Typography
+                        sx={{
+                            my: 2
+                          }} >
+                          {provision.created_by.username}
+                        </Typography>
+                      </Grid>
+                      <Grid item
+                      xs={3}>
+                        <InputLabel>
+                          Cree en
+                        </InputLabel>
+                        <Typography
+                        sx={{
+                            my: 2
+                          }} >
+                          {format(new Date(provision.created_on),'yyyy-MM-dd hh:mm')}
+                        </Typography>
+                      </Grid>
+                      <Grid item
+                      xs={3}>
+                        <InputLabel>
+                          Apprové par
+                        </InputLabel>
+                        <Typography
+                        sx={{
+                            my: 2
+                          }} >
+                          {provision.approved_by === null && "_" || provision.approved_by.username}
+                        </Typography>
+                      </Grid>
+                      
+                      <Grid item
+                      xs={3}>
+                        <InputLabel>
+                          Apprové en
+                        </InputLabel>
+                        <Typography
+                        sx={{
+                            my: 2
+                          }} >
+                          {provision.approved_on === null && "_" || format(new Date(provision.approved_on),'yyyy-MM-dd hh:mm')}
+                        </Typography>
+                      </Grid>
+                    </Grid>
                 </form>
 
-                <ProvisionAddProduct selecetedProducts={products} 
+                <ProvisionAddProduct selectedProducts={products} 
                 setSelectedProducts={setProducts} 
                 isDraft={provision.status==='0'}/>
               </Box>
@@ -313,6 +390,13 @@ const EditProvision = () => {
         </Box>
       </Container>}
     </Box>
+    <Snackbar open={errorSBOpen} 
+    onClose={handleSBClose}>
+      <Alert variant="filled" 
+      severity="error">
+        {errorSBText}
+      </Alert>
+    </Snackbar>
   </>
   );
 };

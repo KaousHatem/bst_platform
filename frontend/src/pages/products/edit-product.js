@@ -4,17 +4,45 @@ import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { Select, MenuItem, Box, Button, Container, Grid, Link, TextField, Typography, Card, CardContent, IconButton,Stack } from '@mui/material';
+import { Select, 
+  MenuItem, 
+  Box, 
+  Button, 
+  Container, 
+  Grid, 
+  Link, 
+  TextField, 
+  Typography, 
+  Card, 
+  CardContent, 
+  IconButton,
+  Stack,
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  Backdrop,
+  Snackbar,
+  Alert,
+  CircularProgress,
+  } from '@mui/material';
+
 import InputLabel from '@mui/material/InputLabel';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import {ThreeDots as ThreeDotsIcon} from '../../icons/three-dots'
+import {Delete as DeleteIcon} from '../../icons/delete'
 
 import { ProductAddToolbar } from '../../components/product/product-add-toolbar';
 import { DashboardLayout } from '../../components/dashboard-layout';
+import { UnitAddDialog } from '../../components/product/unit-add-dialog'
+import { OUnitAddDialog } from '../../components/product/other-unit-add-dialog'
 
 import CategoryProvider from '../../services/category-provider'
 import ProductProvider from '../../services/product-provider'
 import UnitProvider from '../../services/unit-provider'
+import UnitConversionProvider from '../../services/unit-conversion-provider'
 
 
 const EditProduct = (props) => {
@@ -34,6 +62,21 @@ const EditProduct = (props) => {
   const [id, setId] = useState(router.query.id)
   const [product, setProduct] = useState({})
 
+  const [open, setOpen] = useState(false)
+  const [otherUnitsOpen, setOtherUnitsOpen] = useState(false)
+
+  const [currentUnit, setCurrentUnit] = useState()
+  const [convertedUnits, setConvertedUnits] = useState([])
+  const [oldConvertedUnits, setOldConvertedUnits] = useState([])
+
+  const [nameError,setNameError] = useState(false)
+  const [categoryError,setCategoryError] = useState(false)
+  const [baseUnitError,setBaseUnitError] = useState(false)
+
+  const [errorSBOpen, setErrorSBOpen] = useState(false)
+
+  const [loadingOpen, setLoadingOpen] = useState(false)
+
 
   useEffect(() => {
     if(id && JSON.stringify(product) === "{}"){
@@ -47,6 +90,21 @@ const EditProduct = (props) => {
           setCategories(responses[0].data)
           setProduct(responses[1].data)
           setUnits(responses[2].data)
+          setCurrentUnit(responses[1].data.base_unit)
+          setOldConvertedUnits(responses[1].data.unit_conversions.map((convertedUnit)=>{
+            return {
+              id:convertedUnit.id,
+              unit: convertedUnit.to_unit,
+              facteur: convertedUnit.multiplier,
+            }
+          }))
+          setConvertedUnits(responses[1].data.unit_conversions.map((convertedUnit)=>{
+            return {
+              id:convertedUnit.id,
+              unit: convertedUnit.to_unit,
+              facteur: convertedUnit.multiplier,
+            }
+          }))
           setLoading(false)
         }
       })
@@ -62,7 +120,6 @@ const EditProduct = (props) => {
 
   const handleOnSubmit = (e) => {
     e.preventDefault();
-    console.log(e.target.category.value)
     const data = {
       name: e.target.name.value,
       category: e.target.category.value,
@@ -73,21 +130,122 @@ const EditProduct = (props) => {
       data.description = e.target.description.value
     }
 
+    const updateList = convertedUnits.filter((convertedUnit)=>{
+      const unit = oldConvertedUnits.find((unit)=>{
+        if(unit.unit.ref === convertedUnit.unit.ref){
+          return unit.facteur !== parseInt(convertedUnit.facteur)
+        }
+      })
+      return unit !== undefined
+    }).map((convertedUnit)=>{
+      const data = {
+          id: oldConvertedUnits.find((unit)=>{return unit.unit.ref===convertedUnit.unit.ref}).id,
+          product: product.id,
+          base_unit: units.find((unit)=>{return unit.ref===e.target.unit.value}).id ,
+          to_unit: convertedUnit.unit.id,
+          multiplier: convertedUnit.facteur
+        }
+      return data
+    })
 
-    ProductProvider.editProduct(data,id).then(
-      (response) => {
-        alert("done")
+    const updateIds = oldConvertedUnits.filter((convertedUnit)=>{
+      const unit = convertedUnits.find((unit)=>{
+        if(unit.unit.ref === convertedUnit.unit.ref){
+          return unit.facteur !== parseInt(convertedUnit.facteur)
+        }
+      })
+      return unit !== undefined
+    }).map((convertedUnit)=>{
+      
+      return convertedUnit.id
+    })
+
+
+
+    // UnitConversionProvider.bulkUpdateUnitConversion(updateIds, updateList).then(
+    //   (response)=>{
+    //     alert('done')
+    //   },(error)=>{
+    //     alert("error")
+    //   })
+    
+
+    const dataList = convertedUnits.filter((convertedUnit)=>{
+      const unit = oldConvertedUnits.find((unit)=>{  
+        return unit.unit.ref===convertedUnit.unit.ref
+        })
+      return unit === undefined
+    }).map((convertedUnit)=>{
+      const data = {
+          product: product.id,
+          base_unit: units.find((unit)=>{return unit.ref===e.target.unit.value}).id ,
+          to_unit: convertedUnit.unit.id,
+          multiplier: convertedUnit.facteur
+        }
+      return data
+    })
+    // if(dataList.length !== 0){
+    // UnitConversionProvider.addUnitConversion(dataList).then(
+    //       (response)=>{
+    //         setLoadingOpen(false)
+    //         alert('done')
+    //         router.push('/products/list-product');
+    //       },
+    //       (error)=>{
+    //         setLoadingOpen(false)
+    //         setErrorSBOpen(true)
+    //       })
+    // }
+
+
+    const deleteIds = oldConvertedUnits.filter((convertedUnit)=>{
+      return convertedUnits.find((unit)=>{return unit.unit.ref===convertedUnit.unit.ref})===undefined
+    }).map((convertedUnit)=>{
+      return convertedUnit.id
+    })
+
+   
+    setLoadingOpen(true)
+    Promise.all([
+      ProductProvider.editProduct(data,id),
+      updateList.length !== 0 && UnitConversionProvider.bulkUpdateUnitConversion(updateIds, updateList),
+      dataList.length !== 0 && UnitConversionProvider.addUnitConversion(dataList),
+      deleteIds.length !== 0 &&UnitConversionProvider.bulkDeleteUnitConversion(deleteIds),
+      ]).then(
+      (responses)=>{
+        setLoadingOpen(false)
+        console.log(responses)
         router.push('/products/list-product');
       },
-      error => {
-        alert(error.message)
-      }
-      )
+      (errors)=>{
+        setLoadingOpen(false)
+        setErrorSBOpen(true)
+      })
+  }
+
+
+  const handleUnitRefresh = () => {
+    UnitProvider.getUnits().then(
+      (response) => {
+        setUnits(response.data)
+      })
+  }
+
+  const handleSBClose = () => {
+    setErrorSBOpen(false)
   }
   
   return (
     !loading &&
     <>
+    {console.log(convertedUnits)}
+    <Backdrop
+      sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      open={loadingOpen}
+      onClick={()=>{setLoadingOpen(false)}}
+    >
+      <CircularProgress color="inherit" />
+    </Backdrop>
     <Head>
       <title>
         EURL BST | EDITER ARTICLE
@@ -183,6 +341,8 @@ const EditProduct = (props) => {
                       defaultValue={product.base_unit}
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
+                      onChange={(e) =>{setCurrentUnit(e.target.value)}}
+                      disabled={convertedUnits.length !== 0}
                     >
                       {units.slice(0,units.length).map((unit) => (
                         <MenuItem 
@@ -197,6 +357,78 @@ const EditProduct = (props) => {
                       <AddCircleIcon />
                     </IconButton>
                   </Stack>
+
+
+                  <InputLabel>
+                    Autre Unité
+                  </InputLabel>
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    sx={{ my: 2 }}
+                    onClick={()=> setOtherUnitsOpen(true)}
+                    disabled={currentUnit===undefined}
+                  >
+                    Ajouter une Unité
+                  </Button>
+                  <Table>
+                    <TableHead sx={{
+                      backgroundColor: '#F4F7FC',
+                      textAlign: 'center'
+                    }} 
+                    >
+                      <TableRow>
+                        <TableCell>
+                          Unité
+                        </TableCell>
+                        <TableCell>
+                          Facteur
+                        </TableCell>
+                        <TableCell align="center">
+                          <ThreeDotsIcon />
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {  
+                        convertedUnits.map((convertedUnit) => (
+                        <TableRow
+                          hover
+                          // key={convertedUnit.data.id}
+                        >
+                          
+                          <TableCell>
+                            {convertedUnit.unit.name}
+                          </TableCell>
+                          <TableCell>
+                            {convertedUnit.facteur}
+                          </TableCell>
+                          <TableCell
+                            >
+                            <Box
+                              align="center"
+                              sx={{
+                                  justifyContent: 'center',
+                                  display: 'flex'
+                              }}
+                            >
+                              
+                              <DeleteIcon 
+                                sx={{
+                                  mx:1
+                                }}
+                                onClick={(event) => {
+                                  setConvertedUnits(convertedUnits.filter((row) => {return row.unit.ref !== convertedUnit.unit.ref}))
+                                }}
+                              />
+                            </Box>
+                            
+                            
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
                 </form>
               </Box>
             </CardContent>
@@ -204,6 +436,17 @@ const EditProduct = (props) => {
         </Box>
       </Container>
     </Box>
+
+    <UnitAddDialog open={open} setOpen={setOpen} handleUnitRefresh={handleUnitRefresh}/>
+    <OUnitAddDialog units={units} open={otherUnitsOpen} setOpen={setOtherUnitsOpen} baseUnit={currentUnit} convertedUnits={convertedUnits} setConvertedUnits={setConvertedUnits}/>
+    
+    <Snackbar open={errorSBOpen} 
+    onClose={handleSBClose}>
+      <Alert variant="filled" 
+      severity="error">
+        Probleme de connexion, Veuillez de ressayer
+      </Alert>
+    </Snackbar>
   </>
   );
 };

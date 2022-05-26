@@ -1,12 +1,12 @@
-import {prProductUrl} from '../utils/networks'
+import {UnitConversionUrl,BulkUnitConversionUrl} from '../utils/networks'
 import axios from "axios";
 
 
 
-class PRProductProvider {
+class UnitConversionProvider {
 
 
-    getPRProducts(pk=-1) {
+    getUnitConversions(pk=-1) {
         const token = localStorage.getItem('auth')
         
         const config = {
@@ -14,7 +14,7 @@ class PRProductProvider {
         Authorization: `Bearer ${token}`
         }}
          
-        var url = prProductUrl
+        var url = UnitConversionUrl
 
         if (pk!==-1){
             url = url + pk.toString()
@@ -32,7 +32,7 @@ class PRProductProvider {
             });
     }
 
-    addPRProduct(data) {
+    addUnitConversion(data) {
         const token = localStorage.getItem('auth')
         
         const config = {
@@ -40,7 +40,7 @@ class PRProductProvider {
         Authorization: `Bearer ${token}`
         }}
         return axios
-            .post(prProductUrl, data, config)
+            .post(UnitConversionUrl, data, config)
             .then(response => {
                 if (response.status < 200 || response.status >= 300) {
                     throw new Error(response.statusText);
@@ -52,7 +52,7 @@ class PRProductProvider {
             })
     }
 
-    updatePRProduct(data,pk) {
+    updateUnitConversion(data,pk) {
         const token = localStorage.getItem('auth')
         
         const config = {
@@ -60,7 +60,7 @@ class PRProductProvider {
         Authorization: `Bearer ${token}`
         }}
         return axios
-            .put(prProductUrl+pk+'/', data, config)
+            .put(UnitConversionUrl+pk+'/', data, config)
             .then(response => {
                 if (response.status < 200 || response.status >= 300) {
                     throw new Error(response.statusText);
@@ -73,7 +73,7 @@ class PRProductProvider {
             })
     }
 
-    bulkUpdatePRProduct(data) {
+    bulkUpdateUnitConversion(ids,data) {
         const token = localStorage.getItem('auth')
         
         const config = {
@@ -81,7 +81,7 @@ class PRProductProvider {
         Authorization: `Bearer ${token}`
         }}
         return axios
-            .put(prProductUrl, data, config)
+            .put(UnitConversionUrl, {ids:ids,data:data}, config)
             .then(response => {
                 if (response.status < 200 || response.status >= 300) {
                     throw new Error(response.statusText);
@@ -89,12 +89,11 @@ class PRProductProvider {
                 return response;
             })
             .catch((error) => {
-                console.log(error.response)
                 throw new Error()
             })
     }
 
-    deletePRProduct(pk){
+    deleteUnitConversion(pk=-1,data=null){
         const token = localStorage.getItem('auth')
         
         const config = {
@@ -102,7 +101,7 @@ class PRProductProvider {
         Authorization: `Bearer ${token}`
         }}
         return axios
-            .delete(prProductUrl+pk+'/',config)
+            .delete(UnitConversionUrl,config)
             .then(response => {
                 if (response.status < 200 || response.status >= 300) {
                     throw new Error(response.statusText);
@@ -112,9 +111,11 @@ class PRProductProvider {
             .catch((error) => {
                 throw new Error('Network error')
             });
+        
+        
     }
 
-    bulkDeletePRProduct(ids){
+    bulkDeleteUnitConversion(ids=null){
         const token = localStorage.getItem('auth')
         
         const config = {
@@ -122,7 +123,7 @@ class PRProductProvider {
         Authorization: `Bearer ${token}`
         }}
         return axios
-            .delete(prProductUrl,{data:ids},config)
+            .delete(UnitConversionUrl,{data:{ids:ids,}},config)
             .then(response => {
                 if (response.status < 200 || response.status >= 300) {
                     throw new Error(response.statusText);
@@ -132,10 +133,12 @@ class PRProductProvider {
             .catch((error) => {
                 throw new Error('Network error')
             });
+        
+        
     }
 
 
 }
 
 
-export default new PRProductProvider();
+export default new UnitConversionProvider();

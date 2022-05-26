@@ -27,6 +27,10 @@ import {
   Alert,
   Collapse,
   Snackbar,
+  Select,
+  MenuItem,
+  Stack,
+  IconButton,
 
 } from '@mui/material';
 import { getInitials } from '../../utils/get-initials';
@@ -38,32 +42,49 @@ import {Edit as EditIcon} from '../../icons/edit'
 import {Delete as DeleteIcon} from '../../icons/delete'
 import {Save as SaveIcon} from '../../icons/save'
 
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+
 
 import Label from '../Label';
 
 import {ProductAddDialog} from './product-add-dialog'
 
 
-export const ProvisionAddProduct = ({selecetedProducts,setSelectedProducts, isDraft=true,...rest}) => {
+
+export const ProvisionAddProduct = ({selectedProducts,setSelectedProducts, isDraft=true,...rest}) => {
+  
+
   const [selectedProductIds, setSelectedProductIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
 
   
-  let [savedModeProducts, setSavedModeProducts] = useState(selecetedProducts.map((product)=>{return(selecetedProducts.indexOf(product))}))
+  let [savedModeProducts, setSavedModeProducts] = useState(selectedProducts.map((product)=>{return(selectedProducts.indexOf(product))}))
+
+
+
+  const [open, setOpen] = React.useState(false);
+
+  const [quantityOpen, setQuantityOpen] = useState(false)
+
+  const [unitOpen, setUnitOpen] = useState(false)
+
+
+
+
 
   const handleOnEdit = (event, product) => {
-    console.log(selecetedProducts)
-    if( savedModeProducts.includes(selecetedProducts.indexOf(product)) ){
-      const newArray = savedModeProducts.filter((item) => item !== selecetedProducts.indexOf(product))
+    console.log(savedModeProducts)
+    if( savedModeProducts.includes(selectedProducts.indexOf(product)) ){
+      const newArray = savedModeProducts.filter((item) => item !== selectedProducts.indexOf(product))
       setSavedModeProducts(newArray)
     }
   }
 
   const handleOnSave = (event, product) => {
-    if( !savedModeProducts.includes(selecetedProducts.indexOf(product)) ){
+    if( !savedModeProducts.includes(selectedProducts.indexOf(product)) ){
       if (product.quantity && product.quantity > 0){
-        setSavedModeProducts([ ...savedModeProducts , selecetedProducts.indexOf(product)])
+        setSavedModeProducts([ ...savedModeProducts , selectedProducts.indexOf(product)])
       } else {
         setQuantityOpen(true)
         // alert("Veuillez saisir la quantité de l'article")
@@ -113,9 +134,6 @@ export const ProvisionAddProduct = ({selecetedProducts,setSelectedProducts, isDr
     setPage(newPage);
   };
 
-  const [open, setOpen] = React.useState(false);
-
-  const [quantityOpen, setQuantityOpen] = useState(false)
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -127,10 +145,19 @@ export const ProvisionAddProduct = ({selecetedProducts,setSelectedProducts, isDr
 
 
   const handleQuantityChange = (e, product) => {
-    const tmp_selecetedProducts = selecetedProducts
-    tmp_selecetedProducts[tmp_selecetedProducts.indexOf(product)].quantity = e.target.value
-    setSelectedProducts(tmp_selecetedProducts)
+    product.quantity = e.target.value;
+    setSelectedProducts([...selectedProducts]);
   }
+
+  const handleUnitChange = (event,product) => {
+
+    product.unit = event.target.value;
+    setSelectedProducts([...selectedProducts]);
+  }
+
+  useEffect(()=>{
+    console.log(selectedProducts)
+  },[selectedProducts])
 
  
 
@@ -153,10 +180,10 @@ export const ProvisionAddProduct = ({selecetedProducts,setSelectedProducts, isDr
               Ajouter un Article
             </Button>
           </Grid>}
-          {selecetedProducts && <ProductAddDialog open={open} 
+          {selectedProducts && <ProductAddDialog open={open} 
           handleClickOpen={handleClickOpen} 
-          setOpen={setOpen} 
-          selectedProducts={selecetedProducts} 
+          setOpen={setOpen}
+          selectedProducts={selectedProducts} 
           setSelectedProducts={setSelectedProducts}/>}
           <Table>
             <TableHead sx={{
@@ -167,11 +194,11 @@ export const ProvisionAddProduct = ({selecetedProducts,setSelectedProducts, isDr
               <TableRow>
                 <TableCell padding="checkbox">
                   <Checkbox
-                    checked={selectedProductIds.length === selecetedProducts.length}
+                    checked={selectedProductIds.length === selectedProducts.length}
                     color="primary"
                     indeterminate={
                       selectedProductIds.length > 0
-                      && selectedProductIds.length < selecetedProducts.length
+                      && selectedProductIds.length < selectedProducts.length
                     }
                     onChange={handleSelectAll}
                   />
@@ -194,7 +221,7 @@ export const ProvisionAddProduct = ({selecetedProducts,setSelectedProducts, isDr
               </TableRow>
             </TableHead>
             <TableBody>
-              {selecetedProducts.slice(0, limit).map((product) => (
+              {selectedProducts.slice(0, limit).map((product) => (
                 <TableRow
                   hover
                   key={product.data.id}
@@ -214,13 +241,38 @@ export const ProvisionAddProduct = ({selecetedProducts,setSelectedProducts, isDr
                   <TableCell>
                     {product.data.name}
                   </TableCell>
+
                   <TableCell
                     align="center"
                   >
-                    {product.data.unit}
+                  {isDraft && !savedModeProducts.includes(selectedProducts.indexOf(product)) &&
+                    <Select
+                      fullWidth
+                      name="unit"
+                      margin="normal"
+                      defaultValue={product.unit}
+                      onChange={event => handleUnitChange(event,product)}
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                    >
+                       <MenuItem 
+                        key={product.data.base_unit}
+                        value={product.data.base_unit}>{product.data.base_unit}</MenuItem>
+                      
+                      {product.data.unit_conversions && product.data.unit_conversions.map((unit)=>(
+                        <MenuItem 
+                          key={unit.to_unit.ref}
+                          value={unit.to_unit.ref} >{unit.to_unit.ref}</MenuItem>))}
+                    </Select> ||
+                    product.unit
+                  }
+
+
                   </TableCell>
+
+
                   <TableCell align="center">
-                  {isDraft && !savedModeProducts.includes(selecetedProducts.indexOf(product)) &&
+                  {isDraft && !savedModeProducts.includes(selectedProducts.indexOf(product)) &&
                     <TextField
                     inputStyle={{ textAlign: 'center' }}
                       sx={{
@@ -243,7 +295,7 @@ export const ProvisionAddProduct = ({selecetedProducts,setSelectedProducts, isDr
                       }}
                     >
                       {
-                        !savedModeProducts.includes(selecetedProducts.indexOf(product)) &&
+                        !savedModeProducts.includes(selectedProducts.indexOf(product)) &&
                         <SaveIcon
                           onClick={(event) => handleOnSave(event, product)}
                           sx={{
@@ -263,7 +315,7 @@ export const ProvisionAddProduct = ({selecetedProducts,setSelectedProducts, isDr
                           mx:1
                         }}
                         onClick={(event) => {
-                          setSelectedProducts(selecetedProducts.filter((row) => {return row.data.id !== product.data.id}))
+                          setSelectedProducts(selectedProducts.filter((row) => {return row.data.id !== product.data.id}))
                         }}
                       />
               
@@ -279,7 +331,7 @@ export const ProvisionAddProduct = ({selecetedProducts,setSelectedProducts, isDr
       </PerfectScrollbar>
       <TablePagination
         component="div"
-        count={selecetedProducts.length}
+        count={selectedProducts.length}
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleLimitChange}
         page={page}
@@ -293,6 +345,7 @@ export const ProvisionAddProduct = ({selecetedProducts,setSelectedProducts, isDr
           Veuillez saisir la quantité de l`&apos;`article
         </Alert>
       </Snackbar>
+      
       
     </Card>
   );

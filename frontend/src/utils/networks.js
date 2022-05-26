@@ -8,6 +8,8 @@ export const ActivateUrl = BaseUrl + "user/activate"
 export const UserMeUrl = BaseUrl + "user/me"
 
 export const unitUrl = BaseUrl + "logistic/unit/"
+export const UnitConversionUrl = BaseUrl + "logistic/unit-conversion/"
+export const BulkUnitConversionUrl = BaseUrl + "logistic/unit-conversion/delete/"
 export const productUrl = BaseUrl + "logistic/product/"
 export const categoryUrl = BaseUrl + "logistic/category/"
 export const lastProductUrl = productUrl + 'last/'

@@ -5,7 +5,22 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import {  Select, MenuItem, Box, Button, Container, Grid, Link, TextField, Typography, Card, CardContent, } from '@mui/material';
+import {  Select, 
+  MenuItem, 
+  Box, 
+  Button, 
+  Container, 
+  Grid, 
+  Link, 
+  TextField, 
+  Typography, 
+  Card, 
+  CardContent, 
+  Backdrop,
+  CircularProgress,
+  Snackbar,
+  Alert,
+} from '@mui/material';
 import {LocalizationProvider, DatePicker, AdapterDateFns} from '@mui/lab'
 import InputLabel from '@mui/material/InputLabel';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -34,10 +49,20 @@ const EditPurchaseRequest = () => {
   const [selecetedProducts, setSelectedProducts] = useState([])
   const [oldSelecetedProducts, setOldSelectedProducts] = useState([])
 
+  const [errorSBOpen, setErrorSBOpen] = useState(false)
+
+  const [loadingOpen, setLoadingOpen] = useState(false)
+  const [errorSBText, setErrorSBText] = useState("")
+
   const router = useRouter();
   const purchaseRequestId = router.query.id
   const [purchaseRequest, setPurchaseRequest] = useState({})
   const [productInPurchase, setProductInPurchase] = useState([])
+
+  const CONNECTION_ERROR = "Probleme de connexion, Veuillez de ressayer"
+
+  const [doneModeProducts, setDoneModeProducts] = useState([])
+
 
   const handleSetProvisionProducts = (id=-1) => {
     console.log(provisions)
@@ -45,6 +70,8 @@ const EditPurchaseRequest = () => {
       return provision.id === id
     })[0].provisionProducts )
   }
+
+
 
   const handleProvisionChange = async (newValue) => {
     setProvisionValue(newValue.target.value)
@@ -58,7 +85,10 @@ const EditPurchaseRequest = () => {
     handleSetProvisionProducts(newValue.target.value)
   };
 
+
+
   const handleOnSubmit = (e, status) => {
+
     e.preventDefault();
     console.log(provisionValue)
     console.log(purchaseRequest.provision.id)
@@ -66,66 +96,60 @@ const EditPurchaseRequest = () => {
       provision: provisionValue === undefined && purchaseRequest.provision.id || provisionValue,
       status: status,
     }
-    const pr_product_list = []
 
-    PurchaseRequestProvider.updatePurchaseRequest(data,purchaseRequestId ).then(
-      (response) => {
-        console.log(response.data)
-       
-      },
-      error => {
-        setSuccessUpdate(false)
-        alert(error.message)
-      }
-      )
 
-    selecetedProducts.forEach((product) => {
-      if(!oldSelecetedProducts.includes(product)){
-        const product_tmp = {
-          provisionProduct: product.id,
-          purchaseRequest: purchaseRequestId,
-        }
-        pr_product_list = [ ... pr_product_list, product_tmp]
-      }
+    const pr_edit_product_list = selecetedProducts.filter(product=>{ 
+                                                                    const productProvision = oldSelecetedProducts.find(productProvision=>{return productProvision.productProvision.id===product.productProvision.id})
+                                                                    if(productProvision!==undefined){
+                                                                       return productProvision.unit !== product.unit
+                                                                      } })
+                                                                          .map(product=>{
+                                                                            return {
+                                                                              id: product.id,
+                                                                              provisionProduct: product.productProvision.id,
+                                                                              purchaseRequest: purchaseRequestId,
+                                                                              unit: product.unit,
+                                                                              quantity: product.quantity
+                                                                            }
+                                                                        })
 
-      
-    })
-    if (pr_product_list.length){
-      PRProductProvider.addPRProduct(pr_product_list).then(
-      (response) => {
-        console.log(response.data)
-      },
-      error => {
-        alert(error.message)
-        setSuccessUpdate(false)
-      }
-      )
-    }
 
-    oldSelecetedProducts.forEach((product) => {
-      if(!selecetedProducts.includes(product)) {
-        const id = purchaseRequest.purchaseReqProducts.filter((purchaseReqProduct) => {
-            return purchaseReqProduct.provisionProduct === product
-        })[0].id
-        PRProductProvider.deletePRProduct(id).then(
-        (response) => {
-          console.log(response.data)
-        },
-        error => {
-          alert(error.message)
-          setSuccessUpdate(false)
-        }
-        )
-      }
-    })
 
-    if(successUpdate){
-      alert("done")
-      router.push('/purchase-request');
-    }
+    const pr_add_product_list = selecetedProducts.filter(product=>{return !oldSelecetedProducts.map(productProvision=>{return productProvision.productProvision.id}).includes(product.productProvision.id)})
+                                                .map(product=>{
+                                                  return {
+                                                    provisionProduct: product.productProvision.id,
+                                                    purchaseRequest: purchaseRequestId,
+                                                    unit: product.unit,
+                                                    quantity: product.quantity
+                                                  }
+                                                })
+
+    const pr_delete_product_list = oldSelecetedProducts.filter((product)=>{
+      return !selecetedProducts.map(productProvision=>{return productProvision.id}).includes(product.id)
+    }).map(product=>{return product.id})
     
+   
+    setLoadingOpen(true)
+
+    Promise.all([
+      PurchaseRequestProvider.updatePurchaseRequest(data,purchaseRequestId ),
+      pr_edit_product_list.length !== 0 && PRProductProvider.bulkUpdatePRProduct(pr_edit_product_list),
+      pr_add_product_list.length !== 0 && PRProductProvider.addPRProduct(pr_add_product_list),
+      pr_delete_product_list.length !== 0 && PRProductProvider.bulkDeletePRProduct(pr_delete_product_list),
+      ]).then(
+      (responses)=>{
+        setLoadingOpen(false)
+        router.push('/purchase-request');
+      },
+      (errors)=>{
+        setLoadingOpen(false)
+        handleSBOpen(CONNECTION_ERROR)
+      })
     
   }
+
+
 
   const handleApprove = () => {
     if (purchaseRequestId){
@@ -140,6 +164,8 @@ const EditPurchaseRequest = () => {
     }
     
   }
+
+
 
   const handleReject = () => {
     const data = {
@@ -156,8 +182,20 @@ const EditPurchaseRequest = () => {
   }
 
 
+  const handleSBClose = () => {
+    setErrorSBOpen(false)
+  }
+
+
+  const handleSBOpen = (text) => {
+    setErrorSBText(text)
+    setErrorSBOpen(true)
+  }
+
+  
   useEffect(() => {
      if(purchaseRequestId){
+       setLoadingOpen(true)
        Promise.all([
         ProvisionProvider.getOnlyApprovedProvisions(),
         PurchaseRequestProvider.getPurchaseRequests(purchaseRequestId)
@@ -181,8 +219,6 @@ const EditPurchaseRequest = () => {
 
             
           }
-          console.log(responses[1].data.provision.id)
-          console.log('test')
           if(responses[1].data.provision.id){
             const provisionResponse = await ProvisionProvider.getProductInPurchase(responses[1].data.provision.id)
             console.log(responses[1].data.purchaseReqProducts)
@@ -193,23 +229,46 @@ const EditPurchaseRequest = () => {
               setProductInPurchase(provisionResponse.data.map((product) => {if(!oldProvisionProducts.includes(product.id)){return product.id}}))
             }
           }
-          console.log(responses[1].data)
           setPurchaseRequest(responses[1].data)
           if(responses[1].data.purchaseReqProducts){
-            console.log(responses[1].data.purchaseReqProducts.map((product)=>{return product.provisionProduct}))
-            setSelectedProducts(responses[1].data.purchaseReqProducts.map((product)=>{return product.provisionProduct}))
-            setOldSelectedProducts(responses[1].data.purchaseReqProducts.map((product)=>{return product.provisionProduct}))
+            
+            setSelectedProducts(responses[1].data.purchaseReqProducts.map((product)=>{return {
+                            id: product.id,
+                            productProvision: product.provisionProduct,
+                            quantity: product.quantity,
+                            unit: product.unit.ref
+                          } }))
+            setOldSelectedProducts(responses[1].data.purchaseReqProducts.map((product)=>{return {
+                            id: product.id,
+                            productProvision: product.provisionProduct,
+                            quantity: product.quantity,
+                            unit: product.unit.ref
+                          } 
+                        }))
+            setDoneModeProducts(responses[1].data.purchaseReqProducts.map((product)=>{return product.provisionProduct.id}))
+
             handleSetProvisionProducts(responses[1].data.provision.id)
             
           }
+          setLoadingOpen(false)
           setLoading(false)
         })
     }
     
   },[])
+
+
+
   
   return ( !loading &&
     <>
+    <Backdrop
+      sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      open={loadingOpen}
+      onClick={()=>{setLoadingOpen(false)}}
+    >
+      <CircularProgress color="inherit" />
+    </Backdrop>
     <Head>
       <title>
         EURL BST | AJOUTER DEMANDE D'ACHAT
@@ -362,13 +421,23 @@ const EditPurchaseRequest = () => {
                 <PRAddProduct selecetedProducts={selecetedProducts} 
                 setSelectedProducts={setSelectedProducts}
                 provisionProducts = {provisionProducts}
-                productInPurchase = {productInPurchase} />
+                productInPurchase = {productInPurchase}
+                doneModeProducts = {doneModeProducts}
+                setDoneModeProducts = {setDoneModeProducts}
+                isDraft = {purchaseRequest.status==="0"} />
               </Box>
             </CardContent>
           </Card>
         </Box>
       </Container>
     </Box>
+    <Snackbar open={errorSBOpen} 
+    onClose={handleSBClose}>
+      <Alert variant="filled" 
+      severity="error">
+        {errorSBText}
+      </Alert>
+    </Snackbar>
   </>
   );
 };

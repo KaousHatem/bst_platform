@@ -64,9 +64,7 @@ export const ProvisionListResults = ({ provision_list, ...rest }) => {
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [provisionIdDelete, setProvisionIdDelete] = useState(-1)
 
-  const [anchorEl, setAnchorEl] = useState(null);
-  const menuOpen = Boolean(anchorEl);
-  const [clickedId, setClickedId] = useState(-1)
+ 
   
   const handleClose = () => {
     setDeleteOpen(false)
@@ -81,7 +79,7 @@ export const ProvisionListResults = ({ provision_list, ...rest }) => {
     ProvisionsProvider.deleteProvision(provisionIdDelete).then(
       (response) => {
         console.log('provision: '+provisionIdDelete+' is deleted')
-        setProvisions(provisions.filter(function(provision) {
+        setFilteredProvision(filteredProvision.filter(function(provision) {
           return provision.id !== provisionIdDelete
         }))
       },
@@ -146,35 +144,16 @@ export const ProvisionListResults = ({ provision_list, ...rest }) => {
     router.push(data);
   }
 
-  const handleClickMenu = (event, id) => {
-    setClickedId(id)
-    setAnchorEl(event.currentTarget);
-  };
+  
 
-  const handleCloseMenu = () => {
-    setAnchorEl(null);
-  };
-
-  const handlePrint = () => {
-
-  }
-
-  const handleAddPurchaseRequest = () => {
-    if(clickedId){
-      const data = {
-       pathname: '/purchase-request/add-purchase-request',
-       query:{'provisionId':clickedId}
-      }
-      router.push(data);
-    }
-  }
+ 
 
   
 
   return (
     <Box {...rest}>
-      <ProvisionFilter provisions={provisions} 
-      setFilteredProvision={setFilteredProvision} />
+      {provisions.length!==0 &&<ProvisionFilter provisions={provisions} 
+      setFilteredProvision={setFilteredProvision} />}
       <PerfectScrollbar>
         <Box sx={{ minWidth: "100%" }}>
           <Table>
@@ -281,37 +260,20 @@ export const ProvisionListResults = ({ provision_list, ...rest }) => {
                       /></>
                      }
                       
-                      
-                    
-                      <ThreeDotsIcon 
-                        sx={{
-                          mx:1
-                        }}
-                        id="edit-btn"
-                        aria-haspopup="true"
-                        aria-controls={menuOpen ? 'provision-menu' : undefined}
-                        aria-expanded={menuOpen ? 'true' : undefined}
-                        onClick={(event) => handleClickMenu(event, provision.id)}
-                      />
-                      <Menu
-                        id="provision-menu"
-                        anchorEl={anchorEl}
-                        open={menuOpen}
-                        onClose={handleCloseMenu}
-                        MenuListProps={{
-                          'aria-labelledby': 'edit-btn',
-                        }}
-                      >
-                        <MenuItem onClick={(event) => {}}>Imprimer</MenuItem>
-                        <MenuItem onClick={handleAddPurchaseRequest}>Ajouter une demande d'achat</MenuItem>
-                        
-                      </Menu>
 
                     </Box>
                     
                   </TableCell>
                 </TableRow>
               ))}
+              {filteredProvision.length === 0 && 
+                <TableRow>
+                  <TableCell colSpan={7}
+                  align="center" >
+                    Aucune demande d'appro existe
+                  </TableCell>
+                </TableRow>
+              }
             </TableBody>
           </Table>
         </Box>
@@ -333,6 +295,4 @@ export const ProvisionListResults = ({ provision_list, ...rest }) => {
   );
 };
 
-ProvisionListResults.propTypes = {
-  provisions: PropTypes.array.isRequired
-};
+

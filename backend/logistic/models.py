@@ -58,7 +58,7 @@ class Product(models.Model):
 		super(Product, self).save(*args, **kwargs)
 
 class UnitConversion(models.Model):
-	product = models.ForeignKey(Product, related_name='unit_converions', on_delete=models.CASCADE)
+	product = models.ForeignKey(Product, related_name='unit_conversions', on_delete=models.CASCADE)
 	base_unit = models.ForeignKey(Unit, on_delete=models.CASCADE,related_name='unit_conversion_base_unit')
 	to_unit = models.ForeignKey(Unit, on_delete=models.CASCADE,related_name='unit_conversion_to_unit')
 	multiplier = models.FloatField()
@@ -83,7 +83,7 @@ class Provision(models.Model):
 	delay = models.DateField()
 	created_on = models.DateField(auto_now_add=True)
 	updated_on = models.DateField(auto_now=True)
-	approved_on = models.DateField(auto_now_add=True)
+	approved_on = models.DateTimeField(null=True, blank=True)
 
 	__original_status = None
 	__ref = None
@@ -135,7 +135,9 @@ class Provision(models.Model):
 class ProvisionProductRel(models.Model):
 	product = models.ForeignKey(Product, on_delete=models.CASCADE)
 	provision = models.ForeignKey(Provision, related_name='provisionProducts' , on_delete=models.CASCADE)
-	unit = models.CharField(max_length=50)
+	
+	# change unit from charField for ForeignKey
+	unit = models.ForeignKey(Unit, on_delete=models.CASCADE,null=True, blank=True,)
 	quantity = models.IntegerField()
 
 
@@ -203,6 +205,9 @@ class PurchaseRequest(models.Model):
 class PurchaseReqProductRel(models.Model):
 	provisionProduct = models.ForeignKey(ProvisionProductRel, on_delete=models.CASCADE, default=0)
 	purchaseRequest = models.ForeignKey(PurchaseRequest,related_name='purchaseReqProducts' , on_delete=models.CASCADE)
+	unit = models.ForeignKey(Unit, on_delete=models.CASCADE,null=True, blank=True)
+	quantity = models.IntegerField(null=True, blank=True)
+
 
 
 class Supplier(models.Model):
