@@ -2,7 +2,7 @@ from rest_framework.viewsets import ModelViewSet
 from .serializers import (
     CreateUserSerializer, CustomUser, LoginSerializer, UpdatePasswordSerializer,
     CustomUserSerializer, UserActivities, UserActivitiesSerializer, GroupSerializer,
-    ActivateSerializer
+    ActivateSerializer, CustomUserSignSerializer
 )
 from rest_framework.response import Response
 from rest_framework import status
@@ -11,6 +11,7 @@ from django.contrib.auth.models import Group, Permission
 from datetime import datetime, timezone
 from bst_django.utils import get_access_token
 from bst_django.permissions import IsAuthenticatedCustom
+from rest_framework.decorators import api_view, permission_classes, authentication_classes, action
 
 from django.contrib.auth.models import Group
 from project.models import Location
@@ -31,16 +32,19 @@ class CreateUserView(ModelViewSet):
     permission_classes = (IsAuthenticatedCustom, )
 
     def create(self, request):
-        print(request.data)
         valid_request = self.serializer_class(data=request.data)
         valid_request.is_valid(raise_exception=True)
         user_data = dict(valid_request.validated_data)    
         user_data['location'] = Location.objects.get(pk=valid_request.validated_data.get('location'))
-        print('ok')
+
         user = CustomUser.objects.create(**user_data)
         user.set_password(valid_request.validated_data['password'])
 
+        access = get_access_token({"user_id": user.id, "user_username": user.username}, 99999)
+        user.private_key = access
+
         user.save()
+
         add_user_activity(request.user, "added new user")
 
         return Response(
@@ -129,7 +133,6 @@ class LoginView(ModelViewSet):
             )
 
         access = get_access_token({"user_id": user.id}, 1)
-        print(access)
         user.last_login = datetime.utcnow().replace(tzinfo=timezone.utc)
         user.save()
 
@@ -185,12 +188,27 @@ class UsersView(ModelViewSet):
     serializer_class = CustomUserSerializer
     http_method_names = ["get","delete"]
     queryset = CustomUser.objects.all()
-    permission_classes = (IsAuthenticatedCustom, )
+    # permission_classes = (IsAuthenticatedCustom, )
 
     def list(self, request):
         users = self.queryset.filter(is_superuser=False)
         data = self.serializer_class(users, many=True).data
         return Response(data)
+
+
+    @action(detail=True, methods=['get'],serializer_class=CustomUserSignSerializer)
+    def signature(self, request, pk, *args, **kwargs):
+        user = self.get_object()
+        
+        if user.private_key==None:
+            access = get_access_token({"user_id": user.id, "user_username": user.username}, 99999)
+            user.private_key = access
+            user.save()
+        serializer = self.serializer_class(user)
+            
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class GroupView(ModelViewSet):
     serializer_class = GroupSerializer

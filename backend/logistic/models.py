@@ -214,21 +214,36 @@ class Supplier(models.Model):
 	name = models.CharField(max_length=220)
 	number = models.CharField(max_length=220,null=True)
 	email = models.EmailField(null=True)
+	register_number = models.CharField(max_length=220, null=True)
+	address = models.CharField(max_length=220, null=True)
+	city = models.CharField(max_length=20, null=True)
+	state = models.CharField(max_length=20, null=True)
+	code_postal = models.CharField(max_length=20, null=True)
 	created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
 
 class PurchaseOrder(models.Model):
-	status = models.CharField(max_length=220)
+	STATUS = (
+		('1', _("NEW")),
+		('999', _("DELIVERED")),
+	)
+	ref = models.CharField(max_length=20, unique=True, null=True)
+	status = models.CharField(_("status"),max_length=220, default="1",choices=STATUS)
 	created_on = models.DateTimeField(auto_now_add=True)
 	updated_on = models.DateTimeField(auto_now=True)
 	purchaseRequest = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
 	supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
 	created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
+class PurchaseOrderProductRel(models.Model):
+	purchaseOrder = models.ForeignKey(PurchaseOrder,related_name='purchaseOrderProducts' , on_delete=models.CASCADE)
+	purchaseProduct = models.ForeignKey(PurchaseReqProductRel, on_delete=models.CASCADE, default=0)
+	unitPrice = models.FloatField(null=True, blank=True)
+
 
 class Receipt(models.Model):
 	created_on = models.DateTimeField(auto_now_add=True)
 	created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-	purchaseOrder = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE)
+	purchaseOrder = models.ForeignKey(PurchaseOrder, related_name='receipt' ,on_delete=models.CASCADE)
 
 

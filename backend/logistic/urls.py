@@ -9,6 +9,7 @@ from .views import (
 	ProvisionProductViewSet,
 	PurchaseReqViewSet,
 	PurchaseReqProductViewSet,
+	SupplierViewSet,
 	)
 from rest_framework.routers import DefaultRouter
 
@@ -23,6 +24,7 @@ router.register(r'provision', ProvisionViewSet)
 router.register(r'provision-product', ProvisionProductViewSet)
 router.register(r'purchase-request', PurchaseReqViewSet)
 router.register(r'purchase-request-product', PurchaseReqProductViewSet)
+router.register(r'supplier', SupplierViewSet)
 urlpatterns = [
 	path("", include(router.urls)),
 	

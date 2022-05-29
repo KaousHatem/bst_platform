@@ -31,6 +31,7 @@ from .models import (
 	PurchaseReqProductRel,
 	Unit,
 	UnitConversion,
+	Supplier
 	
 )
 
@@ -50,7 +51,8 @@ from .serializers import  (
 	PurchaseReqProductSerializer,
 	PurchaseRequestStatusActionSerializer,
 	UnitSerializer,
-	UnitConversionSerializer
+	UnitConversionSerializer,
+	SupplierSerializer
 	
 )
 
@@ -272,7 +274,6 @@ class ProvisionViewSet(RoleFilterModelViewSet):
 		# data = self.serializer_class(obj).data
 		return Response({'message':"Approved"}, status=201)
 
-
 	@action(methods=['GET'],detail=False)
 	def list_only_approved(self, request):
 		qs = self.queryset.filter(status='9')
@@ -396,7 +397,7 @@ class ProvisionProductViewSet(ModelViewSet):
 class PurchaseReqViewSet(ModelViewSet):
 	queryset = PurchaseRequest.objects.all().order_by('-created_on')
 	serializer_class = PurchaseRequestSerializer
-	permission_classes=[HasPermission]
+	# permission_classes=[HasPermission]
 	# role_filter_classes = [UserRoleFilter,LogisticAdminRoleFilter,AdminRoleFilter]
 	# filterset_class = (ProvisionFilter)
 
@@ -425,6 +426,7 @@ class PurchaseReqViewSet(ModelViewSet):
 
 		return Response(serializer.data, status = 201)
 	
+
 	def update(self, request, pk):
 		print(request.data)
 		serializer = self.get_serializer(data=request.data)
@@ -538,6 +540,28 @@ class PurchaseReqProductViewSet(ModelViewSet):
 			queryset.delete()
 		return Response(status=status.HTTP_204_NO_CONTENT)
 
+class SupplierViewSet(ModelViewSet):
+	queryset = Supplier.objects.all()
+	serializer_class = SupplierSerializer
+	# permission_classes=[HasPermission]
+	# role_filter_classes = [UserRoleFilter,LogisticAdminRoleFilter,AdminRoleFilter]
+	# filterset_class = (ProvisionFilter)
+	def get_queryset(self):
+		return Supplier.objects.all()
+
+	def create(self, request, *args, **kwargs):
+		token = request.META.get('HTTP_AUTHORIZATION')
+		user = decodeJWT(token)	
+		serializer = self.get_serializer(data=request.data)
+		try:
+			serializer.is_valid(raise_exception=True)
+
+		except:
+			return Response({'message':serializer.errors}, status=400)
+
+		serializer.save(created_by=user)
+
+		return Response(serializer.data, status = 201)
 
 
 # @api_view(['POST'])

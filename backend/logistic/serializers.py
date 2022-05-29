@@ -9,7 +9,8 @@ from .models import (
 	PurchaseRequest,
 	PurchaseReqProductRel,
 	Unit,
-	UnitConversion
+	UnitConversion,
+	Supplier
 	
 )
 from project.models import Location
@@ -462,4 +463,45 @@ class PurchaseRequestStatusActionSerializer(serializers.ModelSerializer):
 	def create(self, validated_data):
 		print(validated_data)
 		return PurchaseRequest.objects.create(**validated_data)
-		
+
+
+class SupplierSerializer(serializers.ModelSerializer):
+	created_by = CustomUserListSerializer(read_only=True,required=False)
+	class Meta:
+		model = Supplier
+		fields = [
+			'id',
+			'name',
+			'number',
+			'email',
+			'register_number',
+			'address',
+			'city',
+			'state',
+			'code_postal',
+			'created_by',
+		]
+		extra_kwargs = {
+		   'number': {
+			  'required': False
+		   },
+		   'email': {
+			  'required': False
+		   },
+		   'address': {
+			  'required': False
+		   },
+		   'city': {
+			  'required': False
+		   },
+		   'state': {
+			  'required': False
+		   },
+		   'code_postal': {
+			  'required': False
+		   }
+		   ,
+		   'created_by': {
+			  'required': False
+		   }
+		}

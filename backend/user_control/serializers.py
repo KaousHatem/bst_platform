@@ -32,6 +32,7 @@ class CustomUserListSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = CustomUser
 		fields = [
+				'id',
 				'fullname',
 				'username'
 				]
@@ -41,7 +42,16 @@ class CustomUserSerializer(serializers.ModelSerializer):
 	location = serializers.SlugRelatedField(queryset = Location.objects.all() ,slug_field='name')
 	class Meta:
 		model = CustomUser
-		exclude = ("password", )
+		exclude = ("password","private_key" )
+
+class CustomUserSignSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = CustomUser
+		fields = [
+				'id',
+				'username',
+				'private_key'
+				]
 
 class UserActivitiesSerializer(serializers.ModelSerializer):
 
