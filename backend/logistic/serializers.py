@@ -10,7 +10,8 @@ from .models import (
 	PurchaseReqProductRel,
 	Unit,
 	UnitConversion,
-	Supplier
+	Supplier,
+	PurchaseOrder
 	
 )
 from project.models import Location
@@ -506,10 +507,25 @@ class SupplierSerializer(serializers.ModelSerializer):
 		   }
 		}
 
+
+
+class PurchaseOrderProductSerializer(serializers.ModelSerializer):
+
+	class Meta:
+		model = PurchaseReqProductRel
+		fields = [
+				'id',
+				'purchaseOrder',
+				'purchaseProduct',
+				'unitPrice'
+				]
+		
+
+
 class PurchaseOrderSerializer(serializers.ModelSerializer):
 	created_by = CustomUserListSerializer(read_only=True,required=False)
 	class Meta:
-		model = Supplier
+		model = PurchaseOrder
 		fields = [
 			'id',
 			'ref',
@@ -521,22 +537,6 @@ class PurchaseOrderSerializer(serializers.ModelSerializer):
 		   'ref': {
 			  'required': False
 		   },
-		   'email': {
-			  'required': False
-		   },
-		   'address': {
-			  'required': False
-		   },
-		   'city': {
-			  'required': False
-		   },
-		   'state': {
-			  'required': False
-		   },
-		   'code_postal': {
-			  'required': False
-		   }
-		   ,
 		   'created_by': {
 			  'required': False
 		   }
