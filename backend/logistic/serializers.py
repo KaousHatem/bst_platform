@@ -505,3 +505,39 @@ class SupplierSerializer(serializers.ModelSerializer):
 			  'required': False
 		   }
 		}
+
+class PurchaseOrderSerializer(serializers.ModelSerializer):
+	created_by = CustomUserListSerializer(read_only=True,required=False)
+	class Meta:
+		model = Supplier
+		fields = [
+			'id',
+			'ref',
+			'purchaseRequest',
+			'supplier',
+			'created_by',
+		]
+		extra_kwargs = {
+		   'ref': {
+			  'required': False
+		   },
+		   'email': {
+			  'required': False
+		   },
+		   'address': {
+			  'required': False
+		   },
+		   'city': {
+			  'required': False
+		   },
+		   'state': {
+			  'required': False
+		   },
+		   'code_postal': {
+			  'required': False
+		   }
+		   ,
+		   'created_by': {
+			  'required': False
+		   }
+		}
