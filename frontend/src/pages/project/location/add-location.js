@@ -22,10 +22,7 @@ import LocationProvider from '../../../services/location-provider'
 
 const AddLocation = () => {
 
-  const [value, setValue] = useState(new Date());
-  const [locationValue, setLocationValue] = useState("");
-  const [locations, setLocations] = useState([])
-  const [roleValue, setRoleValue] = useState("");
+
 
 
 

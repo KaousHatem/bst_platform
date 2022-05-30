@@ -291,34 +291,6 @@ export const PRListResults = ({ purchaseReqList, ...rest}) => {
                       />
                        </>
                     }
-                   
-
-                    <ThreeDotsIcon 
-                        sx={{
-                          mx:1
-                        }}
-                        id="edit-btn"
-                        aria-haspopup="true"
-                        aria-controls={menuOpen ? 'provision-menu' : undefined}
-                        aria-expanded={menuOpen ? 'true' : undefined}
-                        onClick={(event) => handleClickMenu(event, purchaseRequest.id)}
-                      />
-
-                      <Menu
-                        id="provision-menu"
-                        anchorEl={anchorEl}
-                        open={menuOpen}
-                        onClose={handleCloseMenu}
-                        MenuListProps={{
-                          'aria-labelledby': 'edit-btn',
-                        }}
-                      >
-                        <MenuItem onClick={()=>{}}>Imprimer (coming)</MenuItem>
-                        <MenuItem onClick={handleApproveOpen}>Approver</MenuItem>
-                        <MenuItem onClick={()=>{}}>Rejecter (coming)</MenuItem>
-                        
-                        
-                      </Menu>
                     </Box>
                     
                   </TableCell>

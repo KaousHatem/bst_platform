@@ -4,44 +4,41 @@ import {
   Box, 
   Container, 
   Grid, 
-  Pagination ,
+  Pagination,
   Backdrop,
   CircularProgress,
   Snackbar,
   Alert,
 } from '@mui/material';
-import { ProvisionListToolbar } from '../../components/provision/provision-list-toolbar';
-import { ProvisionListResults } from '../../components/provision/provision-list-results';  
+import { SupplierListToolbar } from '../../components/supplier/supplier-list-toolbar';
+import { SupplierListResults } from '../../components/supplier/supplier-list-results';  
 import { DashboardLayout } from '../../components/dashboard-layout';
-import { provisions } from '../../__mocks__/provisions';
-
-import ProvisionsProvider from '../../services/provision-provider'
+import SupplierProvider from '../../services/supplier-provider';
 
 import {CONNECTION_ERROR} from '../../utils/constants'
 
-class Provisions extends React.Component{
-
+class Supplier extends React.Component{
     
   constructor(props){
     super(props);
 
     this.state = {
-      provisions: [],
+      suppliers: [],
       nextPageUrl: '',
       loading: true,
       errorSBOpen: false,
       loadingOpen: true,
       errorSBText: ""
-
     };
 
   }
 
   componentDidMount(){
     this.setState({loadingOpen:true,...this.state})
-    ProvisionsProvider.getProvisions().then(
+    SupplierProvider.getSuppliers().then(
       (response) => {
-        this.setState({loadingOpen:false, provisions : response.data, loading: false})
+        console.log(response.data)
+        this.setState({loadingOpen:false, suppliers : response.data, loading: false})
       },
       error => {
         this.setState({loadingOpen:false})
@@ -59,10 +56,10 @@ class Provisions extends React.Component{
 
   }
 
-
   render() {
     return( 
-      <> {this.state.loading === true &&
+      <>
+      {this.state.loading === true &&
         <Backdrop
           sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
           open={this.state.loadingOpen}
@@ -73,7 +70,7 @@ class Provisions extends React.Component{
         <>
           <Head>
             <title>
-              Provisions | Material Kit
+              FOURNISSEUR| Material Kit
             </title>
           </Head>
           <Box
@@ -84,10 +81,8 @@ class Provisions extends React.Component{
             }}
           >
             <Container maxWidth = {false}>
-              <ProvisionListToolbar />
-              <Box sx={{ mt: 3 }}>
-                <ProvisionListResults provision_list={this.state.provisions} />
-              </Box>
+              <SupplierListToolbar />
+              <SupplierListResults supplierList={this.state.suppliers} />
             </Container>
             
           </Box>
@@ -106,10 +101,10 @@ class Provisions extends React.Component{
   
 }
 
-Provisions.getLayout = (page) => (
+Supplier.getLayout = (page) => (
   <DashboardLayout>
     {page}
   </DashboardLayout>
 );
 
-export default Provisions;
+export default Supplier;

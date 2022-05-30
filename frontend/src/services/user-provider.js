@@ -1,4 +1,4 @@
-import { CreateUserUrl, UserListUrl, ActivateUrl, UserMeUrl } from '../utils/networks'
+import { CreateUserUrl, UserListUrl, ActivateUrl, UserMeUrl, UserSignatureUrl } from '../utils/networks'
 import axios from "axios";
 
 
@@ -136,25 +136,28 @@ class UserProvider {
             });
     }
 
-    // editProduct(data,pk) {
-    //     const token = localStorage.getItem('auth')
+    getUserSignature(pk=-1){
+        const token = localStorage.getItem('auth')
         
-    //     const config = {
-    //     headers: {
-    //     Authorization: `Bearer ${token}`
-    //     }}
-    //     return axios
-    //         .put(productUrl+pk+'/', data, config)
-    //         .then(response => {
-    //             if (response.status < 200 || response.status >= 300) {
-    //                 throw new Error(response.statusText);
-    //             }
-    //             return response;
-    //         })
-    //         .catch((error) => {
-    //             throw new Error()
-    //         })
-    // }
+        const config = {
+        headers: {
+        Authorization: `Bearer ${token}`
+        }}
+        
+        return axios
+            .get(UserListUrl+'/'+pk+'/signature',config)
+            .then(response => {
+                if (response.status < 200 || response.status >= 300) {
+                    throw new Error(response.statusText);
+                }
+                return response;
+            })
+            .catch((error) => {
+                throw new Error('Network error')
+            });
+    }
+
+   
 
 
 }

@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
   });
 
 
-const Footer = ({value,purchaseRequest}) => {
+const Footer = ({creator, approver,purchaseRequest}) => {
 
     const getDate = (date) => {
         // const [year, month, day] = date.split('-')
@@ -76,7 +76,7 @@ const Footer = ({value,purchaseRequest}) => {
             <Text style={styles.text}>Visa:</Text>
             <View style={styles.chop}>
                 <Image style={styles.qrCode} 
-                src={document.getElementById(value).toDataURL()}/>
+                src={document.getElementById(creator).toDataURL()}/>
                 <Image style={styles.logo}
                 src={bstLogo.src}/>
             </View>
@@ -84,14 +84,14 @@ const Footer = ({value,purchaseRequest}) => {
         </View>
         <View style={styles.VisaLogistic}>
             <Text style={styles.text}>Directeur Generale</Text>
-            <Text style={styles.text}>Date: {getDate(purchaseRequest.approved_on)}</Text>
+            <Text style={styles.text}>Date: {purchaseRequest.approved_on!==null && getDate(purchaseRequest.approved_on)}</Text>
             <Text style={styles.text}>Visa:</Text>
-            <View style={styles.chop}>
+            {purchaseRequest.approved_by!==null && <View style={styles.chop}>
                 <Image style={styles.qrCode} 
-                src={document.getElementById(value).toDataURL()}/>
+                src={document.getElementById(approver).toDataURL()}/>
                 <Image style={styles.logo}
                 src={bstLogo.src}/>
-            </View>
+            </View>}
         </View>
     </View>
   );

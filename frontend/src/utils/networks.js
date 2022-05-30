@@ -1,5 +1,5 @@
-// const BaseUrl = "http://127.0.0.1:8000/"
-const BaseUrl = "http://164.92.133.247:8000/"
+const BaseUrl = "http://127.0.0.1:8000/"
+// const BaseUrl = "http://164.92.133.247:8000/"
 
 export const LoginUrl = BaseUrl + "user/login"
 export const CreateUserUrl = BaseUrl + "user/create-user"
@@ -24,6 +24,10 @@ export const locationUrl = BaseUrl + 'project/locations/'
 
 export const purchaseRequestUrl = BaseUrl + 'logistic/purchase-request/'
 export const prProductUrl = BaseUrl + 'logistic/purchase-request-product/'
+
+
+export const supplierUrl = BaseUrl + 'logistic/supplier/'
+
 
 
 

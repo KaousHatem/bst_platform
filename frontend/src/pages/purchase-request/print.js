@@ -12,6 +12,7 @@ import Footer from '../../components/purchase-request/pdf/footer'
 import QRGenerator from '../../components/purchase-request/pdf/qr-generator'
 
 import PurchaseRequestProvider from '../../services/purchase-request-provider'
+import UserProvider from '../../services/user-provider'
 
 const styles = StyleSheet.create({
     page: {
@@ -32,7 +33,8 @@ const PurchaseRequestPage = () => {
     const router = useRouter()
     const [loading, setLoading] = useState(true)
     const [svgQrCode, setSvgQrCode] = useState()
-    const [value, setValue] = useState('eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NDUwMTEyMTQsInVzZXJfaWQiOjF9.SsgZbjD_58LEoOEMxOFO9CB_uOcze3MFgJUisUG3TsY')
+    const [creator, setCreator] = useState(null)
+    const [approver, setApprover] = useState(null)
     const [purchaseRequestId, setPurchaseRequestId] = useState(router.query.id)
     const [purchaseRequest, setPurchaseRequest] = useState()
 
@@ -45,7 +47,21 @@ const PurchaseRequestPage = () => {
             (response) => {
               setPurchaseRequest(response.data)
               console.log(response.data)
-              setLoading(false)
+              
+              Promise.all([
+                  UserProvider.getUserSignature(response.data.created_by.id),
+                  (response.data.approved_by!==null || response.data.approved_by!==undefined) && UserProvider.getUserSignature(response.data.approved_by.id)
+                  ]).then(
+                  responses=>{
+                      setCreator(responses[0].data.private_key+'_'+responses[0].data.username)
+                      responses[1] ? setApprover(responses[1].data.private_key+'_'+responses[1].data.username):_
+                      setLoading(false)
+                  },
+                  )
+              
+              
+             
+              
               
             },
             (error) => {
@@ -60,9 +76,13 @@ const PurchaseRequestPage = () => {
         !loading && 
 		<Fragment>
             <Box sx={{display:'none'}}
-            key={'qrGenerator_'+value}>
-                <QRGenerator value={value}/>
+            key={'qrGenerator_'+creator}>
+                <QRGenerator value={creator}/>
             </Box>
+            {approver !== null && <Box sx={{display:'none'}}
+            key={'qrGenerator_'+approver}>
+                <QRGenerator value={approver}/>
+            </Box>}
 			<PDFViewer width={window && window.innerWidth} 
             height={window && window.innerHeight} >
 				<Document>
@@ -71,7 +91,7 @@ const PurchaseRequestPage = () => {
                     {console.log(purchaseRequest)}
 						<Header purchaseRequest={purchaseRequest} />
 						<Body purchaseRequest={purchaseRequest} />
-                        <Footer value={value} 
+                        <Footer creator={creator} approver={approver}
                         purchaseRequest={purchaseRequest}/>
                         
 					</Page>

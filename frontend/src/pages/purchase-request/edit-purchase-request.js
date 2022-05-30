@@ -153,13 +153,15 @@ const EditPurchaseRequest = () => {
 
   const handleApprove = () => {
     if (purchaseRequestId){
+      setLoadingOpen(true)
       PurchaseRequestProvider.approvePurchaseRequest(purchaseRequestId).then(
       (response) => {
-        alert("done")
+        setLoadingOpen(false)
         router.push('/purchase-request');
       },
       (error) => {
-        alert("error")
+        setLoadingOpen(false)
+        handleSBOpen(CONNECTION_ERROR)
       })
     }
     
@@ -171,13 +173,15 @@ const EditPurchaseRequest = () => {
     const data = {
       status: '4',
     }
+    setLoadingOpen(true)
     PurchaseRequestProvider.updateStatusPurchaseRequest(data, purchaseRequestId).then(
       (response) => {
-        alert("done")
+        setLoadingOpen(false)
         router.push('/purchase-request');
       },
       (error) => {
-        alert("error")
+        setLoadingOpen(false)
+        handleSBOpen(CONNECTION_ERROR)
       })
   }
 

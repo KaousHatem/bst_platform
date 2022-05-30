@@ -164,7 +164,7 @@ export const PRAddToolbar = ({props, isAddPage=false, handleReject, handleApprov
             <PrintIcon />
             Imprimer la demande
           </MenuItem>}
-          { !isAddPage && (purchaseRequestStatus!=='0' && purchaseRequestStatus!=="9") && UXAccess.hasProvisionRejectAccess() && <MenuItem 
+          { !isAddPage && (purchaseRequestStatus ==='1' ) && UXAccess.hasProvisionRejectAccess() && <MenuItem 
             onClick={handleReject}
           >
             <CancelIcon />
@@ -181,7 +181,7 @@ export const PRAddToolbar = ({props, isAddPage=false, handleReject, handleApprov
         >
           Confirmer
         </Button>}
-        { !isAddPage && UXAccess.hasPurchaseRequestApproveAccess() && (purchaseRequestStatus!=='0' && purchaseRequestStatus!=='4' && purchaseRequestStatus!=='9') && <Button
+        { !isAddPage && UXAccess.hasPurchaseRequestApproveAccess() && (purchaseRequestStatus ==='1') && <Button
           color="info"
           variant="contained"
           onClick={handleApprove}

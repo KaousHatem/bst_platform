@@ -147,15 +147,18 @@ const EditProvision = () => {
       status: '9',
       ref: null
     }
+    setLoadingOpen(true) 
     ProvisionProvider.approveProvision(provisionId).then(
       (response) => {
-        alert("done")
-        router.push('/provision/list-provision');
+        setLoadingOpen(false)
+        router.push('/provision');
       },
       (error) => {
-        alert("error")
+        setLoadingOpen(false)
+        handleSBOpen(CONNECTION_ERROR)
       })
   }
+
   const handleReject = () => {
     const data = {
       destination: provision.destination,
@@ -165,11 +168,12 @@ const EditProvision = () => {
     }
     ProvisionProvider.editProvision(data, provisionId).then(
       (response) => {
-        alert("done")
-        router.push('/provision/list-provision');
+        setLoadingOpen(false)
+        router.push('/provision');
       },
       (error) => {
-        alert("error")
+        setLoadingOpen(false)
+        handleSBOpen(CONNECTION_ERROR)
       })
   }
 
