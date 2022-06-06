@@ -11,7 +11,8 @@ from .models import (
 	Unit,
 	UnitConversion,
 	Supplier,
-	PurchaseOrder
+	PurchaseOrder,
+	PurchaseOrderProductRel
 	
 )
 from project.models import Location
@@ -91,6 +92,18 @@ class UnitConversionListingSerializer(serializers.ModelSerializer):
 			'to_unit',
 			'multiplier'
 		]
+
+class ProductListingSerializer(serializers.ModelSerializer):
+	
+	class Meta:
+		model = Product
+		fields = [
+				'id',
+				'sku',
+				'name',
+				
+				]
+
 
 class ProductSerializer(serializers.ModelSerializer):
 	category = serializers.SlugRelatedField(queryset = Category.objects.all() ,slug_field='ref')
@@ -196,6 +209,17 @@ class ProvisionProductListingSerializer(serializers.ModelSerializer):
 				'provision',
 				'unit',
 				'quantity',
+				]
+
+# this serilizer is only used for product purchase listing
+class ProvisionProductListingPurchaseSerializer(serializers.ModelSerializer):
+	product = ProductListingSerializer(read_only=True)
+	class Meta:
+		model = ProvisionProductRel
+		fields = [
+				'id',
+				'product',
+
 				]
 
 class ProvisionSerializer(serializers.ModelSerializer):
@@ -314,6 +338,20 @@ class PurchaseReqProductListingSerializer(serializers.ModelSerializer):
 				'unit',
 				'quantity'
 				]
+
+class PurchaseReqProductListingOrderSerializer(serializers.ModelSerializer):
+	provisionProduct = ProvisionProductListingPurchaseSerializer(read_only=True)
+	unit = UnitSerializer(read_only=True)
+	class Meta:
+		model = PurchaseReqProductRel
+		fields = [
+				'id',
+				'purchaseRequest',
+				'provisionProduct',
+				'unit',
+				'quantity'
+				]
+
 
 
 class PurchaseRequestListingSerializer(serializers.ModelSerializer):
@@ -466,6 +504,18 @@ class PurchaseRequestStatusActionSerializer(serializers.ModelSerializer):
 		return PurchaseRequest.objects.create(**validated_data)
 
 
+class SupplierListingSerializer(serializers.ModelSerializer):
+	
+	class Meta:
+		model = Supplier
+		fields = [
+			'id',
+			'name',
+		]
+		
+
+
+
 class SupplierSerializer(serializers.ModelSerializer):
 	created_by = CustomUserListSerializer(read_only=True,required=False)
 	class Meta:
@@ -509,18 +559,89 @@ class SupplierSerializer(serializers.ModelSerializer):
 
 
 
-class PurchaseOrderProductSerializer(serializers.ModelSerializer):
 
+class PurchaseOrderProductSerializer(serializers.ModelSerializer):
 	class Meta:
-		model = PurchaseReqProductRel
+		model = PurchaseOrderProductRel
 		fields = [
 				'id',
 				'purchaseOrder',
 				'purchaseProduct',
 				'unitPrice'
 				]
+		extra_kwargs = {
+		   'unitPrice': {
+			  'required': False,
+		   },
+		}
+
+class PurchaseOrderListingSerializer(serializers.ModelSerializer):
+	created_by = CustomUserListSerializer(read_only=True,required=False)
+	supplier = SupplierListingSerializer()
+	purchaseRequest = serializers.SlugRelatedField(queryset = PurchaseRequest.objects.all() ,slug_field='ref')
+	class Meta:
+		model = PurchaseOrder
+		fields = [
+			'id',
+			'ref',
+			'purchaseRequest',
+			'supplier',
+			'created_by',
+		]
+		extra_kwargs = {
+		   'ref': {
+			  'required': False,
+			  'read_only': True,
+		   },
+		   'created_by': {
+			  'required': False
+		   }
+		}
 		
 
+class PurchaseOrderProductListingSerializer(serializers.ModelSerializer):
+	purchaseProduct = PurchaseReqProductListingOrderSerializer()
+	class Meta:
+		model = PurchaseOrderProductRel
+		fields = [
+				'id',
+				'purchaseOrder',
+				'purchaseProduct',
+				'unitPrice'
+				]
+		extra_kwargs = {
+		   'purchaseOrder': {
+			  'required': False,
+		   },
+		   'purchaseProduct': {
+			  'required': False
+		   }
+		}
+
+class PurchaseOrderRetrieveSerializer(serializers.ModelSerializer):
+	created_by = CustomUserListSerializer(read_only=True,required=False)
+	supplier = SupplierSerializer()
+	purchaseOrderProducts = PurchaseOrderProductListingSerializer(many=True,read_only=True)
+	purchaseRequest = PurchaseRequestListingSerializer()
+	class Meta:
+		model = PurchaseOrder
+		fields = [
+			'id',
+			'ref',
+			'purchaseRequest',
+			'purchaseOrderProducts',
+			'supplier',
+			'created_by',
+		]
+		extra_kwargs = {
+		   'ref': {
+			  'required': False,
+			  'read_only': True,
+		   },
+		   'created_by': {
+			  'required': False
+		   }
+		}
 
 class PurchaseOrderSerializer(serializers.ModelSerializer):
 	created_by = CustomUserListSerializer(read_only=True,required=False)
@@ -535,9 +656,16 @@ class PurchaseOrderSerializer(serializers.ModelSerializer):
 		]
 		extra_kwargs = {
 		   'ref': {
-			  'required': False
+			  'required': False,
+			  'read_only': True,
 		   },
 		   'created_by': {
 			  'required': False
 		   }
 		}
+
+
+
+
+
+

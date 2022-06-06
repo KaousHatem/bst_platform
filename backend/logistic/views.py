@@ -31,7 +31,10 @@ from .models import (
 	PurchaseReqProductRel,
 	Unit,
 	UnitConversion,
-	Supplier
+	Supplier,
+	PurchaseOrderProductRel,
+	PurchaseOrder,
+
 	
 )
 
@@ -52,7 +55,13 @@ from .serializers import  (
 	PurchaseRequestStatusActionSerializer,
 	UnitSerializer,
 	UnitConversionSerializer,
-	SupplierSerializer
+	SupplierSerializer,
+	PurchaseOrderProductSerializer,
+	PurchaseOrderSerializer,
+	PurchaseOrderRetrieveSerializer,
+	PurchaseOrderListingSerializer,
+	PurchaseOrderProductListingSerializer,
+	PurchaseOrderProductSerializer,
 	
 )
 
@@ -562,6 +571,73 @@ class SupplierViewSet(ModelViewSet):
 		serializer.save(created_by=user)
 
 		return Response(serializer.data, status = 201)
+
+
+class PurchaseOrderViewSet(ModelViewSet):
+	queryset = PurchaseOrder.objects.all()
+	serializer_class = PurchaseOrderSerializer
+
+	def get_serializer_class(self):
+		print(self.action)
+		if self.action == 'list':
+			return PurchaseOrderListingSerializer
+		if self.action == 'retrieve':
+			return PurchaseOrderRetrieveSerializer
+		
+		return super().get_serializer_class()
+
+	def create_product(self,serializer_data, *args, **kwargs):
+		if serializer_data:
+			po_id = serializer_data.get('id')			
+			purchaseOrder = self.queryset.get(id=po_id)
+
+			if purchaseOrder:
+				purchaseRequest = purchaseOrder.purchaseRequest
+				purchaseRequestSerializer = PurchaseRequestSerializer(purchaseRequest)
+				prProducts = purchaseRequestSerializer.data.get('purchaseReqProducts')
+				data = [
+					{
+					'purchaseOrder': po_id,
+					'purchaseProduct': product['id']
+					}
+					for product in prProducts
+				]
+
+				serializerProducts = PurchaseOrderProductSerializer(data=data, many=True)
+				try:
+					serializerProducts.is_valid(raise_exception=True)
+
+				except:
+					return Response({'message':serializerProducts.errors}, status=400)
+				serializerProducts.save()
+
+
+
+
+
+	def create(self, request):
+		token = request.META.get('HTTP_AUTHORIZATION')
+		user = decodeJWT(token)
+		serializer = self.get_serializer(data=request.data)
+		try:
+			serializer.is_valid(raise_exception=True)
+
+		except:
+			return Response({'message':serializer.errors}, status=400)
+
+		serializer.save(created_by=CustomUser.objects.first())
+
+		self.create_product(serializer.data)
+		return Response(serializer.data, status = 201)
+
+class PurchaseOrderProductViewSet(ModelViewSet):
+	queryset = PurchaseOrderProductRel.objects.all()
+	serializer_class = PurchaseOrderProductSerializer
+
+	def get_serializer_class(self):
+		if self.action == 'list':
+			return PurchaseOrderProductListingSerializer
+		return super().get_serializer_class()
 
 
 # @api_view(['POST'])

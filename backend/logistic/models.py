@@ -235,6 +235,17 @@ class PurchaseOrder(models.Model):
 	supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
 	created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
+	def save(self, *args, **kwargs):
+		today = datetime.datetime.now()
+		if PurchaseOrder.objects.filter(~Q(ref=None)):
+			last_ref = PurchaseOrder.objects.filter(~Q(ref=None)).order_by('ref').last().ref.split('/')[0]
+			last_ref_int = int(last_ref)
+			self.ref = str(last_ref_int+1).zfill(4) + '/' + str(today.year)
+		else:
+			self.ref = str(1).zfill(4) + '/' + str(today.year)
+		super(PurchaseOrder, self).save(*args, **kwargs)
+		
+
 class PurchaseOrderProductRel(models.Model):
 	purchaseOrder = models.ForeignKey(PurchaseOrder,related_name='purchaseOrderProducts' , on_delete=models.CASCADE)
 	purchaseProduct = models.ForeignKey(PurchaseReqProductRel, on_delete=models.CASCADE, default=0)
