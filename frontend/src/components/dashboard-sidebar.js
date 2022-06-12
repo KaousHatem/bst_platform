@@ -230,6 +230,7 @@ export const DashboardSidebar = (props) => {
             <MenuList>
               <SubNavItem href='/provision' title='Approvisionnement'/>
               <SubNavItem href='/purchase-request' title='Achat'/>
+              <SubNavItem href='/purchase-order' title='Bon de commande'/>
               <SubNavItem href='/supplier' title='Fournisseur'/>
             </MenuList>
             </Box>

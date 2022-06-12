@@ -140,7 +140,7 @@ export const PRListResults = ({ purchaseReqList, ...rest}) => {
     if (selectedIndex === -1) {
       newSelectedPRIds = newSelectedPRIds.concat(selectedPRIds, id);
     } else if (selectedIndex === 0) {
-      newSelectedPRIds = newSelectedPRIdsnewSelectedPRIds.concat(selectedPRIds.slice(1));
+      newSelectedPRIds = newSelectedPRIds.concat(selectedPRIds.slice(1));
     } else if (selectedIndex === selectedPRIds.length - 1) {
       newSelectedPRIds = newSelectedPRIds.concat(selectedPRIds.slice(0, -1));
     } else if (selectedIndex > 0) {

@@ -23,7 +23,11 @@ export const provisionOnlyApprovedUrl = provisionUrl + 'list_only_approved/'
 export const locationUrl = BaseUrl + 'project/locations/'
 
 export const purchaseRequestUrl = BaseUrl + 'logistic/purchase-request/'
+export const prOnlyApprovedUrl = purchaseRequestUrl + 'list_only_approved/'
 export const prProductUrl = BaseUrl + 'logistic/purchase-request-product/'
+
+
+export const purchaseOrderUrl = BaseUrl + 'logistic/purchase-order/'
 
 
 export const supplierUrl = BaseUrl + 'logistic/supplier/'

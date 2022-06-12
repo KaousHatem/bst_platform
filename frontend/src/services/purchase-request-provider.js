@@ -1,4 +1,4 @@
-import {purchaseRequestUrl} from '../utils/networks'
+import {purchaseRequestUrl, prOnlyApprovedUrl} from '../utils/networks'
 import axios from "axios";
 
 
@@ -136,6 +136,28 @@ class PurchaseRequestProvider {
         })
     }
 
+    getOnlyApprovedPR() {
+        
+
+        const token = localStorage.getItem('auth')
+        
+        const config = {
+        headers: {
+        Authorization: `Bearer ${token}`
+        }}
+
+        return axios
+            .get(prOnlyApprovedUrl,config)
+            .then(response => {
+                if (response.status < 200 || response.status >= 300) {
+                    throw new Error(response.statusText);
+                }
+                return response;
+            })
+            .catch((error) => {
+                throw new Error('Network error')
+            });
+    }
 
 }
 

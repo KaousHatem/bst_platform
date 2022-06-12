@@ -393,7 +393,6 @@ const EditPurchaseRequest = () => {
                         {purchaseRequest.approved_by === null && "_" || purchaseRequest.approved_by.username}
                       </Typography>
                     </Grid>
-                    
                     <Grid item
                     xs={4}>
                       <InputLabel>
