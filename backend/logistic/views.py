@@ -61,7 +61,7 @@ from .serializers import  (
 	PurchaseOrderRetrieveSerializer,
 	PurchaseOrderListingSerializer,
 	PurchaseOrderProductListingSerializer,
-	PurchaseOrderProductSerializer,
+	PurchaseOrderProductUpdateSerializer,
 	
 )
 
@@ -491,6 +491,23 @@ class PurchaseReqViewSet(ModelViewSet):
 		# data = self.serializer_class(obj).data
 		return Response({'message':"status_updated"}, status=201)
 
+	@action(methods=['GET'],detail=False)
+	def list_only_approved(self, request):
+
+		qs = self.queryset.filter(status='9')
+
+		if qs:
+			data = self.serializer_class(qs,many=True).data
+			data_final=[]
+			for i in data:
+				purchaseOrder = PurchaseOrder.objects.filter(purchaseRequest=i['id'])
+				if not(purchaseOrder):
+					data_final.append(i)
+				
+			return Response(data_final, status=status.HTTP_200_OK)
+		else:
+			return Response({'message':"There is no approved purchase request"}, status=status.HTTP_200_OK)
+
 
 class PurchaseReqProductViewSet(ModelViewSet):
 	queryset = PurchaseReqProductRel.objects.all()
@@ -574,7 +591,7 @@ class SupplierViewSet(ModelViewSet):
 
 
 class PurchaseOrderViewSet(ModelViewSet):
-	queryset = PurchaseOrder.objects.all()
+	queryset = PurchaseOrder.objects.all().order_by('-created_on')
 	serializer_class = PurchaseOrderSerializer
 
 	def get_serializer_class(self):
@@ -628,7 +645,9 @@ class PurchaseOrderViewSet(ModelViewSet):
 		serializer.save(created_by=CustomUser.objects.first())
 
 		self.create_product(serializer.data)
-		return Response(serializer.data, status = 201)
+
+		data_serializer = PurchaseOrderRetrieveSerializer(self.queryset.get(id=serializer.data.get('id')))
+		return Response(data_serializer.data, status = 201)
 
 class PurchaseOrderProductViewSet(ModelViewSet):
 	queryset = PurchaseOrderProductRel.objects.all()
@@ -638,6 +657,30 @@ class PurchaseOrderProductViewSet(ModelViewSet):
 		if self.action == 'list':
 			return PurchaseOrderProductListingSerializer
 		return super().get_serializer_class()
+
+	@action(methods=['put'], detail=False)
+	def put(self, request, *args, **kwargs):
+
+		data = request.data
+		serializers = PurchaseOrderProductUpdateSerializer(self.queryset,data=data,many=True)
+
+		try:
+			serializers.is_valid(raise_exception=True)
+			
+
+		except:
+			print(serializers.errors)
+			return Response({'message':serializers.errors}, status=400)
+
+		try:
+			serializers.save()
+		except Exception as e:
+			return Response({'message':e}, status=403)
+
+
+		return Response(serializers.data, status=status.HTTP_200_OK)
+
+
 
 
 # @api_view(['POST'])

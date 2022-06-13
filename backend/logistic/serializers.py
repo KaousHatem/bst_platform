@@ -267,6 +267,7 @@ class ProvisionSerializer(serializers.ModelSerializer):
 
 class ProvisionSerializerListing(serializers.ModelSerializer):
 	destination = serializers.SlugRelatedField(queryset = Location.objects.all() ,slug_field='name')
+	created_by = CustomUserListSerializer(read_only=True,required=False)
 	class Meta:
 		model = Provision
 		fields = [
@@ -274,6 +275,7 @@ class ProvisionSerializerListing(serializers.ModelSerializer):
 				'ref',
 				'destination',
 				'delay',
+				'created_by'
 				]
 
 
@@ -441,6 +443,9 @@ class PurchaseRequestRetrieveSerializer(serializers.ModelSerializer):
 		return PurchaseRequest.objects.create(**validated_data)
 
 
+
+
+
 class PurchaseRequestSerializer(serializers.ModelSerializer):
 	purchaseReqProducts = PurchaseReqProductListingSerializer(many=True,read_only=True)
 	created_by = CustomUserListSerializer(read_only=True,required=False)
@@ -558,6 +563,44 @@ class SupplierSerializer(serializers.ModelSerializer):
 		}
 
 
+class PurchaseOrderProductListSerializer(serializers.ListSerializer):
+	def update(self, instance, validated_data):
+
+		# Maps for id->instance and id->data item.
+
+		product_mapping = {product.id: product for product in instance}
+
+
+		data_mapping = {item['id']: item for item in validated_data}
+
+		# Perform creations and updates.
+		ret = []
+		for product_id, data in data_mapping.items():
+			product = product_mapping.get(product_id, None)
+
+			if product is None:
+				ret.append(self.child.create(data))
+			else:
+				ret.append(self.child.update(product, data))
+
+		# # Perform deletions.
+		# for book_id, book in book_mapping.items():
+		#     if book_id not in data_mapping:
+		#         book.delete()
+
+		return ret
+
+class PurchaseOrderProductUpdateSerializer(serializers.ModelSerializer):
+	id = serializers.IntegerField(required=False)
+	class Meta:
+		model = PurchaseOrderProductRel
+		fields = [
+				'id',
+				'unitPrice'
+				]
+		list_serializer_class = PurchaseOrderProductListSerializer
+
+		
 
 
 class PurchaseOrderProductSerializer(serializers.ModelSerializer):
@@ -578,7 +621,7 @@ class PurchaseOrderProductSerializer(serializers.ModelSerializer):
 class PurchaseOrderListingSerializer(serializers.ModelSerializer):
 	created_by = CustomUserListSerializer(read_only=True,required=False)
 	supplier = SupplierListingSerializer()
-	purchaseRequest = serializers.SlugRelatedField(queryset = PurchaseRequest.objects.all() ,slug_field='ref')
+	purchaseRequest = PurchaseRequestListingSerializer()
 	class Meta:
 		model = PurchaseOrder
 		fields = [
