@@ -25,21 +25,22 @@ import {LocalizationProvider, DatePicker, AdapterDateFns} from '@mui/lab'
 import InputLabel from '@mui/material/InputLabel';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-import { PRAddToolbar } from '../../components/purchase-request/pr-add-toolbar';
+import { POAddToolbar } from '../../components/purchase-order/po-add-toolbar';
 import { DashboardLayout } from '../../components/dashboard-layout';
-import { PRAddProduct } from '../../components/purchase-request/pr-add-product';
+import { PurchaseOrderProduct } from '../../components/purchase-order/purchase-order-product';
 
 import { format } from 'date-fns'
 
 import ProvisionProvider from '../../services/provision-provider'
 import PurchaseRequestProvider from '../../services/purchase-request-provider'
-import PRProductProvider from '../../services/pr-product-provider'
+import POProductProvider from '../../services/po-product-provider'
 import PurchaseOrderProvider from '../../services/purchase-order-provider'
 import SupplierProvider from '../../services/supplier-provider'
 
+
 import UXAccess from '../../utils/ux-access'
 
-const AddPurchaseRequest = () => {
+const AddPurchaseOrder = () => {
   const router = useRouter();
 
   const [loading, setLoading] = useState(false)
@@ -79,6 +80,16 @@ const AddPurchaseRequest = () => {
       response=>{
         console.log(response.data)
         setPurchaseRequest(response.data)
+        setPurchaseProducts(response.data.purchaseReqProducts.map(product=>{
+          return {
+            id: product.id,
+            sku: product.provisionProduct.product.sku,
+            name: product.provisionProduct.product.name,
+            unit: product.unit.ref,
+            quantity: product.quantity,
+            unitPrice: null
+          }
+        }))
         setLoadingOpen(false)
       }
       ,error=>{
@@ -97,53 +108,50 @@ const AddPurchaseRequest = () => {
 
 
 
-  const handleOnSubmit = (e, status) => {
+  const handleOnSubmit = (e) => {
     e.preventDefault();
-    // const data = {ProvisionProvider
-    //   provision: purchaseRequestValue,
-    //   status: status,
-    //   ref: null
-    // }
+    const data = {
+      purchaseRequest: purchaseRequestValue,
+      supplier: e.target.supplier.value,
+    }
+    console.log(data)
+    setLoadingOpen(true)
+    PurchaseOrderProvider.addPurchaseOrder(data).then(
+      response=>{
+        
+        const data_product = response.data.purchaseOrderProducts.filter(product => {
+          return purchaseProducts.find(purchaseProduct=>{return purchaseProduct.id===product.purchaseProduct.id}).unitPrice !== null
+        }).map(product=>{
+          return {
+            id: product.id,
+            unitPrice: parseFloat(purchaseProducts.find(purchaseProduct=>{return purchaseProduct.id===product.purchaseProduct.id}).unitPrice+".0")
+          }
+        })
 
-    // console.log(selecetedProducts)
-    // if(selecetedProducts.length === 0 ){
-    //   handleSBOpen("Veuillez ajouter les articles!")
-    // } else{
-    //   const pr_product_list = []
-    //   setLoadingOpen(true)
-    //   PurchaseRequestProvider.addPurchaseRequest(data).then(
-    //     (response) => {
-          
-    //       selecetedProducts.forEach(product => {
-    //         const product_tmp = {
-    //           provisionProduct: product.productProvision.id,
-    //           purchaseRequest: response.data.id,
-    //           unit: product.unit,
-    //           quantity: product.quantity
-    //         }
-    //         pr_product_list = [ ... pr_product_list, product_tmp]
-    //       })
-    //       console.log(pr_product_list)
-    //       PRProductProvider.addPRProduct(pr_product_list).then(
-    //         (response) => {
-    //           console.log(response.data)
-    //           setLoadingOpen(false)
-    //           router.push('/purchase-request');
-    //         },
-    //         error => {
-    //           setLoadingOpen(false)
-    //           handleSBOpen(CONNECTION_ERROR)
-    //           alert(error.message)
-    //         }
-    //         )
-    //     },
-    //     error => {
-    //       setLoadingOpen(false)
-    //       handleSBOpen(CONNECTION_ERROR)
-    //       alert(error.message)
-    //     }
-    //     )
-    // }
+        if (data_product.length){
+          POProductProvider.bulkUpdatePOProduct(data_product).then(
+            response=>{
+              setLoadingOpen(false)
+              router.push('/purchase-order');
+              console.log(response.data)
+            },
+            error=>{
+              setLoadingOpen(false)
+              router.push('/purchase-order');
+              handleSBOpen(CONNECTION_ERROR)
+            })
+        }else {
+          setLoadingOpen(false)
+          router.push('/purchase-order');
+
+        }
+        
+
+      },
+      error=>{
+        setLoadingOpen(false)
+        handleSBOpen(CONNECTION_ERROR)
+      })
   }
 
   const handleSBClose = () => {
@@ -156,30 +164,46 @@ const AddPurchaseRequest = () => {
   }
 
 
+
   useEffect( async () => {
+
     setLoadingOpen(true)
 
     Promise.all([
       PurchaseRequestProvider.getOnlyApprovedPR(),
       SupplierProvider.getSuppliers(),
+      purchaseRequestValue && PurchaseRequestProvider.getPurchaseRequests(purchaseRequestValue),
       ]).then(
         responses => {
           setLoadingOpen(false)
           setPurchaseRequests(responses[0].data)
           setSuppliers(responses[1].data)
+          if(responses[2]){
+            setPurchaseRequest(responses[2].data)
+            setPurchaseProducts(responses[2].data.purchaseReqProducts.map(product=>{
+              return {
+                id: product.id,
+                sku: product.provisionProduct.product.sku,
+                name: product.provisionProduct.product.name,
+                unit: product.unit.ref,
+                quantity: product.quantity,
+                unitPrice: null
+              }
+            }))
+          }
+          
+
         }
         ,errors => {
           setLoadingOpen(false)
           handleSBOpen(CONNECTION_ERROR)
         }
-      )
-
-    
-    
-    
-
-    
+      )    
   },[])
+
+  useEffect( async () => {
+    console.log(purchaseProducts)
+  },[purchaseProducts])
   
   return (
     <>
@@ -203,8 +227,8 @@ const AddPurchaseRequest = () => {
       }}
     >
       <Container maxWidth={false}>
-        {/*<PRAddToolbar isAddPage={true} 
-        handleSaveAsDraft={handleOnSubmit} />*/}
+        <POAddToolbar
+        id={handleOnSubmit} />
         <Box sx={{ 
           mt: 3 ,
           backgroundColor: "white",
@@ -263,7 +287,7 @@ const AddPurchaseRequest = () => {
                         Fournisseur
                       </InputLabel>
                       <Select
-                        name="provision"
+                        name="supplier"
                         fullWidth
                         margin="normal"
                         labelId="demo-simple-select-label"
@@ -271,9 +295,7 @@ const AddPurchaseRequest = () => {
                         sx={{
                           my: 2
                         }} 
-                        // value={supplierValue}
-                        // onChange={handleSupplierChange}
-
+                        
                       >
                         {suppliers.length && suppliers.slice(0,suppliers.length).map((supplier) => (
                           <MenuItem key={supplier.id} 
@@ -334,12 +356,7 @@ const AddPurchaseRequest = () => {
                 </form>
 
 
-                {/*<PurchaseOrderProduct selecetedProducts={selecetedProducts} 
-                setSelectedProducts={setSelectedProducts}
-                provisionProducts = {provisionProducts}
-                productInPurchase = {productInPurchase}
-                doneModeProducts = {doneModeProducts}
-                setDoneModeProducts = {setDoneModeProducts} />*/}
+                {purchaseRequest && <PurchaseOrderProduct setPurchaseProducts={setPurchaseProducts} purchaseProducts={purchaseProducts}  />}
               </Box>
             </CardContent>
           </Card>
@@ -357,10 +374,10 @@ const AddPurchaseRequest = () => {
   );
 };
 
-AddPurchaseRequest.getLayout = (page) => (
+AddPurchaseOrder.getLayout = (page) => (
   <DashboardLayout>
     {page}
   </DashboardLayout>
 );
 
-export default AddPurchaseRequest;
+export default AddPurchaseOrder;

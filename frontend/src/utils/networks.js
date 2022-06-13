@@ -28,6 +28,8 @@ export const prProductUrl = BaseUrl + 'logistic/purchase-request-product/'
 
 
 export const purchaseOrderUrl = BaseUrl + 'logistic/purchase-order/'
+export const poProductUrl = BaseUrl + 'logistic/purchase-order-product/'
+
 
 
 export const supplierUrl = BaseUrl + 'logistic/supplier/'

@@ -33,25 +33,25 @@ class PurchaseOrderProvider {
             });
     }
 
-    // addPurchaseRequest(data) {
-    //     const token = localStorage.getItem('auth')
+    addPurchaseOrder(data) {
+        const token = localStorage.getItem('auth')
         
-    //     const config = {
-    //     headers: {
-    //     Authorization: `Bearer ${token}`
-    //     }}
-    //     return axios
-    //         .post(purchaseRequestUrl, data, config)
-    //         .then(response => {
-    //             if (response.status < 200 || response.status >= 300) {
-    //                 throw new Error(response.statusText);
-    //             }
-    //             return response;
-    //         })
-    //         .catch((error) => {
-    //             throw new Error()
-    //         })
-    // }
+        const config = {
+        headers: {
+        Authorization: `Bearer ${token}`
+        }}
+        return axios
+            .post(purchaseOrderUrl, data, config)
+            .then(response => {
+                if (response.status < 200 || response.status >= 300) {
+                    throw new Error(response.statusText);
+                }
+                return response;
+            })
+            .catch((error) => {
+                throw new Error()
+            })
+    }
 
     // updatePurchaseRequest(data,pk) {
     //     const token = localStorage.getItem('auth')

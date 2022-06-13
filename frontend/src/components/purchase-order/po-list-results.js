@@ -121,13 +121,13 @@ export const POListResults = ({ purchaseOrderList, ...rest}) => {
     setPage(newPage);
   };
 
-  const handleClickEdit = (e,purchaseRequest) => {
+  const handleClickEdit = (e,purchaseOrder) => {
 
-    // const data = {
-    //  pathname: '/purchase-request/edit-purchase-request/',
-    //  query:{'id':purchaseRequest.id}
-    // }
-    // router.push(data);
+    const data = {
+     pathname: '/purchase-order/edit-purchase-order/',
+     query:{'id':purchaseOrder.id}
+    }
+    router.push(data);
   }
 
 
