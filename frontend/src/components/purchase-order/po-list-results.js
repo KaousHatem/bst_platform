@@ -30,6 +30,7 @@ import {View as ViewIcon} from '../../icons/view'
 
 // import {PRDeleteDialog} from './pr-delete-dialog'
 // import {PRApproveDialog} from './pr-approve-dialog'
+import UXAccess from '../../utils/ux-access'
  
 import Label from '../Label';
 
@@ -149,9 +150,9 @@ export const POListResults = ({ purchaseOrderList, ...rest}) => {
                 <TableCell>
                   Reference
                 </TableCell>
-                <TableCell align="center">
+                {UXAccess.hasRefPRinPO() && <TableCell align="center">
                   demande d'appro
-                </TableCell>
+                </TableCell>}
                 <TableCell align="center">
                   demande d'achat
                 </TableCell>
@@ -180,9 +181,9 @@ export const POListResults = ({ purchaseOrderList, ...rest}) => {
                   <TableCell>
                     {purchaseOrder.ref}
                   </TableCell>
-                  <TableCell align="center"> 
+                  {UXAccess.hasRefPRinPO() && <TableCell align="center"> 
                     {purchaseOrder.purchaseRequest.provision.ref}
-                  </TableCell>
+                  </TableCell>}
                   <TableCell align="center">
                     {purchaseOrder.purchaseRequest.ref}
                   </TableCell>

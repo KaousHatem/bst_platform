@@ -112,7 +112,7 @@ const EditUser = () => {
         }
         )
     }
-  })
+  },[])
   
   return (
     loading === false && 
