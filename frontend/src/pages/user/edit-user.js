@@ -78,7 +78,7 @@ const EditUser = () => {
 
     console.log(data)
 
-    LocationProvider.updateLocation(data,userId).then(
+    UserProvider.updateUser(data,userId).then(
       (response) => {
         alert("done")
         console.log(response.data)
