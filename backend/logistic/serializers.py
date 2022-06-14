@@ -675,6 +675,7 @@ class PurchaseOrderRetrieveSerializer(serializers.ModelSerializer):
 			'purchaseOrderProducts',
 			'supplier',
 			'created_by',
+			'created_on',
 		]
 		extra_kwargs = {
 		   'ref': {
