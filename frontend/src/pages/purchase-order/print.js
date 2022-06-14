@@ -3,7 +3,7 @@ import React, { Component, Fragment } from 'react';
 import { useRouter } from 'next/router';
 
 import { useState, useEffect } from 'react';
-import { Page, Document, Image, StyleSheet, PDFViewer,Svg, View } from '@react-pdf/renderer';
+import { Page, Document, Image,Font,  StyleSheet, PDFViewer,Svg, View } from '@react-pdf/renderer';
 import {  Select, MenuItem, Box, Button, Container, Grid, Link, TextField, Typography, Card, CardContent, } from '@mui/material';
 
 import Header from '../../components/purchase-order/pdf/header'
@@ -12,6 +12,13 @@ import Footer from '../../components/purchase-order/pdf/footer'
 
 import PurchaseOrderProvider from '../../services/purchase-order-provider'
 import UserProvider from '../../services/user-provider'
+
+
+Font.register({
+  family: "Roboto",
+  src:
+    "https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-light-webfont.ttf"
+});
 
 const styles = StyleSheet.create({
     page: {
@@ -67,9 +74,8 @@ const PurchaseOrderPage = () => {
                     style={styles.page}>
                     {console.log(purchaseOrder)}
 						<Header purchaseOrder={purchaseOrder} />
-						{/*<Body purchaseOrder={purchaseOrder} />
-                        <Footer 
-                        purchaseOrder={purchaseOrder}/>*/}
+						<Body purchaseOrder={purchaseOrder} />
+            <Footer />
                         
 					</Page>
 				</Document>
