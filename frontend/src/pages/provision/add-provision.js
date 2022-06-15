@@ -133,7 +133,7 @@ const AddProvision = () => {
       responses=>{
         setLocations(responses[0].data)
         if(responses[1]){
-          setLocationValue(response.data.location)
+          setLocationValue(responses[1].data.location)
         }
         setLoadingOpen(false)
       },
