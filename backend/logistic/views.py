@@ -210,7 +210,7 @@ class ProductBulkViewSet(ModelViewSet):
 
 
 class ProvisionViewSet(RoleFilterModelViewSet):
-	queryset = Provision.objects.all()
+	queryset = Provision.objects.all().order_by('-created_on')
 	serializer_class = ProvisionSerializer
 	permission_classes=[HasPermission]
 	role_filter_classes = [UserRoleFilter,LogisticAdminRoleFilter,AdminRoleFilter]
