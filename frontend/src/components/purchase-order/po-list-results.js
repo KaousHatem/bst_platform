@@ -25,8 +25,8 @@ import {Edit as EditIcon} from '../../icons/edit'
 import {Delete as DeleteIcon} from '../../icons/delete'
 import {View as ViewIcon} from '../../icons/view'
 
-// import PurchaseRequestProvider from '../../services/purchase-request-provider'
-// import PRProductProvider from '../../services/pr-product-provider'
+import PurchaseOrderProvider from '../../services/purchase-order-provider'
+
 
 // import {PRDeleteDialog} from './pr-delete-dialog'
 // import {PRApproveDialog} from './pr-approve-dialog'
@@ -47,41 +47,10 @@ export const POListResults = ({ purchaseOrderList, ...rest}) => {
   const [purchaseOrders, setPurchaseOrders] = useState(purchaseOrderList)
   const router = useRouter();
 
-  // const [deleteOpen, setDeleteOpen] = useState(false)
-  // const [purchaseRequestIdDelete, setPurchaseRequestIdDelete] = useState(-1)
-
-
+  
   
 
-  const handleClose = () => {
-    // setDeleteOpen(false)
-  }
-  const handleDeleteOpen = (event, pr_id) => {
-    // setPurchaseRequestIdDelete(pr_id)
-    // setDeleteOpen(true)
-  }
-
-  const handleDeletePurchaseRequest = () => {
-    // setDeleteOpen(false)
-    // PurchaseRequestProvider.deletePurchaseRequest(purchaseRequestIdDelete).then(
-    //   (response) => {
-    //     console.log('PurchaseRequest: '+purchaseRequestIdDelete+' is deleted')
-    //     setPurchaseRequests(purchaseRequests.filter(function(purchaseRequest) {
-    //       return purchaseRequest.id !== purchaseRequestIdDelete
-    //     }))
-    //   },
-    //   error => {
-    //     const resMessage =
-    //       (error.response &&
-    //         error.response.data &&
-    //         error.response.data.message) ||
-    //       error.message ||
-    //       error.toString();
-    //     console.log(resMessage)
-    //   }
-    // )
-  }
-
+  
   const handleSelectAll = (event) => {
     let newSelectedPurchaseOrderIds;
 
@@ -150,12 +119,12 @@ export const POListResults = ({ purchaseOrderList, ...rest}) => {
                 <TableCell>
                   Reference
                 </TableCell>
-                {UXAccess.hasRefPRinPO() && <TableCell align="center">
-                  demande d'appro
-                </TableCell>}
                 <TableCell align="center">
-                  demande d'achat
+                  demande d'appro
                 </TableCell>
+                {UXAccess.hasRefPRinPO() && <TableCell align="center">
+                  demande d'achat
+                </TableCell>}
                 <TableCell>
                   Destination
                 </TableCell>
@@ -181,12 +150,12 @@ export const POListResults = ({ purchaseOrderList, ...rest}) => {
                   <TableCell>
                     {purchaseOrder.ref}
                   </TableCell>
-                  {UXAccess.hasRefPRinPO() && <TableCell align="center"> 
+                  <TableCell align="center"> 
                     {purchaseOrder.purchaseRequest.provision.ref}
-                  </TableCell>}
-                  <TableCell align="center">
-                    {purchaseOrder.purchaseRequest.ref}
                   </TableCell>
+                  {UXAccess.hasRefPRinPO() && <TableCell align="center">
+                    {purchaseOrder.purchaseRequest.ref}
+                  </TableCell>}
                   <TableCell>
                     {purchaseOrder.purchaseRequest.provision.destination}
                   </TableCell>
@@ -211,6 +180,7 @@ export const POListResults = ({ purchaseOrderList, ...rest}) => {
                         }}
                         onClick = {(event) => {handleClickEdit(event, purchaseOrder)}}
                        />
+                      
                     </Box>
                     
                   </TableCell>
@@ -237,10 +207,7 @@ export const POListResults = ({ purchaseOrderList, ...rest}) => {
         rowsPerPage={limit}
         rowsPerPageOptions={[5, 10, 25]}
       />
-      {/*<PRDeleteDialog open={deleteOpen} 
-      handleDeleteOpen={handleDeleteOpen} 
-      handleClose={handleClose}
-      handleDeletePurchaseRequest={handleDeletePurchaseRequest} />*/}
+      
       
     </Box>
 

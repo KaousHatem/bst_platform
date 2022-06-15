@@ -68,7 +68,23 @@ class UXAccess {
 	}
 
 	hasRefPRinPO = () => {
-		const ROLES_ACCESS = [ROLES_LIST.ADMIN, ROLES_LIST.ADMIN,ROLES_LIST.LOGISTIC_ADMIN]
+		const ROLES_ACCESS = [ROLES_LIST.ADMIN,ROLES_LIST.LOGISTIC_ADMIN]
+		const role = localStorage.getItem('role')
+
+		return ROLES_ACCESS.includes(role)
+
+	}
+
+	hasAccessToPrice = () => {
+		const ROLES_ACCESS = [ROLES_LIST.ADMIN,ROLES_LIST.LOGISTIC_ADMIN]
+		const role = localStorage.getItem('role')
+
+		return ROLES_ACCESS.includes(role)
+
+	}
+
+	hasPOupdateAccess = () => {
+		const ROLES_ACCESS = [ROLES_LIST.ADMIN,ROLES_LIST.LOGISTIC_ADMIN]
 		const role = localStorage.getItem('role')
 
 		return ROLES_ACCESS.includes(role)

@@ -74,25 +74,25 @@ class PurchaseOrderProvider {
     //         })
     // }
 
-    // deletePurchaseRequest(pk){
-    //     const token = localStorage.getItem('auth')
+    deletePurchaseOrder(pk){
+        const token = localStorage.getItem('auth')
         
-    //     const config = {
-    //     headers: {
-    //     Authorization: `Bearer ${token}`
-    //     }}
-    //     return axios
-    //         .delete(purchaseRequestUrl+pk+'/',config)
-    //         .then(response => {
-    //             if (response.status < 200 || response.status >= 300) {
-    //                 throw new Error(response.statusText);
-    //             }
-    //             return response;
-    //         })
-    //         .catch((error) => {
-    //             throw new Error('Network error')
-    //         });
-    // }
+        const config = {
+        headers: {
+        Authorization: `Bearer ${token}`
+        }}
+        return axios
+            .delete(purchaseOrderUrl+pk+'/',config)
+            .then(response => {
+                if (response.status < 200 || response.status >= 300) {
+                    throw new Error(response.statusText);
+                }
+                return response;
+            })
+            .catch((error) => {
+                throw new Error('Network error')
+            });
+    }
 
     // approvePurchaseRequest(pk) {
     // const token = localStorage.getItem('auth')

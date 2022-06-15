@@ -45,6 +45,8 @@ import {Convert as ConvertIcon} from '../../icons/convert'
 import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 
+import UXAccess from '../../utils/ux-access'
+
 
 import Label from '../Label';
 
@@ -102,9 +104,9 @@ export const PurchaseOrderProduct = ({setPurchaseProducts, purchaseProducts=[],.
                 <TableCell align="center">
                   Quantité
                 </TableCell>
-                <TableCell align="center">
+                {UXAccess.hasAccessToPrice() && <TableCell align="center">
                   Prix PU
-                </TableCell>
+                </TableCell>}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -126,7 +128,7 @@ export const PurchaseOrderProduct = ({setPurchaseProducts, purchaseProducts=[],.
                   <TableCell align="center">
                     {product.quantity}
                   </TableCell>
-                  <TableCell align="center">
+                  {UXAccess.hasAccessToPrice() && <TableCell align="center">
                     {(product.unitPrice && !changed) && 
                       product.unitPrice ||
                       <TextField
@@ -139,7 +141,7 @@ export const PurchaseOrderProduct = ({setPurchaseProducts, purchaseProducts=[],.
                       /> 
                     }
                     
-                  </TableCell>
+                  </TableCell>}
                   
                 </TableRow>
               ))}

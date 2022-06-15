@@ -277,7 +277,7 @@ const EditPurchaseOrder = () => {
                 </form>
 
 
-                <PurchaseOrderProduct setPurchaseProducts={setPurchaseProducts} purchaseProducts={purchaseProducts}  />
+                <PurchaseOrderProduct  setPurchaseProducts={setPurchaseProducts} purchaseProducts={purchaseProducts}  />
               </Box>
             </CardContent>
           </Card>

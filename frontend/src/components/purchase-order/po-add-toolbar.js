@@ -89,9 +89,6 @@ export const POAddToolbar = ({props, isAdd = true ,id, confirmed=false }) => {
       const url = '/purchase-order/print?id='+id
       window.open(url, "_blank")
     }
-
-    
-    
   }
 
 
@@ -157,7 +154,7 @@ export const POAddToolbar = ({props, isAdd = true ,id, confirmed=false }) => {
         </StyledMenu>
         </>
       }
-        { !confirmed && <Button
+        { (UXAccess.hasPOupdateAccess() && !confirmed) && <Button
           color="info"
           variant="contained"
           form="add-purchase-order-form"
