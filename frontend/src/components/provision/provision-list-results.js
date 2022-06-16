@@ -196,12 +196,14 @@ export const ProvisionListResults = ({ provision_list, ...rest }) => {
             </TableHead>
             <TableBody>
               {filteredProvision.slice(page*limit, page*limit+limit).map((provision) => (
+
                 <TableRow
                   hover
                   key={provision.id}
                   selected={selectedProvisionIds.indexOf(provision.id) !== -1}
                   
                 >
+                {console.log(provision.created_on)}
                   <TableCell padding="checkbox">
                     <Checkbox
                       checked={selectedProvisionIds.indexOf(provision.id) !== -1}

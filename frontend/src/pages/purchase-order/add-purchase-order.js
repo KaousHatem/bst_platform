@@ -112,7 +112,7 @@ const AddPurchaseOrder = () => {
     e.preventDefault();
     const data = {
       purchaseRequest: purchaseRequestValue,
-      supplier: e.target.supplier.value,
+      supplier: parseInt(e.target.supplier.value),
     }
     console.log(data)
     setLoadingOpen(true)
