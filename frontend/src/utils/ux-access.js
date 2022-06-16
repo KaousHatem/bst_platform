@@ -91,6 +91,20 @@ class UXAccess {
 
 	}
 
+	hasPOAccess = () => {
+		const ROLES_ACCESS = [ROLES_LIST.ADMIN,ROLES_LIST.LOGISTIC_ADMIN]
+		const role = localStorage.getItem('role')
+
+		return ROLES_ACCESS.includes(role)
+	}
+
+	hasSupplierAccess = () => {
+		const ROLES_ACCESS = [ROLES_LIST.ADMIN,ROLES_LIST.LOGISTIC_ADMIN]
+		const role = localStorage.getItem('role')
+
+		return ROLES_ACCESS.includes(role)
+	}
+
 
 
 }
