@@ -40,7 +40,8 @@ from .models import (
 
 from user_control.models import CustomUser
 
-from .role_filters import UserRoleFilter,LogisticAdminRoleFilter, AdminRoleFilter
+from .role_filters import provision_role_filters, po_role_filters
+ # import UserRoleFilter,LogisticAdminRoleFilter, AdminRoleFilter
 
 from .serializers import  (
 	ProductSerializer, 
@@ -213,7 +214,7 @@ class ProvisionViewSet(RoleFilterModelViewSet):
 	queryset = Provision.objects.all().order_by('-created_on')
 	serializer_class = ProvisionSerializer
 	permission_classes=[HasPermission]
-	role_filter_classes = [UserRoleFilter,LogisticAdminRoleFilter,AdminRoleFilter]
+	role_filter_classes = [provision_role_filters.UserRoleFilter,provision_role_filters.LogisticAdminRoleFilter,provision_role_filters.AdminRoleFilter]
 	filterset_class = (ProvisionFilter)
 
 	# def get_queryset(self):
@@ -590,12 +591,20 @@ class SupplierViewSet(ModelViewSet):
 		return Response(serializer.data, status = 201)
 
 
-class PurchaseOrderViewSet(ModelViewSet):
+class PurchaseOrderViewSet(RoleFilterModelViewSet):
 	queryset = PurchaseOrder.objects.all().order_by('-created_on')
 	serializer_class = PurchaseOrderSerializer
+	role_filter_classes = [po_role_filters.UserRoleFilter,po_role_filters.LogisticAdminRoleFilter,po_role_filters.AdminRoleFilter]
 
+	def get_role_id(self, request):
+		token = request.META.get('HTTP_AUTHORIZATION')
+		user = decodeJWT(token)
+		if user.is_superuser:
+			return 1
+		return user.role
+	
 	def get_serializer_class(self):
-		print(self.action)
+		# print(self.action)
 		if self.action == 'list':
 			return PurchaseOrderListingSerializer
 		if self.action == 'retrieve':
@@ -630,8 +639,6 @@ class PurchaseOrderViewSet(ModelViewSet):
 
 
 
-
-
 	def create(self, request):
 		token = request.META.get('HTTP_AUTHORIZATION')
 		user = decodeJWT(token)
@@ -640,7 +647,9 @@ class PurchaseOrderViewSet(ModelViewSet):
 			serializer.is_valid(raise_exception=True)
 
 		except:
+			print(serializer.errors)
 			return Response({'message':serializer.errors}, status=400)
+
 
 		serializer.save(created_by=CustomUser.objects.first())
 

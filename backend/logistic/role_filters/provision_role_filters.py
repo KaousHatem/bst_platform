@@ -1,7 +1,7 @@
 from rest_framework_role_filters.role_filters import RoleFilter
 from django.db.models import Q
 
-from .serializers import ProvisionSerializer
+from ..serializers import ProvisionSerializer
 from bst_django.utils import decodeJWT
 
 
@@ -25,7 +25,6 @@ class LogisticAdminRoleFilter(RoleFilter):
         return ["create", "list", "retrieve", "update", "partial_update","approve","destroy","list_only_approved","get_product_in_purchase"]
 
     def get_queryset(self, request, view, queryset):
-        print('get_queryset',request.META.get('HTTP_AUTHORIZATION'))
         token = request.META.get('HTTP_AUTHORIZATION')
         user = decodeJWT(token)
         print(user)
@@ -44,11 +43,10 @@ class UserRoleFilter(RoleFilter):
         return ["create", "list", "retrieve", "update", "partial_update","approve","destroy"]
 
     def get_queryset(self, request, view, queryset):
-        print('get_queryset',request.META.get('HTTP_AUTHORIZATION'))
         token = request.META.get('HTTP_AUTHORIZATION')
         user = decodeJWT(token)
-        print(user)
-        queryset = queryset.filter(created_by=user)
+        print(user.location.id)
+        queryset = queryset.filter(~(Q(status='0') & ~Q(created_by=user)) & Q(destination=user.location.id))
         return queryset
 
     def get_serializer_class(self, request, view):
