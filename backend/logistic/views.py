@@ -220,8 +220,7 @@ class ProvisionViewSet(RoleFilterModelViewSet):
 	# def get_queryset(self):
 	#     return Provision.objects.all()
 
-	# def list(self):
-	# 	return Response({},status=400)
+
 
 	def get_role_id(self, request):
 		token = request.META.get('HTTP_AUTHORIZATION')
@@ -234,7 +233,6 @@ class ProvisionViewSet(RoleFilterModelViewSet):
 	def create(self, request):
 		token = request.META.get('HTTP_AUTHORIZATION')
 		user = decodeJWT(token)
-		print('create',user)
 		serializer = self.get_serializer(data=request.data)
 		try:
 			serializer.is_valid(raise_exception=True)
@@ -245,6 +243,9 @@ class ProvisionViewSet(RoleFilterModelViewSet):
 
   
 		serializer.save(created_by=user)
+
+	
+
 
 		return Response(serializer.data, status = 201)
 
@@ -654,6 +655,8 @@ class PurchaseOrderViewSet(RoleFilterModelViewSet):
 		serializer.save(created_by=CustomUser.objects.first())
 
 		self.create_product(serializer.data)
+
+
 
 		data_serializer = PurchaseOrderRetrieveSerializer(self.queryset.get(id=serializer.data.get('id')))
 		return Response(data_serializer.data, status = 201)

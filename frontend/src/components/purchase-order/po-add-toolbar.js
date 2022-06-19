@@ -145,11 +145,13 @@ export const POAddToolbar = ({props, isAdd = true ,id, confirmed=false }) => {
           }}
         >
           
-          <MenuItem 
-            onClick={(event) => handlePrint(event)}
-          >
+          <MenuItem onClick={(event) => handlePrint(event)} >
             <PrintIcon />
             Imprimer la demande
+          </MenuItem>
+          <MenuItem >
+            <PrintIcon />
+            Approver le bon de commande
           </MenuItem>
         </StyledMenu>
         </>
