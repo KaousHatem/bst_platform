@@ -6,7 +6,7 @@
 FROM python:3.9.10-alpine as builder
 
 # set work directory
-WORKDIR /usr/src/app/backend
+WORKDIR /usr/src/app
 
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -51,7 +51,7 @@ WORKDIR $APP_HOME
 # install dependencies
 RUN apk update && apk add libpq
 COPY --from=builder /usr/src/app/wheels /wheels
-COPY --from=builder /usr/src/app/backend/requirements.txt .
+COPY --from=builder /usr/src/app/requirements.txt .
 RUN pip install --no-cache /wheels/*
 
 # copy entrypoint.prod.sh
