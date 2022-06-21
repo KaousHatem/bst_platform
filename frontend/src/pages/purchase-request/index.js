@@ -70,7 +70,7 @@ class PurchaseRequest extends React.Component{
         <>
           <Head>
             <title>
-              DEMANDE D'ACHAT | Material Kit
+              DEMANDE D`&apos;`ACHAT
             </title>
           </Head>
           <Box

@@ -53,20 +53,24 @@ const EditCategory = () => {
 
 
   useEffect(() => {
-
-    if(categoryId && JSON.stringify(category) === "{}"){
-      CategoryProvider.getCategories(categoryId).then(
-        (response) => {
-          console.log(response.data)
-          setCategory(response.data)
-          SetLoading(false)        
-        },
-        (error) => {
-          alert(error.message)
-        }
-        )
+    const loadCategory = () =>{
+      if(categoryId){
+        CategoryProvider.getCategories(categoryId).then(
+          (response) => {
+            console.log(response.data)
+            setCategory(response.data)
+            SetLoading(false)        
+          },
+          (error) => {
+            alert(error.message)
+          }
+          )
+      }
     }
-  },[])
+
+    loadCategory()
+    
+  },[categoryId])
 
   
   return (

@@ -136,38 +136,36 @@ const AddPurchaseRequest = () => {
   }
 
 
-  useEffect( async () => {
+  useEffect( () => {
     setLoadingOpen(true)
-    const response = await ProvisionProvider.getOnlyApprovedProvisions()
-    if (response.data){
-      if (!response.data.message) {
-        setProvisions(response.data)  
-        provisions = response.data  
-      }
-        
-    }
-    console.log(provisions)
 
-    if(provisionValue!== undefined) {
-      const response = await ProvisionProvider.getProductInPurchase(provisionValue)
-      if (response.data.length){
-        console.log(response.data)
-        setProductInPurchase(response.data.map((product) => {return product.id}))
+    Promise.all([
+      ProvisionProvider.getOnlyApprovedProvisions(),
+      provisionValue && ProvisionProvider.getProductInPurchase(provisionValue)
+      ]).then(
+      responses=>{
+        setProvisions(responses[0].data)
+
+        if(responses[1]){
+          setProductInPurchase(response.data.map((product) => {return product.id}))
+              const selectedProvision =  responses[0].data.find((provision) => {
+            return provision.id === provisionValue
+          })
+          if (selectedProvision){
+            setProvisionProducts(selectedProvision.provisionProducts)
+          }
+        }
+
+        setLoadingOpen(false)
         
-      }
-      const selectedProvision =  provisions.filter((provision) => {
-        return provision.id === provisionValue
+
+      },
+      errors=>{
+        setLoadingOpen(false)
       })
-      if (selectedProvision.length){
-        setProvisionProducts(selectedProvision[0].provisionProducts)
-      }
-      
-      
-    }
-    setLoadingOpen(false)
-
     
-  },[])
+    
+  },[provisionValue])
   
   return (
     <>
@@ -180,7 +178,7 @@ const AddPurchaseRequest = () => {
     </Backdrop>
     <Head>
       <title>
-        EURL BST | AJOUTER DEMANDE D'ACHAT
+        EURL BST | AJOUTER DEMANDE D`&apos;`ACHAT
       </title>
     </Head>
     <Box
@@ -223,7 +221,7 @@ const AddPurchaseRequest = () => {
                     <Grid item 
                     xs={6}>
                       <InputLabel>
-                        Reference De la demande d'appro
+                        Reference De la demande d`&apos;`appro
                       </InputLabel>
                       <Select
                         name="provision"
@@ -242,7 +240,8 @@ const AddPurchaseRequest = () => {
                           <MenuItem key={provision.ref} 
                           value={provision.id}>{provision.ref}</MenuItem>
                         ))|| <MenuItem key={0} 
-                          value={0} disabled>aucune demande d'appro</MenuItem>}
+                          value={0} 
+                          disabled>aucune demande d`&apos;`appro</MenuItem>}
                       </Select>
                     </Grid>
                   </Grid>

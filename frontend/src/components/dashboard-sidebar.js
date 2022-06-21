@@ -183,9 +183,12 @@ export const DashboardSidebar = (props) => {
               }}
             >
             <MenuList>
-              <SubNavItem href='/products/list-product' title='Articles'/>
-              <SubNavItem href='/category' title='Categories'/>
-              <SubNavItem href='#' title='Inventaire (coming soon)'/>
+              <SubNavItem href='/products/list-product' 
+                title='Articles'/>
+              <SubNavItem href='/category' 
+                title='Categories'/>
+              <SubNavItem href='#' 
+                title='Inventaire (coming soon)'/>
             </MenuList>
             </Box>
             
@@ -228,10 +231,14 @@ export const DashboardSidebar = (props) => {
               }}
             >
             <MenuList>
-              <SubNavItem href='/provision' title='Approvisionnement'/>
-              { UXAccess.hasPOAccess() && <SubNavItem href='/purchase-request' title='Achat'/>}
-              <SubNavItem href='/purchase-order' title='Bon de commande'/>
-              { UXAccess.hasSupplierAccess() && <SubNavItem href='/supplier' title='Fournisseur'/>}
+              <SubNavItem href='/provision' 
+                title='Approvisionnement'/>
+              { UXAccess.hasPOAccess() && <SubNavItem href='/purchase-request' 
+                title='Achat'/>}
+              <SubNavItem href='/purchase-order' 
+                title='Bon de commande'/>
+              { UXAccess.hasSupplierAccess() && <SubNavItem href='/supplier' 
+                title='Fournisseur'/>}
             </MenuList>
             </Box>
             
@@ -276,7 +283,8 @@ export const DashboardSidebar = (props) => {
               }}
             >
             <MenuList>
-            <SubNavItem href='/project/location' title='Sites'/>
+            <SubNavItem href='/project/location' 
+              title='Sites'/>
             </MenuList>
             </Box>
             

@@ -41,7 +41,7 @@ export const PRListToolbar = (props,) => {
           sx={{ m: 1 }}
           variant="h4"
         >
-          BST DEMANDES D'ACHAT
+          BST DEMANDES D`&apos;`ACHAT
         </Typography>
         <Box sx={{ m: 1 }}>
           
@@ -51,7 +51,7 @@ export const PRListToolbar = (props,) => {
             href = '/purchase-request/add-purchase-request'
             startIcon={(<PositiveIcon />)}
           >
-            Ajouter une demande d'achat
+            Ajouter une demande d`&apos;`achat
           </Button>
         </Box>
       </Box>

@@ -99,7 +99,7 @@ const EditUser = () => {
         }
       )
 
-    if(userId && JSON.stringify(user) === "{}"){
+    if(userId){
       UserProvider.getUsers(userId).then(
         (response) => {
           console.log(response.data)
@@ -112,7 +112,7 @@ const EditUser = () => {
         }
         )
     }
-  },[])
+  },[userId])
   
   return (
     loading === false && 

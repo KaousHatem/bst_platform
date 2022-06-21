@@ -109,7 +109,7 @@ const EditSupplier = () => {
         setLoadingOpen(false)
         handleSBOpen(CONNECTION_ERROR)
       })
-  },[])
+  },[supplierId])
 
 
   

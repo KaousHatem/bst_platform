@@ -227,9 +227,10 @@ const AddProduct = () => {
                     error={nameError}
                   />
                   <FormControl
-                  sx={{
-                          my: 2
-                        }}  fullWidth>
+                    sx={{
+                            my: 2
+                          }}  
+                    fullWidth>
                   <InputLabel id="demo-simple-select-label">Categorie *</InputLabel>
                   <Select
                     fullWidth
@@ -334,7 +335,7 @@ const AddProduct = () => {
                       {convertedUnits.map((convertedUnit) => (
                         <TableRow
                           hover
-                          // key={convertedUnit.data.id}
+                          key={convertedUnit.id}
                         >
                           
                           <TableCell>
@@ -377,8 +378,15 @@ const AddProduct = () => {
       </Container>
     </Box>
 
-    <UnitAddDialog open={open} setOpen={setOpen} handleUnitRefresh={handleUnitRefresh}/>
-    <OUnitAddDialog units={units} open={otherUnitsOpen} setOpen={setOtherUnitsOpen} baseUnit={currentUnit} convertedUnits={convertedUnits} setConvertedUnits={setConvertedUnits}/>
+    <UnitAddDialog open={open} 
+      setOpen={setOpen} 
+      handleUnitRefresh={handleUnitRefresh}/>
+    <OUnitAddDialog units={units} 
+      open={otherUnitsOpen} 
+      setOpen={setOtherUnitsOpen} 
+      baseUnit={currentUnit} 
+      convertedUnits={convertedUnits} 
+      setConvertedUnits={setConvertedUnits}/>
     
     <Snackbar open={errorSBOpen} 
     onClose={handleSBClose}>

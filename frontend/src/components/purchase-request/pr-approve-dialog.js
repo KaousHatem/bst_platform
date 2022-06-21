@@ -39,10 +39,10 @@ export const PRApproveDialog = ({approveOpen, handleApproveOpen, handleApproveCl
             fullScreen={fullScreen}
             aria-labelledby="responsive-dialog-title"
         >
-            <DialogTitle>APPROVER L'ACHAT</DialogTitle>
+            <DialogTitle>APPROVER L`&apos;`ACHAT</DialogTitle>
             <DialogContent>   
                 <DialogContentText>
-                    Voulez vous approver cette demande d'achat?
+                    Voulez vous approver cette demande d`&apos;`achat?
                 </DialogContentText>
             </DialogContent>
             <DialogActions>

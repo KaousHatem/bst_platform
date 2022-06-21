@@ -59,7 +59,7 @@ const EditLocation = () => {
 
   useEffect(() => {
 
-    if(locationId && JSON.stringify(location) === "{}"){
+    if(locationId){
       LocationProvider.getLocations(locationId).then(
         (response) => {
           console.log(response.data)
@@ -71,7 +71,7 @@ const EditLocation = () => {
         }
         )
     }
-  },[])
+  },[locationId])
 
   
   return (

@@ -79,7 +79,7 @@ const EditProduct = (props) => {
 
 
   useEffect(() => {
-    if(id && JSON.stringify(product) === "{}"){
+    if(id){
       Promise.all([
       CategoryProvider.getCategories(),
       ProductProvider.getProducts(id),
@@ -111,7 +111,7 @@ const EditProduct = (props) => {
     }
     
 
-  },[])
+  },[id])
 
   const handleCategorySelector = (e) => {
     const category = categories[categories.findIndex(item => item.id === e.target.value)]
@@ -394,7 +394,7 @@ const EditProduct = (props) => {
                         convertedUnits.map((convertedUnit) => (
                         <TableRow
                           hover
-                          // key={convertedUnit.data.id}
+                          key={convertedUnit.id}
                         >
                           
                           <TableCell>
@@ -437,8 +437,15 @@ const EditProduct = (props) => {
       </Container>
     </Box>
 
-    <UnitAddDialog open={open} setOpen={setOpen} handleUnitRefresh={handleUnitRefresh}/>
-    <OUnitAddDialog units={units} open={otherUnitsOpen} setOpen={setOtherUnitsOpen} baseUnit={currentUnit} convertedUnits={convertedUnits} setConvertedUnits={setConvertedUnits}/>
+    <UnitAddDialog open={open} 
+      setOpen={setOpen} 
+      handleUnitRefresh={handleUnitRefresh}/>
+    <OUnitAddDialog units={units} 
+      open={otherUnitsOpen} 
+      setOpen={setOtherUnitsOpen} 
+      baseUnit={currentUnit} 
+      convertedUnits={convertedUnits} 
+      setConvertedUnits={setConvertedUnits}/>
     
     <Snackbar open={errorSBOpen} 
     onClose={handleSBClose}>

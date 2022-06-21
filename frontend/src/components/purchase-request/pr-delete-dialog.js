@@ -42,7 +42,7 @@ export const PRDeleteDialog = ({open, handleDeleteOpen, handleClose, handleDelet
             <DialogTitle>SUPPRESSION D`&apos;`ACHAT</DialogTitle>
             <DialogContent>   
                 <DialogContentText>
-                    Voulez vous supprimer cette demande d'achat?
+                    Voulez vous supprimer cette demande d`&apos;`achat?
                 </DialogContentText>
             </DialogContent>
             <DialogActions>

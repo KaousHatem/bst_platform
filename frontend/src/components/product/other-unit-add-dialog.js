@@ -112,7 +112,7 @@ export const OUnitAddDialog = ({open, units, setOpen, baseUnit, convertedUnits, 
         >
           <FormControl fullWidth>
             <InputLabel>
-              Type d'Unité
+              Type d`&apos;`Unité
             </InputLabel>
             <Select
               fullWidth
@@ -147,7 +147,8 @@ export const OUnitAddDialog = ({open, units, setOpen, baseUnit, convertedUnits, 
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Annuler</Button>
-        <Button form="add-unit-form" type = "submit">Ajouter</Button>
+        <Button form="add-unit-form" 
+        type = "submit">Ajouter</Button>
       </DialogActions>
     </Dialog>
     )

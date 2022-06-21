@@ -113,7 +113,8 @@ export const UnitAddDialog = ({open, setOpen, handleUnitRefresh}) => {
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Annuler</Button>
-        <Button form="add-unit-form" type = "submit">Ajouter</Button>
+        <Button form="add-unit-form" 
+        type = "submit">Ajouter</Button>
       </DialogActions>
     </Dialog>
     )

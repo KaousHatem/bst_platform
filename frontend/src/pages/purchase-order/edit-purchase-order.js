@@ -111,7 +111,7 @@ const EditPurchaseOrder = () => {
 
 
 
-  useEffect( async () => {
+  useEffect( () => {
 
     setLoadingOpen(true)
 
@@ -145,7 +145,7 @@ const EditPurchaseOrder = () => {
           setLoading(false)
         }
       )    
-  },[])
+  },[purchaseOrderId])
 
 
   
@@ -203,7 +203,7 @@ const EditPurchaseOrder = () => {
                     <Grid item 
                     xs={6}>
                       <InputLabel>
-                        Reference De la demande d'achat
+                        Reference De la demande d`&apos;`achat
                       </InputLabel>
                       <Typography
                       sx={{
@@ -228,7 +228,7 @@ const EditPurchaseOrder = () => {
                     <Grid item
                     xs={4}>
                       <InputLabel>
-                        Reference de la demande d'appro
+                        Reference de la demande d`&apos;`appro
                       </InputLabel>
                       <Typography
                       sx={{
@@ -277,7 +277,8 @@ const EditPurchaseOrder = () => {
                 </form>
 
 
-                <PurchaseOrderProduct  setPurchaseProducts={setPurchaseProducts} purchaseProducts={purchaseProducts}  />
+                <PurchaseOrderProduct  setPurchaseProducts={setPurchaseProducts} 
+                  purchaseProducts={purchaseProducts}  />
               </Box>
             </CardContent>
           </Card>

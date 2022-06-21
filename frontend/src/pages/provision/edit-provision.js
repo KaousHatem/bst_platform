@@ -192,7 +192,7 @@ const EditProvision = () => {
     setLoadingOpen(true)
     Promise.all([
       LocationProvider.getLocations(),
-      (provisionId && JSON.stringify(provision) === "{}") && ProvisionProvider.getProvisions(provisionId)
+      (provisionId) && ProvisionProvider.getProvisions(provisionId)
       ]).then(
       responses=>{
         setLocations(responses[0].data)
@@ -224,7 +224,7 @@ const EditProvision = () => {
         handleSBOpen(CONNECTION_ERROR)
       }
       )
-  },[])
+  },[provisionId])
 
   
   return (

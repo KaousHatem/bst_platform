@@ -116,9 +116,7 @@ export const CategoryListResults = ({ category_list, ...rest}) => {
     router.push(data);
   }
 
-  useEffect(() => {
-    console.log(categories)
-  },[])
+
 
 
   return(

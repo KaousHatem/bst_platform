@@ -116,9 +116,6 @@ export const LocationListResults = ({ location_list, ...rest}) => {
     router.push(data);
   }
 
-  useEffect(() => {
-    console.log(locations)
-  },[])
 
 
   return(

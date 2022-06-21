@@ -165,7 +165,7 @@ const AddPurchaseOrder = () => {
 
 
 
-  useEffect( async () => {
+  useEffect( () => {
 
     setLoadingOpen(true)
 
@@ -199,11 +199,9 @@ const AddPurchaseOrder = () => {
           handleSBOpen(CONNECTION_ERROR)
         }
       )    
-  },[])
+  },[purchaseRequestValue])
 
-  useEffect( async () => {
-    console.log(purchaseProducts)
-  },[purchaseProducts])
+
   
   return (
     <>
@@ -259,7 +257,7 @@ const AddPurchaseOrder = () => {
                     <Grid item 
                     xs={6}>
                       <InputLabel>
-                        Reference De la demande d'achat
+                        Reference De la demande d`&apos;`achat
                       </InputLabel>
                       <Select
                         name="purchaseRequest"
@@ -278,7 +276,8 @@ const AddPurchaseOrder = () => {
                           <MenuItem key={purchaseRequest.ref} 
                           value={purchaseRequest.id}>{purchaseRequest.ref}</MenuItem>
                         ))|| <MenuItem key={0} 
-                          value={0} disabled>aucune demande d'achat</MenuItem>}
+                          value={0} 
+                          disabled>aucune demande d`&apos;`achat</MenuItem>}
                       </Select>
                     </Grid>
                     <Grid item 
@@ -301,13 +300,14 @@ const AddPurchaseOrder = () => {
                           <MenuItem key={supplier.id} 
                           value={supplier.id}>{supplier.name}</MenuItem>
                         ))|| <MenuItem key={0} 
-                          value={0} disabled>aucun fournisseur</MenuItem>}
+                          value={0} 
+                          disabled>aucun fournisseur</MenuItem>}
                       </Select>
                     </Grid>
                     <Grid item
                     xs={4}>
                       <InputLabel>
-                        Reference de la demande d'appro
+                        Reference de la demande d`&apos;`appro
                       </InputLabel>
                       <Typography
                       sx={{
@@ -356,7 +356,8 @@ const AddPurchaseOrder = () => {
                 </form>
 
 
-                {purchaseRequest && <PurchaseOrderProduct setPurchaseProducts={setPurchaseProducts} purchaseProducts={purchaseProducts}  />}
+                {purchaseRequest && <PurchaseOrderProduct setPurchaseProducts={setPurchaseProducts} 
+                  purchaseProducts={purchaseProducts}  />}
               </Box>
             </CardContent>
           </Card>

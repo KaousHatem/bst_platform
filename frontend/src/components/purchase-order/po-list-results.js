@@ -101,11 +101,6 @@ export const POListResults = ({ purchaseOrderList, ...rest}) => {
   }
 
 
-  useEffect(() => {
-    console.log(purchaseOrders)
-  },[])
-
-
   return(
     <Box {...rest}>
       <PerfectScrollbar>
@@ -120,10 +115,10 @@ export const POListResults = ({ purchaseOrderList, ...rest}) => {
                   Reference
                 </TableCell>
                 <TableCell align="center">
-                  demande d'appro
+                  demande d`&apos;`appro
                 </TableCell>
                 {UXAccess.hasRefPRinPO() && <TableCell align="center">
-                  demande d'achat
+                  demande d`&apos;`achat
                 </TableCell>}
                 <TableCell>
                   Destination

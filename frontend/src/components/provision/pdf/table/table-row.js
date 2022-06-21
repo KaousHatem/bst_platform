@@ -75,12 +75,13 @@ const styles = StyleSheet.create({
 
 
 const TableRow = ({num, product, delay_data, delay=false, last=false}) => {
-    const [delayDate, setDelayDate] = useState(delay_data)
+
     
-    useEffect(()=>{
-        const [year, month, day] = delayDate.split('-')
-        setDelayDate(day+'/'+month+'/'+year)
-    },[])
+    const getDate = (date) => {
+        return format(new Date(date),'dd/MM/yyyy')
+    }
+
+  
     
     return(
         <View style={styles.container}>
@@ -97,7 +98,7 @@ const TableRow = ({num, product, delay_data, delay=false, last=false}) => {
                 <Text>{product.quantity}</Text>
             </View>
             <View style={styles.delay}>
-                {delay && <Text>{delayDate}</Text>}  
+                {delay && <Text>{getDate(delay_data)}</Text>}  
             </View>
         </View>
   );

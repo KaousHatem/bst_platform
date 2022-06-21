@@ -91,7 +91,8 @@ const PurchaseRequestPage = () => {
                     {console.log(purchaseRequest)}
 						<Header purchaseRequest={purchaseRequest} />
 						<Body purchaseRequest={purchaseRequest} />
-                        <Footer creator={creator} approver={approver}
+                        <Footer creator={creator} 
+                            approver={approver}
                         purchaseRequest={purchaseRequest}/>
                         
 					</Page>

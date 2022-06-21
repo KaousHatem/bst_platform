@@ -126,7 +126,7 @@ export const PRAddToolbar = ({props, isAddPage=false, handleReject, handleApprov
         sx={{ m: 1 }}
         variant="h4"
       >
-        DEMANDE D'ACHAT
+        DEMANDE D`&apos;`ACHAT
       </Typography>
       <Box sx={{ m: 1 }}>
         <Button

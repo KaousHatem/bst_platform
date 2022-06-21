@@ -180,9 +180,7 @@ export const PRListResults = ({ purchaseReqList, ...rest}) => {
     setAnchorEl(null);
   };
 
-  useEffect(() => {
-    console.log(purchaseRequests)
-  },[])
+ 
 
 
   return(
@@ -210,7 +208,7 @@ export const PRListResults = ({ purchaseReqList, ...rest}) => {
                   Reference
                 </TableCell>
                 <TableCell>
-                  demande d'appro
+                  demande d`&apos;`appro
                 </TableCell>
                 <TableCell>
                   Destination
@@ -300,7 +298,7 @@ export const PRListResults = ({ purchaseReqList, ...rest}) => {
                 <TableRow>
                   <TableCell colSpan={7}
                   align="center" >
-                    Aucune demande d'achat existe
+                    Aucune demande d`&apos;`achat existe
                   </TableCell>
                 </TableRow>
               }

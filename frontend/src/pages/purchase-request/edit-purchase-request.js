@@ -65,10 +65,9 @@ const EditPurchaseRequest = () => {
 
 
   const handleSetProvisionProducts = (id=-1) => {
-    console.log(provisions)
-    setProvisionProducts(provisions.filter((provision) => {
+    setProvisionProducts(provisions.find((provision) => {
       return provision.id === id
-    })[0].provisionProducts )
+    }).provisionProducts )
   }
 
 
@@ -205,6 +204,7 @@ const EditPurchaseRequest = () => {
         PurchaseRequestProvider.getPurchaseRequests(purchaseRequestId)
         ]).then(async (responses) => {
           console.log(responses)
+          var initProvisions = []
           if (responses[0].data.length){
             var data = {}
             if (!responses[0].data.map((provision) => {return provision.id}).includes(responses[1].data.provision.id)){
@@ -213,12 +213,13 @@ const EditPurchaseRequest = () => {
             }
            
             setProvisions([...responses[0].data, data])
-            provisions = [...responses[0].data, data]
+            initProvisions = [...responses[0].data, data]
+
           }else{
 
             const response = await ProvisionProvider.getProvisions(responses[1].data.provision.id)
             setProvisions([response.data])
-            provisions = [response.data]
+            initProvisions = [response.data]
 
 
             
@@ -251,15 +252,16 @@ const EditPurchaseRequest = () => {
                         }))
             setDoneModeProducts(responses[1].data.purchaseReqProducts.map((product)=>{return product.provisionProduct.id}))
 
-            handleSetProvisionProducts(responses[1].data.provision.id)
-            
+            setProvisionProducts(initProvisions.find((provision) => {
+              return provision.id === responses[1].data.provision.id
+            }).provisionProducts )
           }
           setLoadingOpen(false)
           setLoading(false)
         })
     }
     
-  },[])
+  },[purchaseRequestId])
 
 
 
@@ -275,7 +277,7 @@ const EditPurchaseRequest = () => {
     </Backdrop>
     <Head>
       <title>
-        EURL BST | AJOUTER DEMANDE D'ACHAT
+        EURL BST | AJOUTER DEMANDE D`&apos;`ACHAT
       </title>
     </Head>
     <Box
@@ -323,7 +325,7 @@ const EditPurchaseRequest = () => {
                     <Grid item 
                     xs={6}>
                       <InputLabel>
-                        Demande D'appro
+                        Demande D`&apos;`appro
                       </InputLabel>
                       <Select
                         name="provision"
