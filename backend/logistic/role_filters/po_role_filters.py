@@ -18,7 +18,6 @@ class AdminRoleFilter(RoleFilter):
         return queryset
 
     def get_serializer_class(self, request, view):
-        print(view.serialize_class)
         return view.serializer_class
 
 class LogisticAdminRoleFilter(RoleFilter):

@@ -644,6 +644,7 @@ class PurchaseOrderViewSet(RoleFilterModelViewSet):
 		token = request.META.get('HTTP_AUTHORIZATION')
 		user = decodeJWT(token)
 		serializer = self.get_serializer(data=request.data)
+
 		try:
 			serializer.is_valid(raise_exception=True)
 
