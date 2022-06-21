@@ -22,16 +22,16 @@ services:
       - ./.env.prod.db
     ports:
       - "5435:5432"
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile.prod
-    volumes:
-      - ./frontend/:/usr/src/app/frontend
-    depends_on:
-      - web
-    ports:
-      - 3000:3000
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile.prod
+  #   volumes:
+  #     - ./frontend/:/usr/src/app/frontend
+  #   depends_on:
+  #     - web
+  #   ports:
+  #     - 3000:3000
 
 volumes:
   postgres_data:
