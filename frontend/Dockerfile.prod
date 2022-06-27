@@ -3,7 +3,7 @@ FROM node:lts-alpine3.14
 RUN apk update && \
     apk add --no-cache libc6-compat autoconf automake libtool make tiff jpeg zlib zlib-dev pkgconf nasm file gcc musl-dev
 RUN npm install -g npm
-RUN npm install next react react-dom --save
+RUN npm install next --save
 
 WORKDIR /usr/src/app/frontend
 COPY package.json .
