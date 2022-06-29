@@ -37,6 +37,8 @@ services:
     build: ./nginx_backend_server
     ports:
         - 8000:8000
+    volumes:
+      - static_volume:/home/app/web/staticfiles
     depends_on:
         - backend
 
