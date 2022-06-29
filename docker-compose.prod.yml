@@ -24,15 +24,23 @@ services:
     ports:
       - "5435:5432"
   
-  nginx:
+  frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile.prod
-    restart: unless-stopped
     volumes:
       - ./frontend/:/usr/src/app/frontend
     depends_on:
       - backend
+
+
+  nginx:
+    build:
+      context: ./frontend/nginx
+    volumes:
+      - ./frontend/:/usr/src/app/frontend
+    depends_on:
+      - frontend
     ports:
       - 80:80
 
