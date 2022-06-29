@@ -34,7 +34,14 @@ services:
     depends_on:
       - web
     ports:
-      - 3000:3000
+      - 80:80
+
+  nginx_backend_server:
+    build: ./nginx_backend_server
+    ports:
+        - 8000:8000
+    depends_on:
+        - web
 
 volumes:
   postgres_data:
