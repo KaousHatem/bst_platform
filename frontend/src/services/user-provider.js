@@ -121,8 +121,6 @@ class UserProvider {
         headers: {
         Authorization: `Bearer ${token}`
         }}
-
-        console.log(UserMeUrl)
         
         return axios
             .get(UserMeUrl,config)

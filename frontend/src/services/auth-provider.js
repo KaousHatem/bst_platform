@@ -32,6 +32,8 @@ class AuthProvider {
             
         //const headers = new Headers({ 'Content-Type': 'application/json',})
         
+        alert(LoginUrl+" "+data.toString())
+
         return axios
             .post(LoginUrl,data)
             .then(response => {
