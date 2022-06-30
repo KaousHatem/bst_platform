@@ -14,6 +14,8 @@ services:
       - ./.env.prod
     depends_on:
       - db
+    ports:
+      - 8000:8000
   
   db:
     image: postgres:13.0-alpine
@@ -43,7 +45,6 @@ services:
       - frontend
     ports:
       - 80:80
-      - 8000:8000
 
 
 volumes:
