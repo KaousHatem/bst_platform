@@ -123,7 +123,7 @@ class UserProvider {
         }}
         
         return axios
-            .get("http://164.92.167.240/user/me",config)
+            .get(UserMeUrl,config)
             .then(response => {
                 if (response.status < 200 || response.status >= 300) {
                     throw new Error(response.statusText);
