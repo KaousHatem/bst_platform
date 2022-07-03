@@ -115,7 +115,7 @@ const Login = (props) => {
                   letterSpacing:5
                 }}
               >
-                EURL BST PLATFORMES
+                EURL BST PLATFORM
               </Typography>
             </Box>
             <InputLabel>
