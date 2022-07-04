@@ -14,8 +14,7 @@ services:
       - ./.env.prod
     depends_on:
       - db
-    ports:
-      - 8000:8000
+
 
   
   db:
@@ -39,7 +38,6 @@ services:
     build:
       context: ./frontend/nginx
     volumes:
-      - ./frontend/:/usr/src/app/frontend
       - static_volume:/home/app/web/staticfiles
     depends_on:
       - frontend
