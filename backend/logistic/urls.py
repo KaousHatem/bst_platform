@@ -17,19 +17,21 @@ from rest_framework.routers import DefaultRouter
 
 
 router = DefaultRouter()
-router.register(r'product', ProductViewSet)
-router.register(r'unit', UnitViewSet)
-router.register(r'unit-conversion', UnitConversionViewSet)
-router.register(r'product-bulk', ProductBulkViewSet)
-router.register(r'category', CategoryViewSet)
-router.register(r'provision', ProvisionViewSet)
-router.register(r'provision-product', ProvisionProductViewSet)
-router.register(r'purchase-request', PurchaseReqViewSet)
-router.register(r'purchase-request-product', PurchaseReqProductViewSet)
-router.register(r'supplier', SupplierViewSet)
-router.register(r'purchase-order', PurchaseOrderViewSet)
-router.register(r'purchase-order-product', PurchaseOrderProductViewSet)
+router.register(r'logistic/product', ProductViewSet)
+router.register(r'logistic/unit', UnitViewSet)
+router.register(r'logistic/unit-conversion', UnitConversionViewSet)
+router.register(r'logistic/product-bulk', ProductBulkViewSet)
+router.register(r'logistic/category', CategoryViewSet)
+router.register(r'logistic/provision', ProvisionViewSet)
+router.register(r'logistic/provision-product', ProvisionProductViewSet)
+router.register(r'logistic/purchase-request', PurchaseReqViewSet)
+router.register(r'logistic/purchase-request-product', PurchaseReqProductViewSet)
+router.register(r'logistic/supplier', SupplierViewSet)
+router.register(r'logistic/purchase-order', PurchaseOrderViewSet)
+router.register(r'logistic/purchase-order-product', PurchaseOrderProductViewSet)
+
+
 urlpatterns = [
-	path("", include(router.urls)),
+	path("logistic/", include(router.urls)),
 	
 ]

@@ -27,6 +27,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY","django-insecure-q*qk&%9*&toco*rob08rp4
 # SECURITY WARNING: don't run with debug turned on in production!
 
 
+
 DEBUG = int(os.environ.get("DEBUG", default=1))
 # DEBUG = False
 # DEBUG = True
@@ -156,3 +157,7 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+
+# APPEND_SLASH=False

@@ -1,8 +1,8 @@
-// const BaseUrl = "http://127.0.0.1:8000/"
-const BaseUrl = "http://164.92.167.240/"
+// const BaseUrl = "http://127.0.0.1:8000/api/"
+const BaseUrl = "http://164.92.167.240/api/"
 
-export const LoginUrl = BaseUrl + "user/login"
-export const CreateUserUrl = BaseUrl + "user/create-user"
+export const LoginUrl = BaseUrl + "user/login/"
+export const CreateUserUrl = BaseUrl + "user/create-user/"
 export const UserListUrl = BaseUrl + "user/users"
 export const ActivateUrl = BaseUrl + "user/activate"
 export const UserMeUrl = BaseUrl + "user/me"
