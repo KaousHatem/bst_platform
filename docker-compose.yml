@@ -21,7 +21,7 @@ services:
     env_file:
       - ./.env.dev.db
     ports:
-      - "5435:5432"
+      - "5433:5432"
   frontend:
     build:
       context: ./frontend
