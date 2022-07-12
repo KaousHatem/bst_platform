@@ -28,6 +28,8 @@ services:
       dockerfile: Dockerfile.dev
     volumes:
       - ./frontend/:/usr/src/app/frontend
+    env_file:
+      - ./frontend/.env
     depends_on:
       - web
     ports:
