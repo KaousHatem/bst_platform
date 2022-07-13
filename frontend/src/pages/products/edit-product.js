@@ -26,6 +26,7 @@ import { Select,
   Snackbar,
   Alert,
   CircularProgress,
+  FormControl,
   } from '@mui/material';
 
 import InputLabel from '@mui/material/InputLabel';
@@ -273,60 +274,68 @@ const EditProduct = (props) => {
                     Sku 
                   </InputLabel>
                   <TextField
+                    label="Sku"
                     fullWidth
-                    margin="normal"
+                    margin="dense"
                     name="sku"
                     type="text"
                     variant="outlined"
                     value={product.sku}
                     disabled
+                    sx={{
+                            my: 2
+                          }}
                   />
-                  <InputLabel>
-                    Designation 
-                  </InputLabel>
                   <TextField
+                    sx={{
+                            my: 2
+                          }}
                     fullWidth
-                    margin="normal"
+                    label="Désignation"
+                    margin="dense"
                     name="name"
                     type="text"
                     variant="outlined"
                     defaultValue={product.name}
+                    required
+                    error={nameError}
                   />
-                  <InputLabel>
-                    Groupe 
-                  </InputLabel>
-                  <Select
-                    fullWidth
-                    name="category"
-                    margin="normal"
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    defaultValue={product.category}
+                  <FormControl
                     sx={{
-                      my: 2
-                    }} 
-                    disabled
-                  >
-                    {categories.slice(0,categories.length).map((category) => (
-                      <MenuItem key={category.ref} 
-                      value={category.ref}>{category.name}</MenuItem>
-                    ))}
-                  </Select>
-                  <InputLabel>
-                    Description 
-                  </InputLabel>
+                            my: 2
+                          }}  
+                    fullWidth>
+                    <InputLabel id="demo-simple-select-label">Categorie</InputLabel>
+                    <Select
+                      fullWidth
+                      label="Categorie *"
+                      name="category"
+                      margin="dense"
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      defaultValue={product.category}
+                      disabled
+                    >
+                      {categories.slice(0,categories.length).map((category) => (
+                        <MenuItem key={category.ref} 
+                        value={category.ref}>{category.name}</MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
                   <TextField
                     fullWidth
-                    margin="normal"
+                    margin="dense"
                     name="description"
+                    sx={{
+                          my: 2
+                        }} 
+                    label="Description"
                     type="text"
                     variant="outlined"
                     defaultValue={product.description}
 
                   />
-                  <InputLabel>
-                    Unité 
-                  </InputLabel>
+                  
                   <Stack
                     direction="row"
                     spacing={2}
@@ -334,22 +343,28 @@ const EditProduct = (props) => {
                         my: 2
                       }} 
                   >
-                    <Select
-                      fullWidth
-                      name="unit"
-                      margin="normal"
-                      defaultValue={product.base_unit}
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      onChange={(e) =>{setCurrentUnit(e.target.value)}}
-                      disabled={convertedUnits.length !== 0}
-                    >
-                      {units.slice(0,units.length).map((unit) => (
-                        <MenuItem 
-                        key={unit.ref} 
-                        value={unit.ref}>{unit.name}</MenuItem>
-                        ))}
-                    </Select>
+                    <FormControl fullWidth>
+                      <InputLabel id="demo-simple-select-label">Unité de base *</InputLabel>
+                      <Select
+                        fullWidth
+                        name="unit"
+                        margin="normal"
+                        defaultValue={product.base_unit}
+                        labelId="demo-simple-select-label"
+                        label="Unité de base *"
+                        id="demo-simple-select"
+                        onChange={(e) =>{setCurrentUnit(e.target.value)}}
+                        disabled={convertedUnits.length !== 0}
+                        required
+                        error={baseUnitError}
+                      >
+                        {units.slice(0,units.length).map((unit) => (
+                          <MenuItem 
+                          key={unit.ref} 
+                          value={unit.ref}>{unit.name}</MenuItem>
+                          ))}
+                      </Select>
+                    </FormControl>
                     <IconButton aria-label="fingerprint" 
                     color="secondary" 
                     onClick={() => setOpen(true)}
@@ -357,6 +372,7 @@ const EditProduct = (props) => {
                       <AddCircleIcon />
                     </IconButton>
                   </Stack>
+
 
 
                   <InputLabel>
