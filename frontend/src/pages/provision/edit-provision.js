@@ -21,6 +21,7 @@ import {
   CircularProgress,
   Snackbar,
   Alert, 
+  FormControl,
 } from '@mui/material';
 
 import {LocalizationProvider, DatePicker, AdapterDateFns} from '@mui/lab'
@@ -68,6 +69,7 @@ const EditProvision = () => {
 
 
   const CONNECTION_ERROR = "Probleme de connexion, Veuillez de ressayer"
+  const NO_PRODUCT_ERROR = "Veuillez de selectioner au moin un article"
 
 
 
@@ -119,22 +121,26 @@ const EditProvision = () => {
                                                                                               .includes(oldProduct.provisionProductId)}) 
                                                         .map(oldProduct=>{return oldProduct.provisionProductId})       
     
-    setLoadingOpen(true)                                                   
-    Promise.all([
-      ProvisionProvider.editProvision(data,provisionId ),
-      add_provision_product_list.length && ProvisionProductProvider.addProvisionProduct(add_provision_product_list),
-      edit_provision_product_list.length && ProvisionProductProvider.bulkUpdateProvisionProduct(edit_provision_product_list),
-      delete_provision_product_list.length && ProvisionProductProvider.bulkDeleteProvisionProduct(delete_provision_product_list)
-      ]).then(
-      (responses)=>{
-        console.log(responses)
-        setLoadingOpen(false)
-        router.push('/provision');
-      },
-      (errors)=>{
-        setLoadingOpen(false)
-        handleSBOpen(CONNECTION_ERROR)
-      })
+    if(products.length){
+      setLoadingOpen(true)                                                   
+      Promise.all([
+        ProvisionProvider.editProvision(data,provisionId ),
+        add_provision_product_list.length && ProvisionProductProvider.addProvisionProduct(add_provision_product_list),
+        edit_provision_product_list.length && ProvisionProductProvider.bulkUpdateProvisionProduct(edit_provision_product_list),
+        delete_provision_product_list.length && ProvisionProductProvider.bulkDeleteProvisionProduct(delete_provision_product_list)
+        ]).then(
+        (responses)=>{
+          console.log(responses)
+          setLoadingOpen(false)
+          router.push('/provision');
+        },
+        (errors)=>{
+          setLoadingOpen(false)
+          handleSBOpen(CONNECTION_ERROR)
+        })
+    }else{
+      handleSBOpen(NO_PRODUCT_ERROR)
+    }
   }
 
 
@@ -268,12 +274,10 @@ const EditProvision = () => {
                   columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                     <Grid item 
                     xs={6}>
-                      <InputLabel>
-                        Reference 
-                      </InputLabel>
                       <TextField
                         fullWidth
-                        margin="normal"
+                        label="Reference"
+                        margin="dense"
                         name="ref"
                         type="text"
                         variant="outlined"
@@ -283,38 +287,37 @@ const EditProvision = () => {
                     </Grid>
                     <Grid item 
                     xs={6}>
-                      <InputLabel>
-                        Destination de livraison
-                      </InputLabel>
-                      <Select
-                        labelId="demo-simple-select-standard-label"
-                        id="demo-simple-select-standard"
-                        name="destination"
+                      <FormControl
                         fullWidth
-                        margin="normal"
-                        label="destination"
-                        
                         sx={{
-                          my: 2
-                        }} 
-                        value={provision.destination}
-                        onChange={handleLocationChange}
-                        disabled={provision.status!=="0" || !UXAccess.hasAllLocationAccess()}
+                            my: 1
+                          }}
                       >
-                        {locations.slice(0,locations.length).map((location) => (
-                          <MenuItem key={location.name} 
-                          value={location.name}>{location.name}</MenuItem>
-                        ))}
-                      </Select>
+                        <InputLabel id="demo-simple-select-label">Destination de livraison *</InputLabel>
+                        <Select
+                          labelId="demo-simple-select-standard-label"
+                          label="Destination de livraison *"
+                          id="demo-simple-select-standard"
+                          name="destination"
+                          fullWidth
+                          margin="dense"
+                          value={provision.destination}
+                          onChange={handleLocationChange}
+                          disabled={provision.status!=="0" || !UXAccess.hasAllLocationAccess()}
+                          required
+                        >
+                          {locations.slice(0,locations.length).map((location) => (
+                            <MenuItem key={location.name} 
+                            value={location.name}>{location.name}</MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
                     </Grid>
                     <Grid item 
                     xs={6}>
-                      <InputLabel>
-                        Date de livraison 
-                      </InputLabel>
-                     
                       <DatePicker
                         name="delay"
+                        label="Date de livraison *"
                         inputFormat="dd/MM/yyyy"
                         dateFormat="dd/MM/yyyy"
                         value={provision.delay}
@@ -326,6 +329,8 @@ const EditProvision = () => {
                           my: 2
                         }}/>}
                         disabled={provision.status!=="0"}
+                        required
+                        disablePast
                       />
                     </Grid>
                   </Grid>

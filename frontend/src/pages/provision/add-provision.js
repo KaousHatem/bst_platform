@@ -21,6 +21,7 @@ import {
   CircularProgress,
   Snackbar,
   Alert,
+  FormControl,
 
 } from '@mui/material';
 import {LocalizationProvider, DatePicker, AdapterDateFns} from '@mui/lab'
@@ -62,6 +63,7 @@ const AddProvision = () => {
   const [errorSBText, setErrorSBText] = useState("")
 
   const CONNECTION_ERROR = "Probleme de connexion, Veuillez de ressayer"
+  const NO_PRODUCT_ERROR = "Veuillez de selectioner au moin un article"
 
 
   const handleChange = (newValue) => {
@@ -82,36 +84,41 @@ const AddProvision = () => {
       ref: null
     }
     
-    setLoadingOpen(true)
+    
 
-    ProvisionProvider.addProvision(data).then(
-      (response) => {
-        const provision_product_list = selectedProducts.map(product => {
-          return {
-            product: product.data.id,
-            provision: response.data.id,
-            unit: product.unit,
-            quantity: product.quantity
-          }
-        })
-        ProvisionProductProvider.addProvisionProduct(provision_product_list).then(
-          (response) => {
-            router.push('/provision');
-            setLoadingOpen(false)
-          },
-          error => {
-            console.log(errors)
-            setLoadingOpen(true)
-            handleSBOpen(CONNECTION_ERROR)
-          }
-          )
-      },
-      error => {
-        console.log(errors)
-        setLoadingOpen(true)
-        handleSBOpen(CONNECTION_ERROR)
-      }
+    if(selectedProducts.length){
+      setLoadingOpen(true)
+      ProvisionProvider.addProvision(data).then(
+        (response) => {
+          const provision_product_list = selectedProducts.map(product => {
+            return {
+              product: product.data.id,
+              provision: response.data.id,
+              unit: product.unit,
+              quantity: product.quantity
+            }
+          })
+          ProvisionProductProvider.addProvisionProduct(provision_product_list).then(
+            (response) => {
+              router.push('/provision');
+              setLoadingOpen(false)
+            },
+            error => {
+              console.log(error)
+              setLoadingOpen(true)
+              handleSBOpen(CONNECTION_ERROR)
+            }
+            )
+        },
+        error => {
+          console.log(error)
+          setLoadingOpen(true)
+          handleSBOpen(CONNECTION_ERROR)
+        }
       )
+    }else {
+      handleSBOpen(NO_PRODUCT_ERROR)
+    }
   }
 
   const handleSBClose = () => {
@@ -183,12 +190,10 @@ const AddProvision = () => {
                     xs: 1, sm: 2, md: 3 }}>
                     <Grid item 
                     xs={6}>
-                      <InputLabel>
-                        Reference 
-                      </InputLabel>
                       <TextField
                         fullWidth
-                        margin="normal"
+                        label="Reference"
+                        margin="dense"
                         name="ref"
                         type="text"
                         variant="outlined"
@@ -197,37 +202,38 @@ const AddProvision = () => {
                     </Grid>
                     <Grid item 
                     xs={6}>
-                      <InputLabel>
-                        Destination de livraison
-                      </InputLabel>
-                      <Select
-                        name="destination"
+                      <FormControl
                         fullWidth
-                        margin="normal"
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select" 
                         sx={{
-                          my: 2
-                        }} 
-                        value={locationValue}
-                        // selected={locationValue}
-                        onChange={handleLocationChange}
-                        disabled={!UXAccess.hasAllLocationAccess()}
+                            my: 1
+                          }}
                       >
-                        {locations.slice(0,locations.length).map((location) => (
-                          <MenuItem key={location.name} 
-                          value={location.name}>{location.name}</MenuItem>
-                        ))}
-                      </Select>
+                        <InputLabel id="demo-simple-select-label">Destination de livraison *</InputLabel>
+                        <Select
+                          name="destination"
+                          fullWidth
+                          margin="dense"
+                          label="Destination de livraison"
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select" 
+                          value={locationValue}
+                          // selected={locationValue}
+                          onChange={handleLocationChange}
+                          disabled={!UXAccess.hasAllLocationAccess()}
+                          required
+                        >
+                          {locations.slice(0,locations.length).map((location) => (
+                            <MenuItem key={location.name} 
+                            value={location.name}>{location.name}</MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
                     </Grid>
                     <Grid item 
                     xs={6}>
-                      <InputLabel>
-                        Date de livraison 
-                      </InputLabel>
-                     
                       <DatePicker
                         name="delay"
+                        label="Date de livraison *"
                         inputFormat="dd/MM/yyyy"
                         dateFormat="dd/MM/yyyy"
                         value={value}
@@ -238,6 +244,8 @@ const AddProvision = () => {
                           sx={{
                           my: 2
                         }}/>}
+                        required
+                        disablePast
                       />
                     </Grid>
                   </Grid>
