@@ -33,8 +33,14 @@ class CreateUserView(ModelViewSet):
 
     def create(self, request):
         valid_request = self.serializer_class(data=request.data)
+        if self.queryset.get(username=request.data['username']):
+            return Response(
+                    {'message':"username already exists"},
+                    status=status.HTTP_409_CONFLICT
+                )
         valid_request.is_valid(raise_exception=True)
-        user_data = dict(valid_request.validated_data)    
+        user_data = dict(valid_request.validated_data)
+
         user_data['location'] = Location.objects.get(pk=valid_request.validated_data.get('location'))
 
         user = CustomUser.objects.create(**user_data)
@@ -54,6 +60,12 @@ class CreateUserView(ModelViewSet):
 
     def update(self, request, pk):
         valid_request = self.serializer_class(data=request.data)
+        checkUser = self.queryset.get(username=request.data['username'])
+        if checkUser and checkUser.id != int(pk):
+            return Response(
+                    {'message':"username already exists"},
+                    status=status.HTTP_409_CONFLICT
+                )
         valid_request.is_valid(raise_exception=True)
         user_data = dict(valid_request.validated_data)    
         user_data['location'] = Location.objects.get(pk=valid_request.validated_data.get('location'))
