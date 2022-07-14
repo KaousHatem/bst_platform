@@ -5,7 +5,21 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import {  Select, MenuItem, Box, Button, Container, Grid, Link, TextField, Typography, Card, CardContent, } from '@mui/material';
+import {  
+  Select, 
+  MenuItem, 
+  Box, 
+  Button, 
+  Container, 
+  Grid, 
+  Link, 
+  TextField, 
+  Typography, 
+  Card, 
+  CardContent,
+  Snackbar,
+  Alert, 
+} from '@mui/material';
 import {LocalizationProvider, DatePicker, AdapterDateFns} from '@mui/lab'
 import InputLabel from '@mui/material/InputLabel';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -26,6 +40,13 @@ const AddUser = () => {
   const [locations, setLocations] = useState([])
   const [roleValue, setRoleValue] = useState("");
 
+  const [errorSBOpen, setErrorSBOpen] = useState(false)
+
+  const [loadingOpen, setLoadingOpen] = useState(false)
+  const [errorSBText, setErrorSBText] = useState("")
+
+  const ALREADY_EXIST_ERROR = "Le nom d'utilisateur est déja existe"
+  const CONNECTION_ERROR = "Probleme de connexion, Veuillez de ressayer"
 
 
   const roles = [
@@ -59,33 +80,40 @@ const AddUser = () => {
 
   const handleOnSubmit = (e, status) => {
     e.preventDefault();
+
     const delay_date = format(value,'yyyy-MM-dd')
-    console.log(e.target.username.value)
+
     const data = {
       username: e.target.username.value,
       password: e.target.password.value,
-      fullname: e.target.firstName.value + ' ' + e.target.lastName.value,
+      fullname: e.target.fullName.value,
       group:roleValue,
       role:roleValue,
       location: locationValue
     }
 
-    console.log(data)
-
-
-
     UserProvider.addUser(data).then(
       (response) => {
-        alert("done")
-        console.log(response.data)
         router.push('/user');
       },
-      error => {
-        alert(error.message)
+      (error) => {
+        if(error.cause.status===409){
+          handleSBOpen(ALREADY_EXIST_ERROR)
+        }else{
+          handleSBOpen(CONNECTION_ERROR)
+        }
       }
       )
   }
 
+  const handleSBClose = () => {
+    setErrorSBOpen(false)
+  }
+
+  const handleSBOpen = (text) => {
+    setErrorSBText(text)
+    setErrorSBOpen(true)
+  }
 
   useEffect(() => {
     LocationProvider.getLocations().then(
@@ -127,7 +155,7 @@ const AddUser = () => {
                     <Grid item 
                     xs={6}>
                       <InputLabel>
-                        Nom d`&apos;`utilisateur 
+                        Nom d&apos;utilisateur 
                       </InputLabel>
                       <TextField
                         fullWidth
@@ -140,25 +168,12 @@ const AddUser = () => {
                     <Grid item 
                     xs={6}>
                       <InputLabel>
-                        Nom 
+                        Nom et Prénom
                       </InputLabel>
                       <TextField
                         fullWidth
                         margin="normal"
-                        name="lastName"
-                        type="text"
-                        variant="outlined"
-                      />
-                    </Grid>
-                    <Grid item 
-                    xs={6}>
-                      <InputLabel>
-                        Prenom
-                      </InputLabel>
-                      <TextField
-                        fullWidth
-                        margin="normal"
-                        name="firstName"
+                        name="fullName"
                         type="text"
                         variant="outlined"
                       />
@@ -178,7 +193,6 @@ const AddUser = () => {
                           my: 2
                         }} 
                         value={roleValue}
-                        // selected={locationValue}
                         onChange={handleRoleChange}
                       >
                         {roles.slice(0,roles.length).map((role) => (
@@ -234,6 +248,13 @@ const AddUser = () => {
           </Card>
         </Box>
       </Container>
+      <Snackbar open={errorSBOpen} 
+      onClose={handleSBClose}>
+        <Alert variant="filled" 
+        severity="error">
+          {errorSBText}
+        </Alert>
+      </Snackbar>
     </Box>
   </>
   );
