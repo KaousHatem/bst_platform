@@ -25,7 +25,7 @@ services:
   react:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     volumes:
       - ./frontend/:/usr/src/app/frontend
     env_file:
