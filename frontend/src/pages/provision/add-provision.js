@@ -62,8 +62,14 @@ const AddProvision = () => {
   const [loadingOpen, setLoadingOpen] = useState(false)
   const [errorSBText, setErrorSBText] = useState("")
 
+  const [locationError,setLocationError] = useState(false)
+
+  const [allConfirmed, setAllConfirmed] = useState(false)
+
   const CONNECTION_ERROR = "Probleme de connexion, Veuillez de ressayer"
   const NO_PRODUCT_ERROR = "Veuillez de selectioner au moin un article"
+  const ALL_CONFIRMED_ERROR = "Veuillez de confirmer tous les articles"
+  const NO_VALIDATION_ERROR = "Veuillez de remplir les champs obligatoires"
 
 
   const handleChange = (newValue) => {
@@ -74,9 +80,16 @@ const AddProvision = () => {
     setLocationValue(newValue.target.value)
   };
 
+  const validationForm = () =>{
+    return locationValue!==""
+  }
+
   const handleOnSubmit = (e, status) => {
     e.preventDefault();
     const delay_date = format(value,'yyyy-MM-dd')
+
+    setLocationError((prevState) => (locationValue===""))
+
     const data = {
       destination: locationValue,
       delay: delay_date,
@@ -86,38 +99,47 @@ const AddProvision = () => {
     
     
 
-    if(selectedProducts.length){
-      setLoadingOpen(true)
-      ProvisionProvider.addProvision(data).then(
-        (response) => {
-          const provision_product_list = selectedProducts.map(product => {
-            return {
-              product: product.data.id,
-              provision: response.data.id,
-              unit: product.unit,
-              quantity: product.quantity
-            }
-          })
-          ProvisionProductProvider.addProvisionProduct(provision_product_list).then(
+    if(validationForm()){
+      if(selectedProducts.length){
+        if(allConfirmed){
+          setLoadingOpen(true)
+          ProvisionProvider.addProvision(data).then(
             (response) => {
-              router.push('/provision');
-              setLoadingOpen(false)
+              const provision_product_list = selectedProducts.map(product => {
+                return {
+                  product: product.data.id,
+                  provision: response.data.id,
+                  unit: product.unit,
+                  quantity: product.quantity
+                }
+              })
+              ProvisionProductProvider.addProvisionProduct(provision_product_list).then(
+                (response) => {
+                  router.push('/provision');
+                  setLoadingOpen(false)
+                },
+                error => {
+                  console.log(error)
+                  setLoadingOpen(true)
+                  handleSBOpen(CONNECTION_ERROR)
+                }
+                )
             },
             error => {
               console.log(error)
               setLoadingOpen(true)
               handleSBOpen(CONNECTION_ERROR)
             }
-            )
-        },
-        error => {
-          console.log(error)
-          setLoadingOpen(true)
-          handleSBOpen(CONNECTION_ERROR)
+          )  
+        }else{
+          handleSBOpen(ALL_CONFIRMED_ERROR)
         }
-      )
-    }else {
-      handleSBOpen(NO_PRODUCT_ERROR)
+        
+      }else {
+        handleSBOpen(NO_PRODUCT_ERROR)
+      }
+    }else{
+      handleSBOpen(NO_VALIDATION_ERROR)
     }
   }
 
@@ -129,6 +151,7 @@ const AddProvision = () => {
     setErrorSBText(text)
     setErrorSBOpen(true)
   }
+
 
 
   useEffect(() => {
@@ -221,6 +244,7 @@ const AddProvision = () => {
                           onChange={handleLocationChange}
                           disabled={!UXAccess.hasAllLocationAccess()}
                           required
+                          error={locationError}
                         >
                           {locations.slice(0,locations.length).map((location) => (
                             <MenuItem key={location.name} 
@@ -252,6 +276,7 @@ const AddProvision = () => {
                 </form>
 
                 <ProvisionAddProduct selectedProducts={selectedProducts} 
+                setAllConfirmed={setAllConfirmed}
                 setSelectedProducts={setSelectedProducts} />
               </Box>
             </CardContent>

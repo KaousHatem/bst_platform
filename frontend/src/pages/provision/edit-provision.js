@@ -67,9 +67,12 @@ const EditProvision = () => {
   const [loadingOpen, setLoadingOpen] = useState(false)
   const [errorSBText, setErrorSBText] = useState("")
 
+  const [allConfirmed, setAllConfirmed] = useState(false)
+
 
   const CONNECTION_ERROR = "Probleme de connexion, Veuillez de ressayer"
   const NO_PRODUCT_ERROR = "Veuillez de selectioner au moin un article"
+  const ALL_CONFIRMED_ERROR = "Veuillez de confirmer tous les articles"
 
 
 
@@ -121,23 +124,29 @@ const EditProvision = () => {
                                                                                               .includes(oldProduct.provisionProductId)}) 
                                                         .map(oldProduct=>{return oldProduct.provisionProductId})       
     
+
     if(products.length){
-      setLoadingOpen(true)                                                   
-      Promise.all([
-        ProvisionProvider.editProvision(data,provisionId ),
-        add_provision_product_list.length && ProvisionProductProvider.addProvisionProduct(add_provision_product_list),
-        edit_provision_product_list.length && ProvisionProductProvider.bulkUpdateProvisionProduct(edit_provision_product_list),
-        delete_provision_product_list.length && ProvisionProductProvider.bulkDeleteProvisionProduct(delete_provision_product_list)
-        ]).then(
-        (responses)=>{
-          console.log(responses)
-          setLoadingOpen(false)
-          router.push('/provision');
-        },
-        (errors)=>{
-          setLoadingOpen(false)
-          handleSBOpen(CONNECTION_ERROR)
-        })
+      if(allConfirmed){
+        setLoadingOpen(true)                                                   
+        Promise.all([
+          ProvisionProvider.editProvision(data,provisionId ),
+          add_provision_product_list.length && ProvisionProductProvider.addProvisionProduct(add_provision_product_list),
+          edit_provision_product_list.length && ProvisionProductProvider.bulkUpdateProvisionProduct(edit_provision_product_list),
+          delete_provision_product_list.length && ProvisionProductProvider.bulkDeleteProvisionProduct(delete_provision_product_list)
+          ]).then(
+          (responses)=>{
+            console.log(responses)
+            setLoadingOpen(false)
+            router.push('/provision');
+          },
+          (errors)=>{
+            setLoadingOpen(false)
+            handleSBOpen(CONNECTION_ERROR)
+          })
+        }else{
+          handleSBOpen(ALL_CONFIRMED_ERROR)
+        }
+      
     }else{
       handleSBOpen(NO_PRODUCT_ERROR)
     }
@@ -392,6 +401,7 @@ const EditProvision = () => {
 
                 <ProvisionAddProduct selectedProducts={products} 
                 setSelectedProducts={setProducts} 
+                setAllConfirmed={setAllConfirmed}
                 isDraft={provision.status==='0'}/>
               </Box>
             </CardContent>
