@@ -79,13 +79,15 @@ class UserProvider {
         return axios
             .post(CreateUserUrl, data, config)
             .then(response => {
+                console.log(response)
                 if (response.status < 200 || response.status >= 300) {
-                    throw new Error(response.statusText);
+
+                    throw new Error(response);
                 }
                 return response;
             })
             .catch((error) => {
-                throw new Error()
+                throw new Error(error.response.data.message,{cause:error.response})
             })
     }
 
