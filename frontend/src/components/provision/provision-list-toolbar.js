@@ -43,7 +43,7 @@ export const ProvisionListToolbar = (props,) => {
           sx={{ m: 1 }}
           variant="h4"
         >
-          DEMANDE D`&apos;`APPRO
+          DEMANDE D&apos;APPRO
         </Typography>
         <Box sx={{ m: 1 }}>
           <Button
@@ -64,7 +64,7 @@ export const ProvisionListToolbar = (props,) => {
             href = '/provision/add-provision'
             startIcon={(<PositiveIcon />)}
           >
-            Ajouter demande d`&apos;`appro
+            Ajouter demande d&apos;appro
           </Button>
         </Box>
       </Box>

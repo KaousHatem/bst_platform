@@ -51,7 +51,7 @@ import {ProductAddDialog} from './product-add-dialog'
 
 
 
-export const ProvisionAddProduct = ({selectedProducts,setSelectedProducts, isDraft=true,...rest}) => {
+export const ProvisionAddProduct = ({selectedProducts,setSelectedProducts, setAllConfirmed, isDraft=true,...rest}) => {
   
 
   const [selectedProductIds, setSelectedProductIds] = useState([]);
@@ -156,8 +156,11 @@ export const ProvisionAddProduct = ({selectedProducts,setSelectedProducts, isDra
   }
 
   useEffect(()=>{
-    console.log(selectedProducts)
-  },[selectedProducts])
+    if(selectedProducts.length){
+      setAllConfirmed(savedModeProducts.length===selectedProducts.length)
+    }
+    
+  },[savedModeProducts])
 
  
 
@@ -342,7 +345,7 @@ export const ProvisionAddProduct = ({selectedProducts,setSelectedProducts, isDra
       onClose={handleClose}>
         <Alert variant="filled" 
         severity="error">
-          Veuillez saisir la quantité de l`&apos;`article
+          Veuillez saisir la quantité de l&apos;article
         </Alert>
       </Snackbar>
       

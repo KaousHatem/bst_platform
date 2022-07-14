@@ -117,7 +117,7 @@ export const ProvisionAddToolbar = ({props, isAddPage=false, handleReject, handl
         sx={{ m: 1 }}
         variant="h4"
       >
-        DEMANDE D`&apos;`APPRO
+        DEMANDE D&apos;APPRO
       </Typography>
       <Box sx={{ m: 1 }}>
         <Button

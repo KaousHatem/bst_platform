@@ -272,7 +272,7 @@ export const ProvisionListResults = ({ provision_list, ...rest }) => {
                 <TableRow>
                   <TableCell colSpan={7}
                   align="center" >
-                    Aucune demande d`&apos;`appro existe
+                    Aucune demande d&apos;appro existe
                   </TableCell>
                 </TableRow>
               }
