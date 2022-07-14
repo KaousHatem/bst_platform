@@ -44,8 +44,7 @@ class UserProvider {
                 return response;
             })
             .catch((error) => {
-                console.log(error.response)
-                throw new Error()
+                throw new Error(error.response.data.message,{cause:error.response})
             })
     }
 
