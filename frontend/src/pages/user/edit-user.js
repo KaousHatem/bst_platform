@@ -5,7 +5,21 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import {  Select, MenuItem, Box, Button, Container, Grid, Link, TextField, Typography, Card, CardContent, } from '@mui/material';
+import {  
+  Select, 
+  MenuItem, 
+  Box, 
+  Button, 
+  Container, 
+  Grid, 
+  Link, 
+  TextField, 
+  Typography, 
+  Card, 
+  CardContent, 
+  Snackbar,
+  Alert,
+} from '@mui/material';
 import {LocalizationProvider, DatePicker, AdapterDateFns} from '@mui/lab'
 import InputLabel from '@mui/material/InputLabel';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -31,7 +45,13 @@ const EditUser = () => {
   const [user, setUser] = useState({})
   const [loading, SetLoading] = useState(true)
 
+  const [errorSBOpen, setErrorSBOpen] = useState(false)
 
+  const [loadingOpen, setLoadingOpen] = useState(false)
+  const [errorSBText, setErrorSBText] = useState("")
+
+  const ALREADY_EXIST_ERROR = "Le nom d'utilisateur est déja existe"
+  const CONNECTION_ERROR = "Probleme de connexion, Veuillez de ressayer"
 
   const roles = [
     {
@@ -85,9 +105,22 @@ const EditUser = () => {
         router.push('/user');
       },
       error => {
-        alert(error.message)
+        if(error.cause.status===409){
+          handleSBOpen(ALREADY_EXIST_ERROR)
+        }else{
+          handleSBOpen(CONNECTION_ERROR)
+        }
       }
       )
+  }
+
+  const handleSBClose = () => {
+    setErrorSBOpen(false)
+  }
+
+  const handleSBOpen = (text) => {
+    setErrorSBText(text)
+    setErrorSBOpen(true)
   }
 
 
@@ -146,7 +179,7 @@ const EditUser = () => {
                     <Grid item 
                     xs={6}>
                       <InputLabel>
-                        Nom d`&apos;`utilisateur 
+                        Nom d&apos;utilisateur 
                       </InputLabel>
                       <TextField
                         fullWidth
@@ -242,7 +275,15 @@ const EditUser = () => {
           </Card>
         </Box>
       </Container>
+      <Snackbar open={errorSBOpen} 
+      onClose={handleSBClose}>
+        <Alert variant="filled" 
+        severity="error">
+          {errorSBText}
+        </Alert>
+      </Snackbar>
     </Box>
+
   </>
   );
 };
