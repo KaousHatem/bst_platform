@@ -16,7 +16,9 @@ import {
   TableRow,
   Typography,
   Menu,
-  MenuItem
+  MenuItem,
+  Snackbar,
+  Alert
 } from '@mui/material';
 import { getInitials } from '../../utils/get-initials';
 
@@ -57,6 +59,14 @@ export const UserListResults = ({ user_list=[], ...rest }) => {
   const [userIdDelete, setUserIdDelete] = useState(-1)
   const [clickedId, setClickedId] = useState(-1)
   const [clickedStatus, setClickedStatus] = useState(false)
+
+  const [errorSBOpen, setErrorSBOpen] = useState(false)
+
+  const [loadingOpen, setLoadingOpen] = useState(false)
+  const [errorSBText, setErrorSBText] = useState("")
+
+  const CANNOT_DELETE_ERROR = "Cet utilisateur ne peux pas etre supprimer."
+
   
 
   const handleClickMenu = (event, user) => {
@@ -98,7 +108,8 @@ export const UserListResults = ({ user_list=[], ...rest }) => {
             error.response.data.message) ||
           error.message ||
           error.toString();
-        console.log(resMessage)
+          handleSBOpen(CANNOT_DELETE_ERROR)
+        
       }
     )
   }
@@ -185,6 +196,15 @@ export const UserListResults = ({ user_list=[], ...rest }) => {
     setAnchorEl(null);
   }
 
+  const handleSBClose = () => {
+    setErrorSBOpen(false)
+  }
+
+  const handleSBOpen = (text) => {
+    setErrorSBText(text)
+    setErrorSBOpen(true)
+  }
+
 
 
   return (
@@ -211,7 +231,7 @@ export const UserListResults = ({ user_list=[], ...rest }) => {
                   />
                 </TableCell>
                 <TableCell>
-                  Nom d`&apos;`utilisateur
+                  Utilisateur
                 </TableCell>
                 <TableCell>
                   Role
@@ -338,6 +358,14 @@ export const UserListResults = ({ user_list=[], ...rest }) => {
       handleDeleteOpen={handleDeleteOpen} 
       handleClose={handleClose} 
       handleDeleteUser={handleDeleteUser} />
+
+      <Snackbar open={errorSBOpen} 
+      onClose={handleSBClose}>
+        <Alert variant="filled" 
+        severity="error">
+          {errorSBText}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

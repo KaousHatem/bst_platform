@@ -39,7 +39,7 @@ export const UserDeleteDialog = ({open, handleDeleteOpen, handleClose, handleDel
             fullScreen={fullScreen}
             aria-labelledby="responsive-dialog-title"
         >
-            <DialogTitle>SUPPRESSION D`&apos;`UN UTILISATEUR</DialogTitle>
+            <DialogTitle>SUPPRESSION D&apos;UN UTILISATEUR</DialogTitle>
             <DialogContent>   
                 <DialogContentText>
                     Voulez vous supprimer cet utilisateur?
