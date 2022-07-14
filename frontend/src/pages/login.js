@@ -5,7 +5,17 @@ import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { Box, Button, Container, Grid, Link, TextField, Typography } from '@mui/material';
+import { 
+  Box, 
+  Button, 
+  Container, 
+  Grid, 
+  Link, 
+  TextField, 
+  Typography,
+  Snackbar,
+  Alert,
+} from '@mui/material';
 import InputLabel from '@mui/material/InputLabel';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Facebook as FacebookIcon } from '../icons/facebook';
@@ -25,6 +35,13 @@ const Login = (props) => {
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState("")
+
+  const [errorSBOpen, setErrorSBOpen] = useState(false)
+
+  const [loadingOpen, setLoadingOpen] = useState(false)
+  const [errorSBText, setErrorSBText] = useState("")
+
+  const CONNECTION_ERROR = "Probleme de connexion, Veuillez de ressayer"
   
   // const router = useRouter();
     /*const formik = useFormik({
@@ -70,25 +87,32 @@ const Login = (props) => {
     //form.validateAll();
     AuthProvider.login(username, password).then(
       (response) => {
-        // console.log(response)
         const returnUrl = router.query.returnUrl || '/';
         router.push(returnUrl);  
       },
       error => {
-        
-        const resMessage =
-          (error.response &&
-            error.response.data &&
-            error.response.data.error) ||
-          error.message ||
-          error.toString();
-        console.log(resMessage)
-        setMessage(resMessage)
+        if(error.response.status===400){
+          handleSBOpen(error.response.data.error)
+        }else{
+          handleSBOpen(CONNECTION_ERROR)
+        }
+
         setLoading(false)
       }
     );
-    
+   
   }
+
+  const handleSBClose = () => {
+    setErrorSBOpen(false)
+  }
+
+  const handleSBOpen = (text) => {
+    setErrorSBText(text)
+    setErrorSBOpen(true)
+  }
+
+
   return (
     <>
       <Head>
@@ -164,6 +188,13 @@ const Login = (props) => {
             </Box>
           </form>
         </Container>
+        <Snackbar open={errorSBOpen} 
+        onClose={handleSBClose}>
+          <Alert variant="filled" 
+          severity="error">
+            {errorSBText}
+          </Alert>
+        </Snackbar>
       </Box>
     </>
   );
