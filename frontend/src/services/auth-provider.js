@@ -47,7 +47,6 @@ class AuthProvider {
                 }     
             })
             .catch((error) => {
-                console.log(error.response)
                 throw error
             });
     }
