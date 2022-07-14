@@ -14,7 +14,6 @@ class IsAuthenticatedCustom(BasePermission):
 			return False
 
 		user = decodeJWT(auth_token)
-		print(user)
 		if not user:
 			return False
 
