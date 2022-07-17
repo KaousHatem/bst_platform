@@ -17,8 +17,10 @@ import {
   Typography, 
   Card, 
   CardContent, 
+  Backdrop,
   Snackbar,
   Alert,
+  CircularProgress,
 } from '@mui/material';
 import {LocalizationProvider, DatePicker, AdapterDateFns} from '@mui/lab'
 import InputLabel from '@mui/material/InputLabel';
@@ -85,7 +87,6 @@ const EditUser = () => {
   const handleOnSubmit = (e, status) => {
     e.preventDefault();
     const delay_date = format(value,'yyyy-MM-dd')
-    console.log(e.target.username.value)
     const data = {
       username: e.target.username.value,
       password: e.target.password.value,
@@ -96,18 +97,19 @@ const EditUser = () => {
       location: locations.filter((location) => {return location.name === locationValue})[0].id
     }
 
-    console.log(data)
 
+    setLoadingOpen(true)
     UserProvider.updateUser(data,userId).then(
       (response) => {
-        alert("done")
-        console.log(response.data)
+        setLoadingOpen(false)
         router.push('/user');
       },
       error => {
         if(error.cause.status===409){
+          setLoadingOpen(false)
           handleSBOpen(ALREADY_EXIST_ERROR)
         }else{
+          setLoadingOpen(false)
           handleSBOpen(CONNECTION_ERROR)
         }
       }
@@ -125,37 +127,42 @@ const EditUser = () => {
 
 
   useEffect(() => {
-    LocationProvider.getLocations().then(
-        (response) => {
-          console.log(response.data)
-          setLocations(response.data)
-        }
-      )
+    setLoadingOpen(true)
+    Promise.all([
+        LocationProvider.getLocations(),
+        userId && UserProvider.getUsers(userId),
+      ]).then(
+      (responses) => {
+        setLocations(responses[0].data)
+        setUser(responses[1].data)
+        setLocationValue(responses[1].data.location) 
+        SetLoading(false)    
+        setLoadingOpen(false)    
+      },
+      (errors)=>{
+        setLoadingOpen(false)
+        handleSBOpen(CONNECTION_ERROR)
+      })
+    
 
-    if(userId){
-      UserProvider.getUsers(userId).then(
-        (response) => {
-          console.log(response.data)
-          setUser(response.data)
-          setLocationValue(response.data.location) 
-          SetLoading(false)        
-        },
-        (error) => {
-          alert(error.message)
-        }
-        )
-    }
   },[userId])
   
   return (
-    loading === false && 
+
     <>
+    <Backdrop
+      sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      open={loadingOpen}
+      onClick={()=>{setLoadingOpen(false)}}
+    >
+      <CircularProgress color="inherit" />
+    </Backdrop>
     <Head>
       <title>
         EURL BST | AJOUTER DEMANDE APPRO
       </title>
     </Head>
-    <Box
+    {loading === false && <Box
       component="main"
       sx={{
         flexGrow: 1,
@@ -275,15 +282,15 @@ const EditUser = () => {
           </Card>
         </Box>
       </Container>
-      <Snackbar open={errorSBOpen} 
+      
+    </Box>}
+    <Snackbar open={errorSBOpen} 
       onClose={handleSBClose}>
         <Alert variant="filled" 
         severity="error">
           {errorSBText}
         </Alert>
       </Snackbar>
-    </Box>
-
   </>
   );
 };
