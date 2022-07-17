@@ -17,8 +17,10 @@ import {
   Typography, 
   Card, 
   CardContent,
+  Backdrop,
+  CircularProgress,
   Snackbar,
-  Alert, 
+  Alert,
 } from '@mui/material';
 import {LocalizationProvider, DatePicker, AdapterDateFns} from '@mui/lab'
 import InputLabel from '@mui/material/InputLabel';
@@ -91,15 +93,19 @@ const AddUser = () => {
       role:roleValue,
       location: locationValue
     }
-
+    setLoadingOpen(true)
     UserProvider.addUser(data).then(
       (response) => {
         router.push('/user');
+        setLoadingOpen(false)
       },
       (error) => {
         if(error.cause.status===409){
+          setLoadingOpen(false)
           handleSBOpen(ALREADY_EXIST_ERROR)
+
         }else{
+          setLoadingOpen(false)
           handleSBOpen(CONNECTION_ERROR)
         }
       }
@@ -116,16 +122,27 @@ const AddUser = () => {
   }
 
   useEffect(() => {
+    setLoadingOpen(true)
     LocationProvider.getLocations().then(
         (response) => {
-          console.log(response.data)
           setLocations(response.data)
+          setLoadingOpen(false)
+        },(error) => {
+          setLoadingOpen(false)
+          handleSBOpen(CONNECTION_ERROR)
         }
       )
   },[])
   
   return (
     <>
+    <Backdrop
+      sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      open={loadingOpen}
+      onClick={()=>{setLoadingOpen(false)}}
+    >
+      <CircularProgress color="inherit" />
+    </Backdrop>
     <Head>
       <title>
         EURL BST | AJOUTER DEMANDE APPRO
