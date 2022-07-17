@@ -48,7 +48,7 @@ class CategoryProvider {
                 return response;
             })
             .catch((error) => {
-                throw new Error()
+                throw error
             })
     }
 
@@ -68,8 +68,7 @@ class CategoryProvider {
                 return response;
             })
             .catch((error) => {
-                console.log(error.response)
-                throw new Error()
+                throw error
             })
     }
 

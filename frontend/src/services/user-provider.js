@@ -56,7 +56,7 @@ class UserProvider {
         Authorization: `Bearer ${token}`
         }}
         return axios
-            .put(ActivateUrl+'/'+pk, data, config)
+            .put(ActivateUrl+'/'+pk+'/', data, config)
             .then(response => {
                 if (response.status < 200 || response.status >= 300) {
                     throw new Error(response.statusText);
