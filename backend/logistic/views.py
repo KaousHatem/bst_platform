@@ -85,8 +85,48 @@ class CategoryViewSet(ModelViewSet):
 		token = request.META.get('HTTP_AUTHORIZATION')
 		if token:
 			user = decodeJWT(token)
+		
 			request.data['created_by']=user.id
+
+		if 'ref' in request.data.keys():
+			ref = request.data['ref']
+
+			if self.queryset.filter(ref=ref):
+				return Response(
+					{'message':"category already exists"},
+					status=status.HTTP_409_CONFLICT
+				)
+		name = request.data['name']
+		if self.queryset.filter(ref=name[:3]):
+			
+			return Response(
+				{'message':"category already exists"},
+				status=status.HTTP_409_CONFLICT
+			)
+
+		
 		return super(CategoryViewSet, self).create(request)
+
+	def update(self, request, pk):
+		if 'ref' in request.data.keys():
+			ref = request.data['ref']
+			qs = self.queryset.filter(ref=ref).first()
+			if qs:
+				if qs.id != int(pk):
+					return Response(
+						{'message':"category already exists"},
+						status=status.HTTP_409_CONFLICT
+					)
+		else:  
+			name = request.data['name']
+			if self.queryset.filter(ref=name[:3]):
+				return Response(
+					{'message':"category already exists"},
+					status=status.HTTP_409_CONFLICT
+				)
+
+
+		return super(CategoryViewSet, self).update(request, pk)
 
 
 

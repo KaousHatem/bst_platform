@@ -35,7 +35,7 @@ class Product(models.Model):
 	description = models.CharField(max_length=220, null=True, blank=True,)
 	status = models.BooleanField(default=True)
 	base_unit = models.ForeignKey(Unit, on_delete=models.CASCADE,null=True, blank=True,)
-	category = models.ForeignKey(Category, on_delete=models.CASCADE)
+	category = models.ForeignKey(Category, on_delete=models.DO_NOTHING)
 	created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 	created_on = models.DateTimeField(auto_now_add=True)
 	updated_on = models.DateTimeField(auto_now=True)

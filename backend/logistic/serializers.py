@@ -48,6 +48,9 @@ class CategorySerializer(serializers.ModelSerializer):
 		extra_kwargs = {
 		   'ref': {
 			  'required': False
+		   },
+		   'created_by': {
+			  'required': False
 		   }
 		}
 
