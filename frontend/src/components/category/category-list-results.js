@@ -14,7 +14,11 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  Typography
+  Typography,
+  Backdrop,
+  Snackbar,
+  Alert,
+  CircularProgress,
 } from '@mui/material';
 import { getInitials } from '../../utils/get-initials';
 
@@ -38,6 +42,15 @@ export const CategoryListResults = ({ category_list, ...rest}) => {
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [categoryIdDelete, setCategoryIdDelete] = useState(-1)
 
+  const [errorSBOpen, setErrorSBOpen] = useState(false)
+
+  const [loadingOpen, setLoadingOpen] = useState(false)
+  const [errorSBText, setErrorSBText] = useState("")
+
+  const CANNOT_DELETE_ERROR = "Cette categorie ne peux pas etre supprimer."
+  const CONNECTION_ERROR = "Probleme de connexion, Veuillez de ressayer"
+
+
   const handleClose = () => {
     setDeleteOpen(false)
   }
@@ -48,21 +61,17 @@ export const CategoryListResults = ({ category_list, ...rest}) => {
 
   const handleDeleteCategory = () => {
     setDeleteOpen(false)
+    setLoadingOpen(true)
     CategoryProvider.deleteCategory(categoryIdDelete).then(
       (response) => {
-        console.log('category: '+categoryIdDelete+' is deleted')
         setCategories(categories.filter(function(category) {
           return category.id !== categoryIdDelete
         }))
+        setLoadingOpen(false)
       },
       error => {
-        const resMessage =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
-        console.log(resMessage)
+        setLoadingOpen(false)
+        handleSBOpen(CANNOT_DELETE_ERROR)
       }
     )
   }
@@ -116,11 +125,28 @@ export const CategoryListResults = ({ category_list, ...rest}) => {
     router.push(data);
   }
 
+  const handleSBClose = () => {
+    setErrorSBOpen(false)
+  }
+
+  const handleSBOpen = (text) => {
+    setErrorSBText(text)
+    setErrorSBOpen(true)
+  }
+
+
 
 
 
   return(
     <Box {...rest}>
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loadingOpen}
+        onClick={()=>{setLoadingOpen(false)}}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <PerfectScrollbar>
         <Box sx={{minWidth: "100%"}} >
           <Table>
@@ -223,6 +249,13 @@ export const CategoryListResults = ({ category_list, ...rest}) => {
       handleDeleteOpen={handleDeleteOpen} 
       handleClose={handleClose}
       handleDeleteCategory={handleDeleteCategory} />
+      <Snackbar open={errorSBOpen} 
+      onClose={handleSBClose}>
+        <Alert variant="filled" 
+        severity="error">
+          {errorSBText}
+        </Alert>
+      </Snackbar>
     </Box>
 
 
