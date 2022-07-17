@@ -68,24 +68,35 @@ const AddProduct = () => {
   const [baseUnitError,setBaseUnitError] = useState(false)
 
   const [errorSBOpen, setErrorSBOpen] = useState(false)
+  const [errorSBText, setErrorSBText] = useState("")
+
+  
+  const CONNECTION_ERROR = "Probleme de connexion, Veuillez de ressayer"
 
   const [loadingOpen, setLoadingOpen] = useState(false)
 
   useEffect(() => {
+    setLoadingOpen(true)
     Promise.all([
       CategoryProvider.getCategories(),
       ProductProvider.getLastProduct(),
       UnitProvider.getUnits(),
       ]).then((responses) => {
-        console.log(responses)
         if(responses.length){
 
           setCategories(responses[0].data)
           setId(("0000000"+(responses[1].data.id+1)).slice(-7))
           setUnits(responses[2].data)
           setLoading(false)
+          setLoadingOpen(false)
         }
-      })
+      },
+      (error)=>{
+        setLoadingOpen(false)
+        handleSBOpen(CONNECTION_ERROR)
+      }
+
+      )
   },[])
 
   const handleCategorySelector = (e) => {
@@ -133,22 +144,23 @@ const AddProduct = () => {
             UnitConversionProvider.addUnitConversion(dataList).then(
               (response)=>{
                 setLoadingOpen(false)
-                router.push('/products/list-product');
+                router.push('/products');
               },
               (error)=>{
                 setLoadingOpen(false)
-                setErrorSBOpen(true)
+                handleSBOpen(CONNECTION_ERROR)
               })
           }else{
             setLoadingOpen(false)
-            router.push('/products/list-product');
+            router.push('/products');
           }
           
             
         },
         error => {
+          console.log('error')
           setLoadingOpen(false)
-          setErrorSBOpen(true)
+          handleSBOpen(CONNECTION_ERROR)
         }
         )
     }
@@ -166,8 +178,13 @@ const AddProduct = () => {
     setErrorSBOpen(false)
   }
 
+  const handleSBOpen = (text) => {
+    setErrorSBText(text)
+    setErrorSBOpen(true)
+  }
 
-  return ( !loading && 
+
+  return (
     <>
     <Backdrop
       sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
@@ -392,7 +409,7 @@ const AddProduct = () => {
     onClose={handleSBClose}>
       <Alert variant="filled" 
       severity="error">
-        Probleme de connexion, Veuillez de ressayer
+        {errorSBText}
       </Alert>
     </Snackbar>
   </>

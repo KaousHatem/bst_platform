@@ -54,11 +54,6 @@ const EditProduct = (props) => {
   const [units, setUnits] = useState([])
 
 
-  const [sku, setSku] = useState("")
-  const [name, setName] = useState("")
-  const [category, setCategory] = useState(0)
-  const [description, setDescription] = useState("")
-  const [unit, setUnit] = useState("")
 
   const [id, setId] = useState(router.query.id)
   const [product, setProduct] = useState({})
@@ -75,12 +70,16 @@ const EditProduct = (props) => {
   const [baseUnitError,setBaseUnitError] = useState(false)
 
   const [errorSBOpen, setErrorSBOpen] = useState(false)
+  const [errorSBText, setErrorSBText] = useState("")
+
+  const CONNECTION_ERROR = "Probleme de connexion, Veuillez de ressayer"
 
   const [loadingOpen, setLoadingOpen] = useState(false)
 
 
   useEffect(() => {
     if(id){
+      setLoadingOpen(true)
       Promise.all([
       CategoryProvider.getCategories(),
       ProductProvider.getProducts(id),
@@ -107,7 +106,11 @@ const EditProduct = (props) => {
             }
           }))
           setLoading(false)
+          setLoadingOpen(false)
         }
+      },(errors)=>{
+        setLoadingOpen(false)
+        handleSBOpen(CONNECTION_ERROR)
       })
     }
     
@@ -162,15 +165,6 @@ const EditProduct = (props) => {
     })
 
 
-
-    // UnitConversionProvider.bulkUpdateUnitConversion(updateIds, updateList).then(
-    //   (response)=>{
-    //     alert('done')
-    //   },(error)=>{
-    //     alert("error")
-    //   })
-    
-
     const dataList = convertedUnits.filter((convertedUnit)=>{
       const unit = oldConvertedUnits.find((unit)=>{  
         return unit.unit.ref===convertedUnit.unit.ref
@@ -185,19 +179,6 @@ const EditProduct = (props) => {
         }
       return data
     })
-    // if(dataList.length !== 0){
-    // UnitConversionProvider.addUnitConversion(dataList).then(
-    //       (response)=>{
-    //         setLoadingOpen(false)
-    //         alert('done')
-    //         router.push('/products/list-product');
-    //       },
-    //       (error)=>{
-    //         setLoadingOpen(false)
-    //         setErrorSBOpen(true)
-    //       })
-    // }
-
 
     const deleteIds = oldConvertedUnits.filter((convertedUnit)=>{
       return convertedUnits.find((unit)=>{return unit.unit.ref===convertedUnit.unit.ref})===undefined
@@ -215,12 +196,11 @@ const EditProduct = (props) => {
       ]).then(
       (responses)=>{
         setLoadingOpen(false)
-        console.log(responses)
-        router.push('/products/list-product');
+        router.push('/products');
       },
       (errors)=>{
         setLoadingOpen(false)
-        setErrorSBOpen(true)
+        handleSBOpen(CONNECTION_ERROR)
       })
   }
 
@@ -235,11 +215,16 @@ const EditProduct = (props) => {
   const handleSBClose = () => {
     setErrorSBOpen(false)
   }
+
+  const handleSBOpen = (text) => {
+    setErrorSBText(text)
+    setErrorSBOpen(true)
+  }
+
   
   return (
-    !loading &&
+    
     <>
-    {console.log(convertedUnits)}
     <Backdrop
       sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
       open={loadingOpen}
@@ -252,7 +237,7 @@ const EditProduct = (props) => {
         EURL BST | EDITER ARTICLE
       </title>
     </Head>
-    <Box
+    { !loading && <Box
       component="main"
       sx={{
         flexGrow: 1,
@@ -270,22 +255,17 @@ const EditProduct = (props) => {
               <Box sx={{ maxWidth: 500 }}>
                 <form id='add-product-form' 
                 onSubmit={handleOnSubmit}>
-                  <InputLabel>
-                    Sku 
-                  </InputLabel>
                   <TextField
-                    label="Sku"
                     fullWidth
+                    label="Sku"
                     margin="dense"
                     name="sku"
                     type="text"
                     variant="outlined"
                     value={product.sku}
                     disabled
-                    sx={{
-                            my: 2
-                          }}
                   />
+                  
                   <TextField
                     sx={{
                             my: 2
@@ -451,7 +431,7 @@ const EditProduct = (props) => {
           </Card>
         </Box>
       </Container>
-    </Box>
+    </Box>}
 
     <UnitAddDialog open={open} 
       setOpen={setOpen} 
