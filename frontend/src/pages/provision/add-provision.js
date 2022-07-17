@@ -120,14 +120,14 @@ const AddProvision = () => {
                 },
                 error => {
                   console.log(error)
-                  setLoadingOpen(true)
+                  setLoadingOpen(false)
                   handleSBOpen(CONNECTION_ERROR)
                 }
                 )
             },
             error => {
               console.log(error)
-              setLoadingOpen(true)
+              setLoadingOpen(false)
               handleSBOpen(CONNECTION_ERROR)
             }
           )  
