@@ -15,7 +15,10 @@ import {
   Typography,
   Snackbar,
   Alert,
+  Backdrop,
+  CircularProgress,
 } from '@mui/material';
+
 import InputLabel from '@mui/material/InputLabel';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Facebook as FacebookIcon } from '../icons/facebook';
@@ -85,16 +88,20 @@ const Login = (props) => {
     setLoading(true)
 
     //form.validateAll();
+    setLoadingOpen(true)
     AuthProvider.login(username, password).then(
       (response) => {
         const returnUrl = router.query.returnUrl || '/';
-        router.push(returnUrl);  
+        router.push(returnUrl);
+        setLoadingOpen(false)  
       },
       error => {
         if(error.response.status===400){
           handleSBOpen(error.response.data.error)
+          setLoadingOpen(false)
         }else{
           handleSBOpen(CONNECTION_ERROR)
+          setLoadingOpen(false)
         }
 
         setLoading(false)
@@ -115,6 +122,13 @@ const Login = (props) => {
 
   return (
     <>
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loadingOpen}
+        onClick={()=>{setLoadingOpen(false)}}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Head>
         <title>EURL BST | Connecter</title>
       </Head>
