@@ -34,7 +34,7 @@ export const ProductAddToolbar = (props) => (
         <Button
           color="primary"
           variant="outlined"
-          href = '/products/list-product'
+          href = '/products'
           sx={{ mr: 4 }}
         >
           Annuler

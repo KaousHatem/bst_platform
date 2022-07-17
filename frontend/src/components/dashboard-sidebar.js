@@ -183,7 +183,7 @@ export const DashboardSidebar = (props) => {
               }}
             >
             <MenuList>
-              <SubNavItem href='/products/list-product' 
+              <SubNavItem href='/products' 
                 title='Articles'/>
               <SubNavItem href='/category' 
                 title='Categories'/>
