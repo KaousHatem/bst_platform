@@ -16,7 +16,11 @@ import {
   TableRow,
   Typography,
   Menu,
-  MenuItem
+  MenuItem,
+  Backdrop,
+  Snackbar,
+  Alert,
+  CircularProgress,
 } from '@mui/material';
 import { getInitials } from '../../utils/get-initials';
 
@@ -49,6 +53,15 @@ export const ProductListResults = ({ product, categories, ...rest }) => {
   const menuOpen = Boolean(anchorEl);
   const [clickedId, setClickedId] = useState(-1)
   const [clickedStatus, setClickedStatus] = useState(false)
+
+  const [errorSBOpen, setErrorSBOpen] = useState(false)
+  const [errorSBText, setErrorSBText] = useState("")
+
+  const CONNECTION_ERROR = "Probleme de connexion, Veuillez de ressayer"
+
+  const [loadingOpen, setLoadingOpen] = useState(false)
+
+
 
   const handleClickMenu = (event, product) => {
     setClickedId(product.id)
@@ -118,22 +131,19 @@ export const ProductListResults = ({ product, categories, ...rest }) => {
 
   const handleDelete = () => {
     setOpen(false)
+    setLoadingOpen(true)
     ProductProvider.deleteProduct(id).then(
         (response) => {
           console.log(response)
           console.log('item: '+id+' is deleted')
-          setProducts(filteredProducts.filter(function(product) {
+          setFilteredProducts(filteredProducts.filter(function(product) {
             return product.id !== id
           }))
+          setLoadingOpen(false)
         },
-        error => {
-          const resMessage =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
-          console.log(resMessage)
+        error => {  
+          setLoadingOpen(false)
+          handleSBOpen(CONNECTION_ERROR)
         }
       )
   }
@@ -160,8 +170,25 @@ export const ProductListResults = ({ product, categories, ...rest }) => {
     setAnchorEl(null);
   }
 
+  const handleSBClose = () => {
+    setErrorSBOpen(false)
+  }
+
+  const handleSBOpen = (text) => {
+    setErrorSBText(text)
+    setErrorSBOpen(true)
+  }
+
+
   return (
     <Card {...rest}>
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loadingOpen}
+        onClick={()=>{setLoadingOpen(false)}}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <ProductFilter products={products} 
       setFilteredProducts={setFilteredProducts} 
       categories={categories} />
@@ -309,6 +336,14 @@ export const ProductListResults = ({ product, categories, ...rest }) => {
       handleClickOpen={handleClickOpen} 
       handleClose={handleClose} 
       handleDelete={handleDelete} />
+
+      <Snackbar open={errorSBOpen} 
+      onClose={handleSBClose}>
+        <Alert variant="filled" 
+        severity="error">
+          Probleme de connexion, Veuillez de ressayer
+        </Alert>
+      </Snackbar>
     </Card>
 
   );

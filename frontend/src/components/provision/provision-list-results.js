@@ -16,7 +16,11 @@ import {
   TableRow,
   Typography,
   Menu,
-  MenuItem
+  MenuItem,
+  Backdrop,
+  Snackbar,
+  Alert,
+  CircularProgress,
 } from '@mui/material';
 import { getInitials } from '../../utils/get-initials';
 
@@ -64,6 +68,13 @@ export const ProvisionListResults = ({ provision_list, ...rest }) => {
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [provisionIdDelete, setProvisionIdDelete] = useState(-1)
 
+  const [errorSBOpen, setErrorSBOpen] = useState(false)
+  const [errorSBText, setErrorSBText] = useState("")
+
+  const CONNECTION_ERROR = "Probleme de connexion, Veuillez de ressayer"
+
+  const [loadingOpen, setLoadingOpen] = useState(false)
+
  
   
   const handleClose = () => {
@@ -76,21 +87,17 @@ export const ProvisionListResults = ({ provision_list, ...rest }) => {
 
   const handleDeleteProvision = () => {
     setDeleteOpen(false)
+    setLoadingOpen(true)
     ProvisionsProvider.deleteProvision(provisionIdDelete).then(
       (response) => {
-        console.log('provision: '+provisionIdDelete+' is deleted')
         setFilteredProvision(filteredProvision.filter(function(provision) {
           return provision.id !== provisionIdDelete
         }))
+        setLoadingOpen(false)
       },
       error => {
-        const resMessage =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
-        console.log(resMessage)
+        setLoadingOpen(false)
+        handleSBOpen(CONNECTION_ERROR)
       }
     )
   }
@@ -144,14 +151,26 @@ export const ProvisionListResults = ({ provision_list, ...rest }) => {
     router.push(data);
   }
 
+  const handleSBClose = () => {
+    setErrorSBOpen(false)
+  }
+
+  const handleSBOpen = (text) => {
+    setErrorSBText(text)
+    setErrorSBOpen(true)
+  }
+
   
-
- 
-
-  
-
   return (
     <Box {...rest}>
+
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loadingOpen}
+        onClick={()=>{setLoadingOpen(false)}}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       {provisions.length!==0 &&<ProvisionFilter provisions={provisions} 
       setFilteredProvision={setFilteredProvision} />}
       <PerfectScrollbar>
@@ -293,6 +312,13 @@ export const ProvisionListResults = ({ provision_list, ...rest }) => {
       handleDeleteOpen={handleDeleteOpen} 
       handleClose={handleClose} 
       handleDeleteProvision={handleDeleteProvision} />
+      <Snackbar open={errorSBOpen} 
+      onClose={handleSBClose}>
+        <Alert variant="filled" 
+        severity="error">
+          Probleme de connexion, Veuillez de ressayer
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

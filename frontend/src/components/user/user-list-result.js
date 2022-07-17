@@ -17,8 +17,10 @@ import {
   Typography,
   Menu,
   MenuItem,
+  Backdrop,
   Snackbar,
-  Alert
+  Alert,
+  CircularProgress,
 } from '@mui/material';
 import { getInitials } from '../../utils/get-initials';
 
@@ -66,6 +68,7 @@ export const UserListResults = ({ user_list=[], ...rest }) => {
   const [errorSBText, setErrorSBText] = useState("")
 
   const CANNOT_DELETE_ERROR = "Cet utilisateur ne peux pas etre supprimer."
+  const CONNECTION_ERROR = "Probleme de connexion, Veuillez de ressayer"
 
   
 
@@ -94,21 +97,17 @@ export const UserListResults = ({ user_list=[], ...rest }) => {
 
   const handleDeleteUser = () => {
     setDeleteOpen(false)
+    setLoadingOpen(true)
     UserProvider.deleteUser(userIdDelete).then(
       (response) => {
-        console.log('user: '+userIdDelete+' is deleted')
         setUsers(users.filter(function(user) {
           return user.id !== userIdDelete
         }))
+        setLoadingOpen(false)
       },
       error => {
-        const resMessage =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
-          handleSBOpen(CANNOT_DELETE_ERROR)
+        setLoadingOpen(false)
+        handleSBOpen(CANNOT_DELETE_ERROR)
         
       }
     )
@@ -170,12 +169,16 @@ export const UserListResults = ({ user_list=[], ...rest }) => {
     const data = {
       is_active: true
     }
-
+    setLoadingOpen(true)
     UserProvider.activateUser(data,clickedId).then(
       (response) => {
         users[index].is_active = true
         // console.log(users)
         // setUsers(users)
+        setLoadingOpen(false)
+      },error=>{
+        setLoadingOpen(false)
+        handleSBOpen(CONNECTION_ERROR)
       })
     setAnchorEl(null);
   }
@@ -209,7 +212,13 @@ export const UserListResults = ({ user_list=[], ...rest }) => {
 
   return (
     <Box {...rest}>
-      
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loadingOpen}
+        onClick={()=>{setLoadingOpen(false)}}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <PerfectScrollbar>
         <Box sx={{ minWidth: "100%" }}>
           <Table>

@@ -39,10 +39,10 @@ export const ProvisionDeleteDialog = ({open, handleDeleteOpen, handleClose, hand
             fullScreen={fullScreen}
             aria-labelledby="responsive-dialog-title"
         >
-            <DialogTitle>SUPPRESSION D`&apos;`APPRO</DialogTitle>
+            <DialogTitle>SUPPRESSION D&apos;APPRO</DialogTitle>
             <DialogContent>   
                 <DialogContentText>
-                    Voulez vous supprimer cette demande d`&apos;`appro?
+                    Voulez vous supprimer cette demande d&apos;appro?
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
