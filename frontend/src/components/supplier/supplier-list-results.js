@@ -47,7 +47,7 @@ export const SupplierListResults = ({ supplierList, ...rest}) => {
   const [loadingOpen, setLoadingOpen] = useState(false)
   const [errorSBText, setErrorSBText] = useState("")
 
-  
+  const CANNOT_DELETE_ERROR = "Ce fournisseur ne peux pas etre supprimé."
   const CONNECTION_ERROR = "Probleme de connexion, Veuillez de ressayer"
 
 
@@ -71,7 +71,7 @@ export const SupplierListResults = ({ supplierList, ...rest}) => {
       },
       error => {
         setLoadingOpen(false)
-        handleSBOpen(CONNECTION_ERROR)
+        handleSBOpen(CANNOT_DELETE_ERROR)
       }
     )
   }
