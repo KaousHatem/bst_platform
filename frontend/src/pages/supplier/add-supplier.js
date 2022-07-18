@@ -70,7 +70,7 @@ const AddSupplier = () => {
 
 
 
-    
+    setLoadingOpen(true)
     SupplierProvider.addSupplier(data).then(
       (response) => {
         console.log(response.data)
