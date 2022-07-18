@@ -15,6 +15,8 @@ import { CategoryListResults } from '../../components/category/category-list-res
 import { DashboardLayout } from '../../components/dashboard-layout';
 import CategoryProvider from '../../services/category-provider';
 
+import {CONNECTION_ERROR} from '../../utils/constants'
+
 class Categories extends React.Component{
     
   constructor(props){
