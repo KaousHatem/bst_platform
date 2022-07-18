@@ -231,9 +231,9 @@ class PurchaseOrder(models.Model):
 	status = models.CharField(_("status"),max_length=220, default="1",choices=STATUS)
 	created_on = models.DateTimeField(auto_now_add=True)
 	updated_on = models.DateTimeField(auto_now=True)
-	purchaseRequest = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
-	supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
-	created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+	purchaseRequest = models.ForeignKey(PurchaseRequest, on_delete=models.DO_NOTHING)
+	supplier = models.ForeignKey(Supplier, on_delete=models.DO_NOTHING)
+	created_by = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING)
 
 	def save(self, *args, **kwargs):
 		today = datetime.datetime.now()
