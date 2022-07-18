@@ -18,6 +18,8 @@ import { UserListResults } from '../../components/user/user-list-result'
 
 import UserProvider from '../../services/user-provider'
 
+import {CONNECTION_ERROR} from '../../utils/constants'
+
 class Users extends React.Component{
     
   constructor(props){
