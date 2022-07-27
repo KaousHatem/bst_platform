@@ -7,6 +7,8 @@ from project.models import Location
 from user_control.models import CustomUser
 
 
+
+
 class Category(models.Model):
 	ref = models.CharField(max_length=20, unique=True)
 	name = models.CharField(max_length=220)
@@ -62,6 +64,82 @@ class UnitConversion(models.Model):
 	base_unit = models.ForeignKey(Unit, on_delete=models.CASCADE,related_name='unit_conversion_base_unit')
 	to_unit = models.ForeignKey(Unit, on_delete=models.CASCADE,related_name='unit_conversion_to_unit')
 	multiplier = models.FloatField()
+
+
+
+
+
+class Store(models.Model):
+	location = models.ForeignKey(Location, on_delete=models.DO_NOTHING, related_name="store")
+	name = models.CharField(max_length=20)
+	store_manager = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING, related_name="store", null=True)
+	_open = models.BooleanField(default=True)
+	created_by = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING, related_name="created_by")
+	created_on = models.DateTimeField(auto_now_add=True)
+	updated_on = models.DateTimeField(auto_now=True)
+
+class Transfer(models.Model):
+	source = models.ForeignKey(Store, on_delete=models.DO_NOTHING, related_name="source")
+	target = models.ForeignKey(Store, on_delete=models.DO_NOTHING, related_name="target")
+	product = models.ForeignKey(Product, on_delete=models.DO_NOTHING)
+	quantity = models.IntegerField()
+	price = models.FloatField(null=True)
+	unit = models.ForeignKey(Unit, on_delete=models.CASCADE,null=True, blank=True,)
+	created_by = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING)
+	created_on = models.DateTimeField(auto_now_add=True)
+	updated_on = models.DateTimeField(auto_now=True)
+
+class Stock(models.Model):
+	store = models.ForeignKey(Store, on_delete=models.DO_NOTHING)
+	product = models.ForeignKey(Product, on_delete=models.DO_NOTHING)
+	quantity = models.IntegerField()
+	price = models.FloatField(null=True)
+	updated_by = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING, null=True)
+	created_on = models.DateTimeField(auto_now_add=True)
+	updated_on = models.DateTimeField(auto_now=True)
+
+
+
+# check ref https://medium.com/@yedjoe/celery-4-periodic-task-in-django-9f6b5a8c21c7
+# class StockSnapshot(models.Model):
+# 	stock = models.ForeignKey(Stock, on_delete=models.DO_NOTHING, related_name="snapshots")
+# 	quantity = models.IntegerField()
+# 	created_on = models.DateTimeField(auto_now_add=True)
+
+class StockIn(models.Model):
+
+	SOURCE = (
+		('0', _("PURCHASE")),
+		('1', _("CASH_PURCHASE")),
+		('2', _("TRANSFER")),
+	)
+	stock = models.ForeignKey(Stock, on_delete=models.DO_NOTHING, related_name="stock_in")
+	quantity = quantity = models.IntegerField()
+	price = models.FloatField(null=True)
+	source = models.CharField(_("source"),max_length=22,choices=SOURCE)
+	source_id = models.IntegerField(null=True, blank=True)
+	created_by = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING)
+	created_on = models.DateTimeField(auto_now_add=True)
+	updated_on = models.DateTimeField(auto_now=True)
+
+
+
+class StockOut(models.Model):
+
+	TARGET = (
+		('1', _("TO_PROJECT")),
+		('2', _("TRANSFER")),
+	)
+	stock = models.ForeignKey(Stock, on_delete=models.DO_NOTHING, related_name="stock_out")
+	quantity = quantity = models.IntegerField()
+	price = models.FloatField(null=True)
+	target = models.CharField(_("target"),max_length=22,choices=TARGET)
+	transfer = models.ForeignKey(Transfer, on_delete=models.DO_NOTHING)
+	created_by = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING)
+	created_on = models.DateTimeField(auto_now_add=True)
+	updated_on = models.DateTimeField(auto_now=True)
+
+
 
 
 
@@ -255,6 +333,25 @@ class PurchaseOrderProductRel(models.Model):
 class Receipt(models.Model):
 	created_on = models.DateTimeField(auto_now_add=True)
 	created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+	ref = models.CharField(max_length=20, unique=True, null=True)
+	do = models.CharField(max_length=50, null=True)
+	invoice = models.CharField(max_length=50, null=True)
 	purchaseOrder = models.ForeignKey(PurchaseOrder, related_name='receipt' ,on_delete=models.CASCADE)
 
+	def save(self, *args, **kwargs):
+		today = datetime.datetime.now()
+		if Receipt.objects.filter(~Q(ref=None)):
+			last_ref = Receipt.objects.filter(~Q(ref=None)).order_by('ref').last().ref.split('/')[0]
+			last_ref_int = int(last_ref)
+			self.ref = str(last_ref_int+1).zfill(4) + '/' + str(today.year)
+		else:
+			self.ref = str(1).zfill(4) + '/' + str(today.year)
+		super(Receipt, self).save(*args, **kwargs)
 
+class ReceiptProductRel(models.Model):
+	receipt = models.ForeignKey(PurchaseOrder, related_name='receiptProducts' ,on_delete=models.CASCADE)
+	purchaseOrderProductRel = models.ForeignKey(PurchaseOrderProductRel, on_delete=models.CASCADE, default=0)
+	quantity_receipt = models.IntegerField(null=True, blank=True)
+	quantity_accepted = models.IntegerField(null=True, blank=True)
+	conformity = models.BooleanField(default=True)
+	note = models.TextField(null=True, blank=True)
