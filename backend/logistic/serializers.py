@@ -12,7 +12,9 @@ from .models import (
 	UnitConversion,
 	Supplier,
 	PurchaseOrder,
-	PurchaseOrderProductRel
+	PurchaseOrderProductRel,
+	Receipt,
+	ReceiptProductRel,
 	
 )
 from project.models import Location
@@ -283,7 +285,6 @@ class ProvisionSerializerListing(serializers.ModelSerializer):
 
 
 	def create(self, validated_data):
-		print(validated_data)
 		return Provision.objects.create(**validated_data)
 
 class PurchaseReqProductListSerializer(serializers.ListSerializer):
@@ -710,6 +711,7 @@ class PurchaseOrderSerializer(serializers.ModelSerializer):
 			  'required': False
 		   }
 		}
+
 
 
 

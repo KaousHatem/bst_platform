@@ -22,6 +22,7 @@ from bst_django.permissions import IsAuthenticatedCustom, HasPermission
 
 
 from .filters import ProvisionFilter, ProductFilter
+
 from .models import (
 	Product, 
 	Provision, 
@@ -34,6 +35,10 @@ from .models import (
 	Supplier,
 	PurchaseOrderProductRel,
 	PurchaseOrder,
+	Receipt,
+	ReceiptProductRel,
+	Store,
+	Stock
 
 	
 )
@@ -66,9 +71,23 @@ from .serializers import  (
 	
 )
 
+from .serializer.receipt_serializers import (
+	ReceiptSerializer,
+	ReceiptListSerializer,
+	ReceiptRetreiveSerializer,
+	ReceiptProductSerializer,
+	ReceiptProductRetreiveSerializer,
+)
 
+from .serializer.store_serializers import (
+	StoreSerializer,
+	StoreListSerializer,
+)
 
-
+from .serializer.stock_serializers import (
+	StockSerializer,
+	StockListSerializer,
+)
 
 
 class CategoryViewSet(ModelViewSet):
@@ -734,91 +753,100 @@ class PurchaseOrderProductViewSet(ModelViewSet):
 		return Response(serializers.data, status=status.HTTP_200_OK)
 
 
+class ReceiptViewSet(ModelViewSet):
+	queryset = Receipt.objects.all()
+	serializer_class = ReceiptSerializer
 
+	def get_serializer_class(self):
+		print(self.action)
+		if self.action == 'list':
+			return ReceiptListSerializer
+		if self.action == 'retrieve':
+			return ReceiptRetreiveSerializer
 
-# @api_view(['POST'])
-# @permission_classes([IsAuthenticatedCustom])
-# def product_create_view(request, *args, **kwargs):
-#   serializer = ProductCreateSerializer(data=request.data)
-#   if serializer.is_valid(raise_exception=True):
-#       serializer.save()
-#       return Response(serializer.data, status = 201)
-
-
-# @api_view(['GET'])
-# def product_list_view(request, *args, **kwargs):
-#   qs = Product.objects.all()
-#   serializer = ProductSerializer(qs, many=True)
-#   return JsonResponse(serializer.data, safe=False)
-
-
-# @api_view(['DELETE'])
-# @permission_classes([IsAuthenticatedCustom])
-# def prodcut_delete_view(request,product_id, *args, **kwargs):
-#   qs = Product.objects.filter(id=product_id)
-#   if not qs.exists():
-#       return Resonse({}, status=404)
-#   obj = qs.first()
-#   obj.delete()
-#   return Response({'message':"Product removed"}, status=200)
-
-# @api_view(['GET'])
-# @permission_classes([IsAuthenticatedCustom])
-# def product_detail_view(request, product_id, *args, **kwargs):
-#   qs = Product.objects.filter(id=product_id)
-#   if not qs.exists():
-#       return Response({}, status=404)
-#   obj = qs.first()
-#   serializer = ProductSerializer(obj)
-#   return Response(serializer.data, status=200)
+		return super().get_serializer_class()
 
 
 
-@api_view(['POST'])
-@permission_classes([IsAuthenticatedCustom])
-def provision_create_view(request, *args, **kwargs):
-	serializer = ProvisionSerializer(data=request.data)
-	if serializer.is_valid(raise_exception=True):
-		serializer.save()
-	return Response(serializer.data,status=201)
+	def create(self, request, *args, **kwargs):
+		# commented tempo
+		# token = request.META.get('HTTP_AUTHORIZATION')
+		# user = decodeJWT(token)	
+		serializer = self.get_serializer(data=request.data)
+		try:
+			serializer.is_valid(raise_exception=True)
 
-@api_view(['GET'])
-@permission_classes([IsAuthenticatedCustom])
-def provision_list_view(request, *args, **kwargs):
-	qs = Provision.objects.all()
-	serializer = ProvisionSerializer(qs, many=True)
-	return JsonResponse(serializer.data, safe=False)
+		except:
+			return Response({'message':serializer.errors}, status=400)
+
+		# serializer.save(created_by=user)
+
+		serializer.save(created_by=CustomUser.objects.first())
+
+
+		return Response(serializer.data, status = 201)
+
+
+		
+
+class ReceiptProductViewSet(ModelViewSet):
+	queryset = ReceiptProductRel.objects.all()
+	serializer_class = ReceiptProductSerializer
+
+
+	def create_stock_in(self,id):
+		receiptProduct = ReceiptProductRetreiveSerializer(self.queryset.get(id=id))
+		# print(receiptProduct.data)
+		provisionProduct = receiptProduct.data['purchaseOrderProduct']['purchaseProduct']['provisionProduct']
+		product_id = provisionProduct['product']['id']
+		stock = Stock.objects.filter(product=product_id)
+
+		if(not(stock)):
+			location_id = provisionProduct['provision']['destination']['id']
+			store = Store.objects.filter(location=location_id)[0]
+
+			serializer = StockSerializer(data={'product':product_id,'store':store.id})
+			serializer.is_valid()
+			serializer.save()
+			stock = [Stock.objects.get(id=serializer.data['id'])]
+			print(stock)
+			print('none')
+		
+
+
+	def create(self, request):
+
+		result = super(ReceiptProductViewSet, self).create(request)
+		
+		print(result.data['id'])
+
+		self.create_stock_in(result.data['id'])
+
+		return result
+
+
+class StoreViewSet(ModelViewSet):
+	queryset = Store.objects.all()
+	serializer_class = StoreSerializer
+
+	def get_serializer_class(self):
+		if self.action == 'list':
+			return StoreListSerializer
+
+		return super().get_serializer_class()
+
+class StockViewSet(ModelViewSet):
+	queryset = Stock.objects.all()
+	serializer_class = StockSerializer
+
+	def get_serializer_class(self):
+		if self.action == 'list':
+			return StockListSerializer
+
+		return super().get_serializer_class()
 
 
 
-@api_view(['DELETE'])
-@permission_classes([IsAuthenticatedCustom])
-def provision_delete_view(request, provision_id, *args, **kwargs):
-	qs = Provision.objects.filter(id=provision_id)
-	if not qs.exists():
-		return Response({},404)
-	obj = qs.first()
-	obj.delete()
-	return Response({'message':'provision has been removed'},status=200)
 
-@api_view(['GET'])
-@permission_classes([IsAuthenticatedCustom])
-def provision_detail_view(request, provision_id, *args, **kwargs):
-	qs = Provision.objects.filter(id=provision_id)
-	if not qs.exists():
-		return Response({}, status=404)
-	obj = qs.first()
-	serializer = ProvisionSerializer(obj)
-	return Response( serializer.data, status=200)
 
-@api_view(['PUT'])
-@permission_classes([IsAuthenticatedCustom])
-def provision_approve_view(request, provision_id, *args, **kwargs):
-	qs = Provision.objects.filter(id=provision_id)
-	if not qs.exists():
-		return Response({}, status=404)
-	obj = qs.first()
-	obj.approve()
-	obj.save()
-	return Response( {'message':"update successful"}, status=200) 
 

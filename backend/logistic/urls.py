@@ -12,6 +12,10 @@ from .views import (
 	SupplierViewSet,
 	PurchaseOrderViewSet,
 	PurchaseOrderProductViewSet,
+	ReceiptViewSet,
+	ReceiptProductViewSet,
+	StoreViewSet,
+	StockViewSet,
 	)
 from rest_framework.routers import DefaultRouter
 
@@ -29,6 +33,10 @@ router.register(r'logistic/purchase-request-product', PurchaseReqProductViewSet)
 router.register(r'logistic/supplier', SupplierViewSet)
 router.register(r'logistic/purchase-order', PurchaseOrderViewSet)
 router.register(r'logistic/purchase-order-product', PurchaseOrderProductViewSet)
+router.register(r'logistic/receipt', ReceiptViewSet)
+router.register(r'logistic/receipt-product', ReceiptProductViewSet)
+router.register(r'logistic/store', StoreViewSet)
+router.register(r'logistic/stock', StockViewSet)
 
 
 urlpatterns = [

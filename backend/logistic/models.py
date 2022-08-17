@@ -90,10 +90,10 @@ class Transfer(models.Model):
 	updated_on = models.DateTimeField(auto_now=True)
 
 class Stock(models.Model):
-	store = models.ForeignKey(Store, on_delete=models.DO_NOTHING)
+	store = models.ForeignKey(Store, on_delete=models.DO_NOTHING, related_name="products")
 	product = models.ForeignKey(Product, on_delete=models.DO_NOTHING)
-	quantity = models.IntegerField()
-	price = models.FloatField(null=True)
+	quantity = models.IntegerField(default=0)
+	price = models.FloatField(null=True,default=0.0)
 	updated_by = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING, null=True)
 	created_on = models.DateTimeField(auto_now_add=True)
 	updated_on = models.DateTimeField(auto_now=True)
@@ -216,7 +216,7 @@ class ProvisionProductRel(models.Model):
 	
 	# change unit from charField for ForeignKey
 	unit = models.ForeignKey(Unit, on_delete=models.CASCADE,null=True, blank=True,)
-	quantity = models.IntegerField()
+	quantity = models.FloatField()
 
 
 class PurchaseRequest(models.Model):
@@ -284,7 +284,7 @@ class PurchaseReqProductRel(models.Model):
 	provisionProduct = models.ForeignKey(ProvisionProductRel, on_delete=models.CASCADE, default=0)
 	purchaseRequest = models.ForeignKey(PurchaseRequest,related_name='purchaseReqProducts' , on_delete=models.CASCADE)
 	unit = models.ForeignKey(Unit, on_delete=models.CASCADE,null=True, blank=True)
-	quantity = models.IntegerField(null=True, blank=True)
+	quantity = models.FloatField(null=True, blank=True)
 
 
 
@@ -349,9 +349,9 @@ class Receipt(models.Model):
 		super(Receipt, self).save(*args, **kwargs)
 
 class ReceiptProductRel(models.Model):
-	receipt = models.ForeignKey(PurchaseOrder, related_name='receiptProducts' ,on_delete=models.CASCADE)
-	purchaseOrderProductRel = models.ForeignKey(PurchaseOrderProductRel, on_delete=models.CASCADE, default=0)
-	quantity_receipt = models.IntegerField(null=True, blank=True)
-	quantity_accepted = models.IntegerField(null=True, blank=True)
+	receipt = models.ForeignKey(Receipt, related_name='receiptProducts' ,on_delete=models.CASCADE)
+	purchaseOrderProduct = models.ForeignKey(PurchaseOrderProductRel, on_delete=models.CASCADE, default=0)
+	quantity_receipt = models.FloatField(null=True, blank=True)
+	quantity_accepted = models.FloatField(null=True, blank=True)
 	conformity = models.BooleanField(default=True)
 	note = models.TextField(null=True, blank=True)
