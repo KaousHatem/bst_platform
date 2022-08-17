@@ -47,14 +47,13 @@ const PurchaseRequestPage = () => {
             (response) => {
               setPurchaseRequest(response.data)
               console.log(response.data)
-              
               Promise.all([
                   UserProvider.getUserSignature(response.data.created_by.id),
-                  (response.data.approved_by!==null || response.data.approved_by!==undefined) && UserProvider.getUserSignature(response.data.approved_by.id)
+                  (response.data.approved_by!==null) && UserProvider.getUserSignature(response.data.approved_by.id)
                   ]).then(
                   responses=>{
                       setCreator(responses[0].data.private_key+'_'+responses[0].data.username)
-                      responses[1] ? setApprover(responses[1].data.private_key+'_'+responses[1].data.username):_
+                      responses[1] ? setApprover(responses[1].data.private_key+'_'+responses[1].data.username):
                       setLoading(false)
                   },
                   )
