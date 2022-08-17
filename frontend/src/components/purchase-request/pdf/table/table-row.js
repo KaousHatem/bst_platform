@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import {Text, View, StyleSheet, Image } from '@react-pdf/renderer';
+import { format } from 'date-fns'
 
 const borderColor = 'black'
 const textColor = 'black'
