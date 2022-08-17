@@ -147,7 +147,7 @@ const AddPurchaseRequest = () => {
         setProvisions(responses[0].data)
 
         if(responses[1]){
-          setProductInPurchase(response.data.map((product) => {return product.id}))
+          setProductInPurchase(responses[1].data.map((product) => {return product.id}))
               const selectedProvision =  responses[0].data.find((provision) => {
             return provision.id === provisionValue
           })
