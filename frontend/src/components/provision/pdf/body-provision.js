@@ -27,7 +27,7 @@ const BodyProvision = ({provision}) => {
     
     return(
     <View style={styles.headerContainer}>
-        <Text style={styles.documentTitle}>Demande d`&apos;`appro</Text>
+        <Text style={styles.documentTitle}>Demande d&apos;appro</Text>
         <ItemsTable provision={provision}/>
     </View>
   );

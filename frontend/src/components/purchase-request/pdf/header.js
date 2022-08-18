@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
         letterSpacing: 0.5,
         textTransform: 'uppercase',
         fontFamily: 'Helvetica-Bold',
-        marginTop:5,
+        marginTop:12,
     },
     projectContainer: {
         marginTop: 5,

@@ -27,7 +27,7 @@ const Body = ({purchaseRequest}) => {
     
     return(
     <View style={styles.headerContainer}>
-        <Text style={styles.documentTitle}>Demande d`&apos;`achat</Text>
+        <Text style={styles.documentTitle}>Demande d&apos;achat</Text>
         <ItemsTable purchaseRequest={purchaseRequest}/>
     </View>
   );

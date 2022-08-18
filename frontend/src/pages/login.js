@@ -46,30 +46,7 @@ const Login = (props) => {
 
   const CONNECTION_ERROR = "Probleme de connexion, Veuillez de ressayer"
   
-  // const router = useRouter();
-    /*const formik = useFormik({
-      initialValues: {
-        username: '',
-        password: ''
-      },
-      validationSchema: Yup.object({
-        username: Yup
-          .string()
-          .max(255)
-          .required(
-            'Email is required'),
-        password: Yup
-          .string()
-          .max(255)
-          .required(
-            'Password is required')
-      }),
-      onSubmit: (values) => {
-        //AuthProvider.login(values.username,values.password)
-        console.log(values.username)
-        router.push('/');
-      }
-    });*/
+  
   
 
 

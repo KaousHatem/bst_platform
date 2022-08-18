@@ -126,7 +126,7 @@ export const PRAddToolbar = ({props, isAddPage=false, handleReject, handleApprov
         sx={{ m: 1 }}
         variant="h4"
       >
-        DEMANDE D`&apos;`ACHAT
+        DEMANDE D&apos;ACHAT
       </Typography>
       <Box sx={{ m: 1 }}>
         <Button
@@ -177,7 +177,7 @@ export const PRAddToolbar = ({props, isAddPage=false, handleReject, handleApprov
             <CancelIcon />
             Rejecter la demande
           </MenuItem>}
-          { !isAddPage && (!purchaseRequestStatus || purchaseRequestStatus==='9' ) && <MenuItem 
+          { !isAddPage && UXAccess.hasPurchaseRequestApproveAccess() && (!purchaseRequestStatus || purchaseRequestStatus==='9' ) && <MenuItem 
             onClick={handleAddPurchaseOrder}
           >
             <PositiveIcon />

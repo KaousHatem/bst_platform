@@ -53,7 +53,9 @@ const PurchaseRequestPage = () => {
                   ]).then(
                   responses=>{
                       setCreator(responses[0].data.private_key+'_'+responses[0].data.username)
-                      responses[1] ? setApprover(responses[1].data.private_key+'_'+responses[1].data.username):
+                      if(responses[1]){
+                          setApprover(responses[1].data.private_key+'_'+responses[1].data.username)
+                      }
                       setLoading(false)
                   },
                   )

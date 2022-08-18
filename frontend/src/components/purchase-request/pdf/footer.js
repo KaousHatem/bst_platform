@@ -63,7 +63,7 @@ const Footer = ({creator, approver,purchaseRequest}) => {
     const getDate = (date) => {
         // const [year, month, day] = date.split('-')
         // console.log(day+'/'+month+'/'+year)
-        return format(new Date(date),'yyyy/MM/dd')
+        return format(new Date(date),'dd/MM/yyyy')
     }
 
  
@@ -83,7 +83,7 @@ const Footer = ({creator, approver,purchaseRequest}) => {
             
         </View>
         <View style={styles.VisaLogistic}>
-            <Text style={styles.text}>Directeur Generale</Text>
+            <Text style={styles.text}>Directeur General</Text>
             <Text style={styles.text}>Date: {purchaseRequest.approved_on!==null && getDate(purchaseRequest.approved_on)}</Text>
             <Text style={styles.text}>Visa:</Text>
             {purchaseRequest.approved_by!==null && <View style={styles.chop}>
