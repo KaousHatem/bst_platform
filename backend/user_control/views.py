@@ -33,12 +33,15 @@ class CreateUserView(ModelViewSet):
 
     def create(self, request):
         valid_request = self.serializer_class(data=request.data)
-        if self.queryset.get(username=request.data['username']):
+        # print(self.queryset.get(username="chakib"))
+        if self.queryset.filter(username=request.data['username']):
             return Response(
                     {'message':"username already exists"},
                     status=status.HTTP_409_CONFLICT
                 )
+
         valid_request.is_valid(raise_exception=True)
+
         user_data = dict(valid_request.validated_data)
 
         user_data['location'] = Location.objects.get(pk=valid_request.validated_data.get('location'))
