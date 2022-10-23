@@ -16,6 +16,7 @@ RUN apk update \
 
 # install dependencies
 RUN pip install --upgrade pip
+RUN pip install --upgrade cython
 COPY ./requirements.txt /usr/src/app/backend
 RUN pip install -r requirements.txt
 

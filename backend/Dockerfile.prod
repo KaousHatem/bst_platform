@@ -18,6 +18,7 @@ RUN apk update \
 
 # lint
 RUN pip install --upgrade pip
+RUN pip install --upgrade cython
 RUN pip install flake8
 COPY . .
 RUN flake8 --ignore=E501,F401,W191,E203,W,E,F .
