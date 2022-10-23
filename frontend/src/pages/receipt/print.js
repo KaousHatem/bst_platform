@@ -88,7 +88,8 @@ const ReceiptPage = () => {
                     style={styles.page}>
 						<Header receipt={receipt} />
 						<Body receipt={receipt} />
-            <Footer creator={creator} receipt={receipt} />
+            <Footer creator={creator} 
+              receipt={receipt} />
                         
 					</Page>
 				</Document>
