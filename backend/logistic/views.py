@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from django.http import HttpResponse, Http404, JsonResponse, HttpResponseRedirect
+from django.http import HttpResponse, Http404, JsonResponse, HttpResponseRedirect, FileResponse
+# from django.http import FileResponse
 from django.views.decorators.csrf import csrf_exempt
 import django_filters.rest_framework
 from rest_framework_role_filters.viewsets import RoleFilterModelViewSet
@@ -13,8 +14,10 @@ from rest_framework import status
 from rest_framework.response import Response
 
 
+
 from rest_framework_csv import parsers as p
 
+import pandas as pd
 import csv
 import json
 from time import time
@@ -22,6 +25,7 @@ from time import time
 from bst_django.utils import get_access_token, decodeJWT
 from bst_django.permissions import IsAuthenticatedCustom, HasPermission
 
+from .renderers import PassthroughRenderer
 
 from .filters import ProvisionFilter, ProductFilter
 
@@ -1103,40 +1107,6 @@ class StockViewSet(ModelViewSet):
 
 	def list(self, request):
 
-		# qs1 = list(StockIn.objects.all())
-		# qs2 = list(StockOut.objects.all())
-		# qs3 = list(StockInit.objects.all())
-		# listQs = [qs1,qs2,qs3]
-		# print(qs1)
-		# print(qs2)
-		# print(qs3)
-		# qsTotal = []
-		# for i in range(len(qs1)+len(qs2)+len(qs3)):
-		# 	# print(i)
-		# 	try:
-		# 		qsItem1 = listQs[0][-1]
-		# 	except:
-		# 		qsItem1 = None
-		# 	try:
-		# 		qsItem2 = listQs[1][-1]
-		# 	except:
-		# 		qsItem2 = None
-		# 	try:
-		# 		qsItem3 = listQs[2][-1]
-		# 	except:
-		# 		qsItem3 = None
-
-		# 	itemList = [qsItem1,qsItem2,qsItem3]
-		# 	min_qs = max(itemList, key=lambda item: item.created_on if (item) else )
-		# 	listQs[itemList.index(min_qs)].remove(min_qs)
-		# 	# print(itemList.index(min_qs))
-		# 	print(listQs)
-
-
-		# allqs = list(chain(qs2,qs1,qs3))
-		# allqs1= qs1.union(qs2, all=True)
-		# print(allqs)
-		# print(allqs1.first().source)
 
 		result = super(StockViewSet, self).list(request)
 		if result.data:
@@ -1170,6 +1140,29 @@ class StockViewSet(ModelViewSet):
 			return Response(data={"message":"no content"}, status=status.HTTP_204_NO_CONTENT)
 
 
+	@action(methods=['get'], detail=True)
+	def download(self,request, *args, **kwargs):
+		instance = self.get_object()
+		serializer = StockRetrieveSerializer(instance)
+		list_data_frame = []
+		for stock_movement in serializer.data['stock_movement']:
+			data = {}
+			data['id']= stock_movement['id']
+			data['date']= stock_movement['created_on']
+			data['type de mouvement']= stock_movement['movement_type']
+			data['justification']= stock_movement['movement_detail']['justification']
+			data['reference']= stock_movement['movement_detail']['reference']
+			data['quantité']= stock_movement['movement_detail']['quantity']
+			data['unité']= stock_movement['movement_detail']['unit']
+			data['prix_unitaire']= stock_movement['movement_detail']['price']
+			data['prix total']= stock_movement['movement_detail']['total_price']
+			list_data_frame.append(data)
+		df = pd.DataFrame(list_data_frame)
+		# send file
+		response = HttpResponse(content_type='text/csv')
+		response['Content-Disposition'] = 'attachment; filename="export.csv"'
+		df.to_csv(path_or_buf=response)  # with other applicable parameters
+		return response
 
 
 
