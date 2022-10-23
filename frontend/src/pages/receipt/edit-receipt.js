@@ -183,7 +183,7 @@ const EditReceipt = () => {
         }
       )    
     
-  },[])
+  },[receiptId])
 
 
   

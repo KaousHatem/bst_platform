@@ -171,7 +171,7 @@ const AddReceipt = () => {
         }
       )    
     
-  },[])
+  },[purchaseOrderId])
 
 
   
