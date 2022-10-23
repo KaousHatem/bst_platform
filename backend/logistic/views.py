@@ -17,7 +17,7 @@ from rest_framework.response import Response
 
 from rest_framework_csv import parsers as p
 
-import pandas as pd
+# import pandas as pd
 import csv
 import json
 from time import time
@@ -1140,29 +1140,29 @@ class StockViewSet(ModelViewSet):
 			return Response(data={"message":"no content"}, status=status.HTTP_204_NO_CONTENT)
 
 
-	@action(methods=['get'], detail=True)
-	def download(self,request, *args, **kwargs):
-		instance = self.get_object()
-		serializer = StockRetrieveSerializer(instance)
-		list_data_frame = []
-		for stock_movement in serializer.data['stock_movement']:
-			data = {}
-			data['id']= stock_movement['id']
-			data['date']= stock_movement['created_on']
-			data['type de mouvement']= stock_movement['movement_type']
-			data['justification']= stock_movement['movement_detail']['justification']
-			data['reference']= stock_movement['movement_detail']['reference']
-			data['quantité']= stock_movement['movement_detail']['quantity']
-			data['unité']= stock_movement['movement_detail']['unit']
-			data['prix_unitaire']= stock_movement['movement_detail']['price']
-			data['prix total']= stock_movement['movement_detail']['total_price']
-			list_data_frame.append(data)
-		df = pd.DataFrame(list_data_frame)
-		# send file
-		response = HttpResponse(content_type='text/csv')
-		response['Content-Disposition'] = 'attachment; filename="export.csv"'
-		df.to_csv(path_or_buf=response)  # with other applicable parameters
-		return response
+	# @action(methods=['get'], detail=True)
+	# def download(self,request, *args, **kwargs):
+	# 	instance = self.get_object()
+	# 	serializer = StockRetrieveSerializer(instance)
+	# 	list_data_frame = []
+	# 	for stock_movement in serializer.data['stock_movement']:
+	# 		data = {}
+	# 		data['id']= stock_movement['id']
+	# 		data['date']= stock_movement['created_on']
+	# 		data['type de mouvement']= stock_movement['movement_type']
+	# 		data['justification']= stock_movement['movement_detail']['justification']
+	# 		data['reference']= stock_movement['movement_detail']['reference']
+	# 		data['quantité']= stock_movement['movement_detail']['quantity']
+	# 		data['unité']= stock_movement['movement_detail']['unit']
+	# 		data['prix_unitaire']= stock_movement['movement_detail']['price']
+	# 		data['prix total']= stock_movement['movement_detail']['total_price']
+	# 		list_data_frame.append(data)
+	# 	df = pd.DataFrame(list_data_frame)
+	# 	# send file
+	# 	response = HttpResponse(content_type='text/csv')
+	# 	response['Content-Disposition'] = 'attachment; filename="export.csv"'
+	# 	df.to_csv(path_or_buf=response)  # with other applicable parameters
+	# 	return response
 
 
 
