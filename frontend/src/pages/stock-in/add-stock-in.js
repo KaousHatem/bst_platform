@@ -125,7 +125,7 @@ const AddStockIn = () => {
         handleSBOpen(CONNECTION_ERROR)
       })
     
-  },[])
+  },[stockId])
 
 
   

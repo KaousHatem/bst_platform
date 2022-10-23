@@ -102,7 +102,6 @@ const DetailStock = () => {
   useEffect( () => {
 
     setLoadingOpen(true)
-    console.log(stockId)
     Promise.all([
       StockProvider.getStocks(stockId)
       ]).then(
@@ -122,7 +121,7 @@ const DetailStock = () => {
         }
       )    
     
-  },[])
+  },[stockId])
 
 
   

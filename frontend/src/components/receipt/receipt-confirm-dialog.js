@@ -83,12 +83,16 @@ export const ReceiptConfirmDialog = ({product, products, setProducts, open, setO
     setConformity(new_conformity);
   };
 
+  const receiptProductUpdate = (productInput) => {
+    setReceivedQuantity(productInput.receivedQuantity ? productInput.receivedQuantity : productInput.quantity)
+    setAcceptedQuantity(productInput.acceptedQuantity ? productInput.acceptedQuantity : productInput.quantity)
+    setNote(productInput.note)
+    setConformity(productInput.conformity)
+  }
+
   useEffect(()=>{
     if(open){
-      setReceivedQuantity(product.receivedQuantity ? product.receivedQuantity : product.quantity)
-      setAcceptedQuantity(product.acceptedQuantity ? product.acceptedQuantity : product.quantity)
-      setNote(product.note)
-      setConformity(product.conformity)
+      receiptProductUpdate(product)
 
     }
   },[open])
@@ -205,10 +209,12 @@ export const ReceiptConfirmDialog = ({product, products, setProducts, open, setO
                 onChange={handleConformity}
                 aria-label="conformity"
               >
-                <ToggleButton value="oui" aria-label="conforme">
+                <ToggleButton value="oui" 
+                  aria-label="conforme">
                   conforme
                 </ToggleButton>
-                <ToggleButton value="non" aria-label="non-conforme">
+                <ToggleButton value="non" 
+                  aria-label="non-conforme">
                   non conforme
                 </ToggleButton>
               </ToggleButtonGroup>

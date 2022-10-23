@@ -152,7 +152,7 @@ export const StockDetailToolbar = ({props, stockId }) => {
             }}
           >
             <MenuItem onClick={(event) => handleStockIn(event)} >
-              Bon d'entré
+              Bon d&apos;entré
             </MenuItem> 
             <MenuItem onClick={(event) => handleStockOut(event)} >
               Bon de sortie

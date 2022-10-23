@@ -166,7 +166,14 @@ export const ReceiptAddProduct = ({selectedProducts,setSelectedProducts, setAllC
     <Card {...rest}>
       <PerfectScrollbar>
         <Box sx={{ minWidth: "100%" }}>
-          {selectedProduct && <ReceiptConfirmDialog products={selectedProducts} setProducts={setSelectedProducts} product={selectedProduct} open={open} setOpen={setOpen} />}
+          {selectedProduct && 
+            <ReceiptConfirmDialog 
+              products={selectedProducts} 
+              setProducts={setSelectedProducts} 
+              product={selectedProduct} 
+              open={open} 
+              setOpen={setOpen} 
+            />}
           
           <Table>
             <TableHead sx={{

@@ -118,7 +118,7 @@ const EditStore = () => {
         handleSBOpen(CONNECTION_ERROR)
       })
     
-  },[])
+  },[storeId])
 
 
   

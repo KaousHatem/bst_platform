@@ -80,10 +80,13 @@ export const ReceiptProductDialog = ({product, products, setProducts, open, setO
     setConformity(new_conformity);
   };
 
+  const receiptProductUpdate = (productInput) => {
+    setNote(productInput.note)
+    setConformity(productInput.conformity)
+  }
   useEffect(()=>{
     if(open){
-      setNote(product.note)
-      setConformity(product.conformity)
+      receiptProductUpdate(product)
     }
   },[open])
 
@@ -194,10 +197,12 @@ export const ReceiptProductDialog = ({product, products, setProducts, open, setO
                 onChange={handleConformity}
                 aria-label="conformity"
               >
-                <ToggleButton value={true} aria-label="conforme">
+                <ToggleButton value={true} 
+                  aria-label="conforme">
                   conforme
                 </ToggleButton>
-                <ToggleButton value={false} aria-label="non-conforme">
+                <ToggleButton value={false} 
+                  aria-label="non-conforme">
                   non conforme
                 </ToggleButton>
               </ToggleButtonGroup>

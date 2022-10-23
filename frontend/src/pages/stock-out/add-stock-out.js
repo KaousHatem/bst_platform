@@ -123,7 +123,7 @@ const AddStockOut = () => {
         handleSBOpen(CONNECTION_ERROR)
       })
     
-  },[])
+  },[stockId])
 
 
   
