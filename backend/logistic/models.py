@@ -215,10 +215,16 @@ class StockIn(models.Model):
 			stock.quantity = stock.quantity + self.quantity
 			stock.save()
 
-		super(StockIn, self).save(*args, **kwargs)
+			super(StockIn, self).save(*args, **kwargs)
 
-		stockIn = StockMovement.objects.create(movement_type='0',movement_id=int(self.pk),stock=self.stock)
-		stockIn.save()
+			stockIn = StockMovement.objects.create(movement_type='0',movement_id=int(self.pk),stock=self.stock)
+			stockIn.save()
+		else:
+			if self.price:
+				stock = self.stock	
+				stock.price = round((stock.price * stock.quantity + self.price * self.quantity)/(stock.quantity+self.quantity),2)
+				stock.save()
+			super(StockIn, self).save(*args, **kwargs)
 
 	def delete(self, *args, **kwargs):
 		stock = self.stock

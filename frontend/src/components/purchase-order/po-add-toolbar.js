@@ -70,7 +70,7 @@ const StyledMenu = styled((props) => (
   },
 }));
 
-export const POAddToolbar = ({props, isAdd = true ,id, confirmed=false }) => {
+export const POAddToolbar = ({props, isAdd = true ,id, received=false, confirmed=false }) => {
 
   const router = useRouter();
   
@@ -153,18 +153,18 @@ export const POAddToolbar = ({props, isAdd = true ,id, confirmed=false }) => {
             'aria-labelledby': 'action-btn',
           }}
         >
-          <MenuItem onClick={(event) => handleReceipt(event)} >
+          {!received && <MenuItem onClick={(event) => handleReceipt(event)} >
             <ReceiptIcon />
             Accuser la réception
-          </MenuItem> 
+          </MenuItem> }
           <MenuItem onClick={(event) => handlePrint(event)} >
             <PrintIcon />
             Imprimer la demande
           </MenuItem>
-          <MenuItem >
+          {/*<MenuItem >
             <PrintIcon />
             Approver le bon de commande
-          </MenuItem>
+          </MenuItem>*/}
         </StyledMenu>
         </>
       }

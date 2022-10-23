@@ -768,6 +768,15 @@ class PurchaseOrderProductViewSet(ModelViewSet):
 
 		try:
 			serializers.save()
+			for data in serializers.data:
+				purchaseOrderProductRel = self.queryset.get(id=data['id'])
+				receiptProducts = purchaseOrderProductRel.received.all()
+				for receiptProduct in receiptProducts:
+					stockIn = StockIn.objects.filter(source_id=receiptProduct.id).first()
+					if stockIn:
+						stockIn.price = data['unitPrice']
+						stockIn.save()
+
 		except Exception as e:
 			return Response({'message':e}, status=403)
 
@@ -801,9 +810,8 @@ class ReceiptViewSet(RoleFilterModelViewSet):
 
 
 	def create(self, request, *args, **kwargs):
-		# commented tempo
-		# token = request.META.get('HTTP_AUTHORIZATION')
-		# user = decodeJWT(token)	
+		token = request.META.get('HTTP_AUTHORIZATION')
+		user = decodeJWT(token)	
 		serializer = self.get_serializer(data=request.data)
 		try:
 			serializer.is_valid(raise_exception=True)
@@ -811,9 +819,9 @@ class ReceiptViewSet(RoleFilterModelViewSet):
 		except:
 			return Response({'message':serializer.errors}, status=400)
 
-		# serializer.save(created_by=user)
+		serializer.save(created_by=user)
 
-		serializer.save(created_by=CustomUser.objects.first())
+		# serializer.save(created_by=CustomUser.objects.first())
 
 
 		return Response(serializer.data, status = 201)

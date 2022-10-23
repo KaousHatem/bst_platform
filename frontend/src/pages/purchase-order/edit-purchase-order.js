@@ -93,7 +93,7 @@ const EditPurchaseOrder = () => {
       },
       error=>{
         setLoadingOpen(false)
-        router.push('/purchase-order');
+        // router.push('/purchase-order');
         handleSBOpen(CONNECTION_ERROR)
       })
     
@@ -119,7 +119,6 @@ const EditPurchaseOrder = () => {
       PurchaseOrderProvider.getPurchaseOrders(purchaseOrderId),
       ]).then(
         responses => {
-
           setPurchaseOrder(responses[0].data)
           setPurchaseProducts(responses[0].data.purchaseOrderProducts.map(product=>{
             if(!product.unitPrice){
@@ -145,7 +144,7 @@ const EditPurchaseOrder = () => {
           setLoading(false)
         }
       )    
-  },[purchaseOrderId])
+  },[])
 
 
   
@@ -174,7 +173,10 @@ const EditPurchaseOrder = () => {
         <POAddToolbar
         isAdd={false}
         id={purchaseOrderId}
-        confirmed={confirmed} />
+        confirmed={confirmed}
+        received={purchaseOrder.allReceived}
+        />
+        
         <Box sx={{ 
           mt: 3 ,
           backgroundColor: "white",

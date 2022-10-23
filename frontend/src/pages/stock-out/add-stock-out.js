@@ -57,8 +57,8 @@ const AddStockOut = () => {
 
   
   const CONNECTION_ERROR = "Probleme de connexion, Veuillez de ressayer"
-  const STOCK_EXIST_ERROR = "Cette article existe dans ce magasin"
-  const PRODUCT_NOT_SELECTED_ERROR = "Veuillez de selectionner un article"
+  
+  const QUANTITY_ERROR = "La quantité du bon de sortie est supèrieure à la quantité courante"
 
 
 
@@ -78,23 +78,27 @@ const AddStockOut = () => {
       
     }
      
-    const data = {
-      quantity: base_quantity,
-      price: stock.price,
-      target: e.target.targetType.value,
-      target_detail: e.target.targetDetail.value,
-      stock: stockId,
+    if(base_quantity < stock.quantity){
+      const data = {
+        quantity: base_quantity,
+        price: stock.price,
+        target: e.target.targetType.value,
+        target_detail: e.target.targetDetail.value,
+        stock: stockId,
+      }
+      console.log(data)
+      setLoadingOpen(true)
+      StockOutProvider.addStockOut(data).then(
+        response=>{
+          setLoadingOpen(false)
+          router.back();
+        },error=>{
+          setLoadingOpen(false)
+          handleSBOpen(CONNECTION_ERROR)
+        })
+    }else{
+      handleSBOpen(QUANTITY_ERROR)
     }
-    console.log(data)
-    setLoadingOpen(true)
-    StockOutProvider.addStockOut(data).then(
-      response=>{
-        setLoadingOpen(false)
-        router.back();
-      },error=>{
-        setLoadingOpen(false)
-        handleSBOpen(CONNECTION_ERROR)
-      })
     
   }
 
