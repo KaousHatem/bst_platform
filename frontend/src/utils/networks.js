@@ -6,6 +6,7 @@ export const CreateUserUrl = BaseUrl + "user/create-user/"
 export const UserListUrl = BaseUrl + "user/users"
 export const ActivateUrl = BaseUrl + "user/activate"
 export const UserMeUrl = BaseUrl + "user/me"
+export const UserListShortUrl = BaseUrl + "user/users/short/"
 
 export const unitUrl = BaseUrl + "logistic/unit/"
 export const UnitConversionUrl = BaseUrl + "logistic/unit-conversion/"
@@ -34,6 +35,17 @@ export const poProductUrl = BaseUrl + 'logistic/purchase-order-product/'
 
 export const supplierUrl = BaseUrl + 'logistic/supplier/'
 
+export const receiptUrl = BaseUrl + 'logistic/receipt/'
+export const receiptProductUrl = BaseUrl + 'logistic/receipt-product/'
+export const storeUrl = BaseUrl + 'logistic/store/'
+
+export const stockUrl = BaseUrl + 'logistic/stock/'
+export const stockUserLocationUrl = BaseUrl + 'logistic/stock/user_location/'
+
+
+export const stockInitUrl = BaseUrl + 'logistic/stock-init/'
+export const stockInUrl = BaseUrl + 'logistic/stock-in/'
+export const stockOutUrl = BaseUrl + 'logistic/stock-out/'
 
 
 

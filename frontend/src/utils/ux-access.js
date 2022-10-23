@@ -105,6 +105,15 @@ class UXAccess {
 		return ROLES_ACCESS.includes(role)
 	}
 
+	hasStoreAccess = () => {
+		const ROLES_ACCESS = [ROLES_LIST.ADMIN,ROLES_LIST.LOGISTIC_ADMIN]
+		const role = localStorage.getItem('role')
+
+		return ROLES_ACCESS.includes(role)
+	}
+
+
+
 
 
 }

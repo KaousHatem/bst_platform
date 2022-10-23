@@ -79,6 +79,7 @@ class Store(models.Model):
 	updated_on = models.DateTimeField(auto_now=True)
 
 class Transfer(models.Model):
+	ref = models.CharField(max_length=20, unique=True, null=True)
 	source = models.ForeignKey(Store, on_delete=models.DO_NOTHING, related_name="source")
 	target = models.ForeignKey(Store, on_delete=models.DO_NOTHING, related_name="target")
 	product = models.ForeignKey(Product, on_delete=models.DO_NOTHING)
@@ -88,13 +89,23 @@ class Transfer(models.Model):
 	created_by = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING)
 	created_on = models.DateTimeField(auto_now_add=True)
 	updated_on = models.DateTimeField(auto_now=True)
+	
+	def save(self, *args, **kwargs):
+		today = datetime.datetime.now()
+		if Transfer.objects.filter(~Q(ref=None)):
+			last_ref = Transfer.objects.filter(~Q(ref=None)).order_by('ref').last().ref.split('/')[0]
+			last_ref_int = int(last_ref)
+			self.ref = str(last_ref_int+1).zfill(4) + '/' + str(today.year)
+		else:
+			self.ref = str(1).zfill(4) + '/' + str(today.year)
+		super(Transfer, self).save(*args, **kwargs)
 
 class Stock(models.Model):
 	store = models.ForeignKey(Store, on_delete=models.DO_NOTHING, related_name="products")
 	product = models.ForeignKey(Product, on_delete=models.DO_NOTHING)
 	quantity = models.IntegerField(default=0)
 	price = models.FloatField(null=True,default=0.0)
-	updated_by = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING, null=True)
+	updated_by = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING, null=True, default=CustomUser.objects.first().id)
 	created_on = models.DateTimeField(auto_now_add=True)
 	updated_on = models.DateTimeField(auto_now=True)
 
@@ -106,6 +117,67 @@ class Stock(models.Model):
 # 	quantity = models.IntegerField()
 # 	created_on = models.DateTimeField(auto_now_add=True)
 
+class StockMovement(models.Model):
+	MOVEMENT = (
+		('0', _("in")),
+		('1', _("out")),
+		('2', _("init")),
+	)
+	stock = models.ForeignKey(Stock, on_delete=models.DO_NOTHING, related_name="stock_movement",null=True)
+	movement_type = models.CharField(_("movement_type"),max_length=22,choices=MOVEMENT)
+	movement_id = models.IntegerField(null=True, blank=True)
+	created_on = models.DateTimeField(auto_now_add=True)
+
+	class Meta:
+		ordering = ('-created_on',)
+		unique_together = [
+            ("movement_type", "movement_id"),
+        ]
+
+
+
+class StockInit(models.Model):
+	ref = models.CharField(max_length=20, unique=True, null=True)
+	stock = models.ForeignKey(Stock, on_delete=models.DO_NOTHING, related_name="stock_init")
+	quantity = models.IntegerField()
+	old_quantity = models.IntegerField(null=True)
+	price = models.FloatField(null=True)
+	old_price = models.FloatField(null=True)
+	note = models.CharField(max_length=500, null=True, blank=True)
+	created_by = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING)
+	created_on = models.DateTimeField(auto_now_add=True)
+	updated_on = models.DateTimeField(auto_now=True)
+
+	class Meta:
+		ordering = ('created_on',)
+
+	def save(self, *args, **kwargs):
+		today = datetime.datetime.now()
+		if StockInit.objects.filter(~Q(ref=None)):
+			last_ref = StockInit.objects.filter(~Q(ref=None)).order_by('ref').last().ref.split('/')[0]
+			last_ref_int = int(last_ref)
+			self.ref = str(last_ref_int+1).zfill(4) + '/' + str(today.year)
+		else:
+			self.ref = str(1).zfill(4) + '/' + str(today.year)
+
+		if not self.pk:
+			stock = self.stock
+			self.old_quantity = stock.quantity 
+			self.old_price = stock.price 
+			stock.quantity = self.quantity
+			stock.price = self.price
+			stock.save()
+		super(StockInit, self).save(*args, **kwargs)
+
+		stockInit = StockMovement.objects.create(movement_type='2',movement_id=int(self.pk), stock=self.stock)
+		stockInit.save()
+
+	# def delete(self, *args, **kwargs):
+	# 	stock = self.stock
+	# 	stock.quantity = stock.quantity - self.quantity
+	# 	stock.save()
+	# 	super(StockIn, self).delete(*args, **kwargs)
+
 class StockIn(models.Model):
 
 	SOURCE = (
@@ -113,8 +185,9 @@ class StockIn(models.Model):
 		('1', _("CASH_PURCHASE")),
 		('2', _("TRANSFER")),
 	)
+	ref = models.CharField(max_length=20, unique=True, null=True)
 	stock = models.ForeignKey(Stock, on_delete=models.DO_NOTHING, related_name="stock_in")
-	quantity = quantity = models.IntegerField()
+	quantity = models.IntegerField()
 	price = models.FloatField(null=True)
 	source = models.CharField(_("source"),max_length=22,choices=SOURCE)
 	source_id = models.IntegerField(null=True, blank=True)
@@ -122,22 +195,82 @@ class StockIn(models.Model):
 	created_on = models.DateTimeField(auto_now_add=True)
 	updated_on = models.DateTimeField(auto_now=True)
 
+	class Meta:
+		ordering = ('created_on',)
+
+	def save(self, *args, **kwargs):
+		today = datetime.datetime.now()
+		if StockIn.objects.filter(~Q(ref=None)):
+			last_ref = StockIn.objects.filter(~Q(ref=None)).order_by('ref').last().ref.split('/')[0]
+			last_ref_int = int(last_ref)
+			self.ref = str(last_ref_int+1).zfill(4) + '/' + str(today.year)
+		else:
+			self.ref = str(1).zfill(4) + '/' + str(today.year)
+
+		if not self.pk:
+			stock = self.stock
+			if self.price:
+				stock.price = round((stock.price * stock.quantity + self.price * self.quantity)/(stock.quantity+self.quantity),2)
+
+			stock.quantity = stock.quantity + self.quantity
+			stock.save()
+
+		super(StockIn, self).save(*args, **kwargs)
+
+		stockIn = StockMovement.objects.create(movement_type='0',movement_id=int(self.pk),stock=self.stock)
+		stockIn.save()
+
+	def delete(self, *args, **kwargs):
+		stock = self.stock
+		stock.quantity = stock.quantity - self.quantity
+		stock.save()
+		super(StockIn, self).delete(*args, **kwargs)
+
 
 
 class StockOut(models.Model):
 
 	TARGET = (
-		('1', _("TO_PROJECT")),
 		('2', _("TRANSFER")),
+		('3', _("TO_PROJECT")),
 	)
+	ref = models.CharField(max_length=20, unique=True, null=True)
 	stock = models.ForeignKey(Stock, on_delete=models.DO_NOTHING, related_name="stock_out")
-	quantity = quantity = models.IntegerField()
+	quantity = models.IntegerField()
 	price = models.FloatField(null=True)
 	target = models.CharField(_("target"),max_length=22,choices=TARGET)
-	transfer = models.ForeignKey(Transfer, on_delete=models.DO_NOTHING)
+	target_detail = models.CharField(max_length=220, null=True, blank=True)
+	transfer = models.ForeignKey(Transfer, on_delete=models.DO_NOTHING,null=True)
 	created_by = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING)
 	created_on = models.DateTimeField(auto_now_add=True)
 	updated_on = models.DateTimeField(auto_now=True)
+
+	class Meta:
+		ordering = ('created_on',)
+
+	def save(self, *args, **kwargs):
+		today = datetime.datetime.now()
+		if StockOut.objects.filter(~Q(ref=None)):
+			last_ref = StockOut.objects.filter(~Q(ref=None)).order_by('ref').last().ref.split('/')[0]
+			last_ref_int = int(last_ref)
+			self.ref = str(last_ref_int+1).zfill(4) + '/' + str(today.year)
+		else:
+			self.ref = str(1).zfill(4) + '/' + str(today.year)
+		if not self.pk:
+			stock = self.stock
+			stock.quantity = stock.quantity - self.quantity
+			stock.save()
+		super(StockOut, self).save(*args, **kwargs)
+		stockOut = StockMovement.objects.create(movement_type='1',movement_id=int(self.pk), stock=self.stock)
+		stockOut.save()
+
+	def delete(self, *args, **kwargs):
+		stock = self.stock
+		print(stock)
+		stock.quantity = stock.quantity + self.quantity
+		stock.save()
+		super(StockOut, self).delete(*args, **kwargs)
+
 
 
 
@@ -334,10 +467,13 @@ class Receipt(models.Model):
 	created_on = models.DateTimeField(auto_now_add=True)
 	created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 	ref = models.CharField(max_length=20, unique=True, null=True)
-	do = models.CharField(max_length=50, null=True)
-	invoice = models.CharField(max_length=50, null=True)
+	do = models.CharField(max_length=50, null=True, blank=True)
+	invoice = models.CharField(max_length=50, null=True, blank=True)
 	purchaseOrder = models.ForeignKey(PurchaseOrder, related_name='receipt' ,on_delete=models.CASCADE)
 
+	class Meta:
+		ordering = ('-created_on',)
+		
 	def save(self, *args, **kwargs):
 		today = datetime.datetime.now()
 		if Receipt.objects.filter(~Q(ref=None)):
@@ -350,8 +486,8 @@ class Receipt(models.Model):
 
 class ReceiptProductRel(models.Model):
 	receipt = models.ForeignKey(Receipt, related_name='receiptProducts' ,on_delete=models.CASCADE)
-	purchaseOrderProduct = models.ForeignKey(PurchaseOrderProductRel, on_delete=models.CASCADE, default=0)
+	purchaseOrderProduct = models.ForeignKey(PurchaseOrderProductRel, related_name = 'received',on_delete=models.CASCADE, default=0)
 	quantity_receipt = models.FloatField(null=True, blank=True)
 	quantity_accepted = models.FloatField(null=True, blank=True)
-	conformity = models.BooleanField(default=True)
+	conformity = models.BooleanField(default=True, null=True, blank=True)
 	note = models.TextField(null=True, blank=True)

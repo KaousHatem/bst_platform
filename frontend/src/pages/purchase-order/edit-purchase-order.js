@@ -203,7 +203,7 @@ const EditPurchaseOrder = () => {
                     <Grid item 
                     xs={6}>
                       <InputLabel>
-                        Reference De la demande d`&apos;`achat
+                        Reference De la demande d&apos;achat
                       </InputLabel>
                       <Typography
                       sx={{
@@ -228,7 +228,7 @@ const EditPurchaseOrder = () => {
                     <Grid item
                     xs={4}>
                       <InputLabel>
-                        Reference de la demande d`&apos;`appro
+                        Reference de la demande d&apos;appro
                       </InputLabel>
                       <Typography
                       sx={{

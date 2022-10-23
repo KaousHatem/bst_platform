@@ -30,6 +30,7 @@ import PurchaseOrderProvider from '../../services/purchase-order-provider'
 
 // import {PRDeleteDialog} from './pr-delete-dialog'
 // import {PRApproveDialog} from './pr-approve-dialog'
+
 import UXAccess from '../../utils/ux-access'
  
 import Label from '../Label';
@@ -115,10 +116,10 @@ export const POListResults = ({ purchaseOrderList, ...rest}) => {
                   Reference
                 </TableCell>
                 <TableCell align="center">
-                  demande d`&apos;`appro
+                  demande d&apos;appro
                 </TableCell>
                 {UXAccess.hasRefPRinPO() && <TableCell align="center">
-                  demande d`&apos;`achat
+                  demande d&apos;achat
                 </TableCell>}
                 <TableCell>
                   Destination

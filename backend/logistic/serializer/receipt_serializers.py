@@ -277,6 +277,23 @@ class ReceiptSerializer(serializers.ModelSerializer):
 		   }
 		}
 
+class ReceiptUpdateSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Receipt
+		fields = [
+				'invoice',
+				'do',
+				]
+		extra_kwargs = {
+		   
+		   'invoice': {
+			  'required': False
+		   },
+		   'do': {
+			  'required': False
+		   }
+		}
+
 
 
 class ReceiptProductSerializer(serializers.ModelSerializer):
@@ -297,6 +314,50 @@ class ReceiptProductSerializer(serializers.ModelSerializer):
 		   },
 		   
 		}
+
+
+class ReceiptProductListSerializer(serializers.ListSerializer):
+	def update(self, instance, validated_data):
+		# Maps for id->instance and id->data item.
+
+		product_mapping = {product.id: product for product in instance}
+		print(validated_data)
+
+		data_mapping = {item['id']: item for item in validated_data}
+
+		# Perform creations and updates.
+		ret = []
+		for product_id, data in data_mapping.items():
+			product = product_mapping.get(product_id, None)
+
+			if product is None:
+				ret.append(self.child.create(data))
+			else:
+				ret.append(self.child.update(product, data))
+
+
+		return ret
+
+class ReceiptProductUpdateSerializer(serializers.ModelSerializer):
+	id = serializers.IntegerField(required=False)
+	class Meta:
+		model = ReceiptProductRel
+		fields = [
+				'id',
+				'conformity',
+				'note',
+				]
+		extra_kwargs = {
+		   'note': {
+			  'required': False
+		   },
+		   'conformity': {
+			  'required': False
+		   },
+		   
+		}
+
+		list_serializer_class = ReceiptProductListSerializer
 
 
 

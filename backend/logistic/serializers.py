@@ -180,11 +180,6 @@ class PurchaseReqProductListSerializer(serializers.ListSerializer):
 			else:
 				ret.append(self.child.update(product, data))
 
-		# # Perform deletions.
-		# for book_id, book in book_mapping.items():
-		#     if book_id not in data_mapping:
-		#         book.delete()
-
 		return ret
 
 class ProvisionProductSerializer(serializers.ModelSerializer):
@@ -648,12 +643,15 @@ class PurchaseOrderListingSerializer(serializers.ModelSerializer):
 
 class PurchaseOrderProductListingSerializer(serializers.ModelSerializer):
 	purchaseProduct = PurchaseReqProductListingOrderSerializer()
+	leftQuantity = serializers.SerializerMethodField()
 	class Meta:
 		model = PurchaseOrderProductRel
 		fields = [
 				'id',
 				'purchaseOrder',
 				'purchaseProduct',
+				'received',
+				'leftQuantity',
 				'unitPrice'
 				]
 		extra_kwargs = {
@@ -665,11 +663,16 @@ class PurchaseOrderProductListingSerializer(serializers.ModelSerializer):
 		   }
 		}
 
+	def get_leftQuantity(self, obj):
+		return  obj.purchaseProduct.quantity - sum(product.quantity_receipt for product in obj.received.all())
+
+
 class PurchaseOrderRetrieveSerializer(serializers.ModelSerializer):
 	created_by = CustomUserListSerializer(read_only=True,required=False)
 	supplier = SupplierSerializer()
 	purchaseOrderProducts = PurchaseOrderProductListingSerializer(many=True,read_only=True)
 	purchaseRequest = PurchaseRequestListingSerializer()
+	allReceived = serializers.SerializerMethodField()
 	class Meta:
 		model = PurchaseOrder
 		fields = [
@@ -678,6 +681,7 @@ class PurchaseOrderRetrieveSerializer(serializers.ModelSerializer):
 			'purchaseRequest',
 			'purchaseOrderProducts',
 			'supplier',
+			'allReceived',
 			'created_by',
 			'created_on',
 		]
@@ -690,6 +694,18 @@ class PurchaseOrderRetrieveSerializer(serializers.ModelSerializer):
 			  'required': False
 		   }
 		}
+		
+	def leftQuantity(self, purchaseOrderProduct):
+		return  purchaseOrderProduct.purchaseProduct.quantity - sum(product.quantity_receipt for product in purchaseOrderProduct.received.all())
+	
+	def get_allReceived(self, obj):
+		for purchaseOrderProduct in obj.purchaseOrderProducts.all():
+			leftQuantity = self.leftQuantity(purchaseOrderProduct)
+			if leftQuantity > 0:
+				return False
+
+		return  True
+
 
 class PurchaseOrderSerializer(serializers.ModelSerializer):
 	created_by = CustomUserListSerializer(read_only=True,required=False)

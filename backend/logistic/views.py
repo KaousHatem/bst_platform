@@ -3,6 +3,8 @@ from django.http import HttpResponse, Http404, JsonResponse, HttpResponseRedirec
 from django.views.decorators.csrf import csrf_exempt
 import django_filters.rest_framework
 from rest_framework_role_filters.viewsets import RoleFilterModelViewSet
+from django.db.models import Q
+from itertools import chain
 
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import api_view, permission_classes, authentication_classes, action
@@ -38,14 +40,17 @@ from .models import (
 	Receipt,
 	ReceiptProductRel,
 	Store,
-	Stock
+	Stock,
+	StockIn,
+	StockOut,
+	StockInit,
 
 	
 )
 
 from user_control.models import CustomUser
 
-from .role_filters import provision_role_filters, po_role_filters
+from .role_filters import provision_role_filters, po_role_filters, receipt_role_filters
  # import UserRoleFilter,LogisticAdminRoleFilter, AdminRoleFilter
 
 from .serializers import  (
@@ -77,6 +82,8 @@ from .serializer.receipt_serializers import (
 	ReceiptRetreiveSerializer,
 	ReceiptProductSerializer,
 	ReceiptProductRetreiveSerializer,
+	ReceiptProductUpdateSerializer,
+	ReceiptUpdateSerializer,
 )
 
 from .serializer.store_serializers import (
@@ -84,10 +91,25 @@ from .serializer.store_serializers import (
 	StoreListSerializer,
 )
 
+from .serializer.stock_init_serializers import (
+	StockInitSerializer,
+)
+
 from .serializer.stock_serializers import (
 	StockSerializer,
+	StockRetrieveSerializer,
 	StockListSerializer,
 )
+
+from .serializer.stock_in_serializers import (
+	StockInSerializer,
+)
+
+from .serializer.stock_out_serializers import (
+	StockOutSerializer,
+)
+
+from .filter.stock_filters import StockFilter
 
 
 class CategoryViewSet(ModelViewSet):
@@ -125,6 +147,7 @@ class CategoryViewSet(ModelViewSet):
 
 		
 		return super(CategoryViewSet, self).create(request)
+
 
 	def update(self, request, pk):
 		if 'ref' in request.data.keys():
@@ -586,7 +609,6 @@ class PurchaseReqProductViewSet(ModelViewSet):
 		return super(PurchaseReqProductViewSet, self).get_serializer(*args, **kwargs)
 
 	def create(self, request):
-		print(request.data)
 
 		serializer = self.get_serializer(data=request.data)
 		try:
@@ -712,7 +734,7 @@ class PurchaseOrderViewSet(RoleFilterModelViewSet):
 			return Response({'message':serializer.errors}, status=400)
 
 
-		serializer.save(created_by=CustomUser.objects.first())
+		serializer.save(created_by=user)
 
 		self.create_product(serializer.data)
 
@@ -753,9 +775,17 @@ class PurchaseOrderProductViewSet(ModelViewSet):
 		return Response(serializers.data, status=status.HTTP_200_OK)
 
 
-class ReceiptViewSet(ModelViewSet):
+class ReceiptViewSet(RoleFilterModelViewSet):
 	queryset = Receipt.objects.all()
 	serializer_class = ReceiptSerializer
+	role_filter_classes = [receipt_role_filters.UserRoleFilter,receipt_role_filters.LogisticAdminRoleFilter,receipt_role_filters.AdminRoleFilter]
+
+	def get_role_id(self, request):
+		token = request.META.get('HTTP_AUTHORIZATION')
+		user = decodeJWT(token)
+		if user.is_superuser:
+			return 1
+		return user.role
 
 	def get_serializer_class(self):
 		print(self.action)
@@ -763,6 +793,8 @@ class ReceiptViewSet(ModelViewSet):
 			return ReceiptListSerializer
 		if self.action == 'retrieve':
 			return ReceiptRetreiveSerializer
+		if self.action == 'update':
+			return ReceiptUpdateSerializer
 
 		return super().get_serializer_class()
 
@@ -786,43 +818,142 @@ class ReceiptViewSet(ModelViewSet):
 
 		return Response(serializer.data, status = 201)
 
+	def update(self, request, pk):
+		serializer = self.get_serializer(data=request.data)
+		try:
+			serializer.is_valid(raise_exception=True)
+
+		except:
+			print(serializer.errors)
+			return Response({'message':serializer.errors}, status=400)
+
+		
+		return super(ReceiptViewSet, self).update(request, pk)
+
+
 
 		
 
 class ReceiptProductViewSet(ModelViewSet):
 	queryset = ReceiptProductRel.objects.all()
 	serializer_class = ReceiptProductSerializer
+	
+
+	def get_serializer(self, *args, **kwargs):
+		if isinstance(kwargs.get('data', {}), list):
+			kwargs['many'] = True
+		return super(ReceiptProductViewSet, self).get_serializer(*args, **kwargs)
+
+
+	def get_serializer_class(self):
+		print(self.action)
+		if self.action == 'update':
+			return ReceiptProductUpdateSerializer
+		return super().get_serializer_class()
 
 
 	def create_stock_in(self,id):
+		print("ok")
 		receiptProduct = ReceiptProductRetreiveSerializer(self.queryset.get(id=id))
-		# print(receiptProduct.data)
 		provisionProduct = receiptProduct.data['purchaseOrderProduct']['purchaseProduct']['provisionProduct']
 		product_id = provisionProduct['product']['id']
-		stock = Stock.objects.filter(product=product_id)
+
+		location_id = provisionProduct['provision']['destination']['id']
+
+		store = Store.objects.filter(location=location_id)[0]
+		
+		stock = Stock.objects.filter(product=product_id,store=store.id)
 
 		if(not(stock)):
-			location_id = provisionProduct['provision']['destination']['id']
-			store = Store.objects.filter(location=location_id)[0]
-
+			
 			serializer = StockSerializer(data={'product':product_id,'store':store.id})
 			serializer.is_valid()
 			serializer.save()
 			stock = [Stock.objects.get(id=serializer.data['id'])]
-			print(stock)
-			print('none')
+
+
+
+		data = {
+			'stock':stock[0].id,
+			'quantity':receiptProduct.data['quantity_receipt'],
+			'source':'0',
+			'created_by':CustomUser.objects.first().id,
+			'source_id':receiptProduct.data['id'],
+		}
+
+		
+
+
+		serializer = StockInSerializer(data=data)
+
+		try:
+			serializer.is_valid(raise_exception=True)
+
+		except:
+			print(serializer.errors)
+
+		serializer.save()
 		
 
 
 	def create(self, request):
+		serializer = self.get_serializer(data=request.data)
+		try:
+			serializer.is_valid(raise_exception=True)
+
+		except:
+			print(serializer.errors)
+			return Response({'message':serializer.errors}, status=400)
 
 		result = super(ReceiptProductViewSet, self).create(request)
-		
-		print(result.data['id'])
-
-		self.create_stock_in(result.data['id'])
+		if isinstance(result.data, dict):
+			result_data = [result.data]
+		else:
+			result_data = result.data
+		for data in result_data:
+			self.create_stock_in(data['id'])
 
 		return result
+
+	@action(methods=['put'], detail=False)
+	def put(self, request, *args, **kwargs):
+
+		data = request.data
+		
+		serializers = ReceiptProductUpdateSerializer(self.queryset,data=data,many=True)
+		
+		try:
+			serializers.is_valid(raise_exception=True)
+			
+
+		except:
+			print(serializers.errors)
+			return Response({'message':serializers.errors}, status=400)
+
+		try:
+			serializers.save()
+		except Exception as e:
+			return Response({'message':e}, status=403)
+
+
+		return Response(serializers.data, status=status.HTTP_200_OK)
+
+
+	def delete_stock_in(self,id):
+		stock_in = StockIn.objects.filter(source_id=id)
+		print(stock_in)
+		stock_in.delete()
+
+
+
+	def destroy(self, request, pk):
+		result = super(ReceiptProductViewSet, self).destroy(request,pk)
+
+		self.delete_stock_in(pk)
+
+		return result
+
+
 
 
 class StoreViewSet(ModelViewSet):
@@ -835,15 +966,201 @@ class StoreViewSet(ModelViewSet):
 
 		return super().get_serializer_class()
 
+	def create(self, request):
+		token = request.META.get('HTTP_AUTHORIZATION')
+		user = decodeJWT(token)
+		request.data['created_by'] = user.id
+		serializer = self.get_serializer(data=request.data)
+		try:
+			serializer.is_valid(raise_exception=True)
+
+		except:
+			return Response({'message':serializer.errors}, status=400)
+
+		
+		return super(StoreViewSet, self).create(request)
+
+	def update(self, request, pk):
+		token = request.META.get('HTTP_AUTHORIZATION')
+		user = decodeJWT(token)
+		request.data['created_by'] = user.id
+		serializer = self.get_serializer(data=request.data)
+		try:
+			serializer.is_valid(raise_exception=True)
+
+		except:
+			return Response({'message':serializer.errors}, status=400)
+
+		
+		return super(StoreViewSet, self).update(request, pk)
+
+
+class StockInitViewSet(ModelViewSet):
+	queryset = StockInit.objects.all()
+	serializer_class = StockInitSerializer
+
+	def create(self, request):
+		token = request.META.get('HTTP_AUTHORIZATION')
+		user = decodeJWT(token)
+		request.data['created_by'] = user.id
+		
+		serializer = self.get_serializer(data=request.data)
+		print(request.data)
+		try:
+			serializer.is_valid(raise_exception=True)
+
+		except:
+			print(serializer.errors)
+			return Response({'message':serializer.errors}, status=400)
+
+		
+		return super(StockInitViewSet, self).create(request)
+
+class StockInViewSet(ModelViewSet):
+	queryset = StockIn.objects.all()
+	serializer_class = StockInSerializer
+
+	def create(self, request):
+		token = request.META.get('HTTP_AUTHORIZATION')
+		user = decodeJWT(token)
+		request.data['created_by'] = user.id
+		
+		serializer = self.get_serializer(data=request.data)
+		print(request.data)
+		try:
+			serializer.is_valid(raise_exception=True)
+
+		except:
+			print(serializer.errors)
+			return Response({'message':serializer.errors}, status=400)
+
+		
+		return super(StockInViewSet, self).create(request)
+
+class StockOutViewSet(ModelViewSet):
+	queryset = StockOut.objects.all()
+	serializer_class = StockOutSerializer
+
+	def create(self, request):
+		token = request.META.get('HTTP_AUTHORIZATION')
+		user = decodeJWT(token)
+		request.data['created_by'] = user.id
+		
+		serializer = self.get_serializer(data=request.data)
+		print(request.data)
+		try:
+			serializer.is_valid(raise_exception=True)
+
+		except:
+			print(serializer.errors)
+			return Response({'message':serializer.errors}, status=400)
+
+		
+		return super(StockOutViewSet, self).create(request)
+
+
 class StockViewSet(ModelViewSet):
 	queryset = Stock.objects.all()
 	serializer_class = StockSerializer
-
+	filterset_class = (StockFilter)
+	
 	def get_serializer_class(self):
 		if self.action == 'list':
 			return StockListSerializer
+		if self.action == 'retrieve':
+			return StockRetrieveSerializer
 
 		return super().get_serializer_class()
+
+	def create(self, request):
+		token = request.META.get('HTTP_AUTHORIZATION')
+		user = decodeJWT(token)
+		request.data['updated_by'] = user.id
+		store = request.data['store']
+		product = request.data['product']
+		stock = self.queryset.filter(product=product, store=store)
+		print(stock)
+		if stock:
+			return Response({'code':"stock_exist",'message':"stock already exists"}, status=403)
+		else:
+			serializer = self.get_serializer(data=request.data)
+			try:
+				serializer.is_valid(raise_exception=True)
+
+			except:
+				return Response({'message':serializer.errors}, status=400)
+
+		
+		return super(StockViewSet, self).create(request)
+
+	def list(self, request):
+
+		# qs1 = list(StockIn.objects.all())
+		# qs2 = list(StockOut.objects.all())
+		# qs3 = list(StockInit.objects.all())
+		# listQs = [qs1,qs2,qs3]
+		# print(qs1)
+		# print(qs2)
+		# print(qs3)
+		# qsTotal = []
+		# for i in range(len(qs1)+len(qs2)+len(qs3)):
+		# 	# print(i)
+		# 	try:
+		# 		qsItem1 = listQs[0][-1]
+		# 	except:
+		# 		qsItem1 = None
+		# 	try:
+		# 		qsItem2 = listQs[1][-1]
+		# 	except:
+		# 		qsItem2 = None
+		# 	try:
+		# 		qsItem3 = listQs[2][-1]
+		# 	except:
+		# 		qsItem3 = None
+
+		# 	itemList = [qsItem1,qsItem2,qsItem3]
+		# 	min_qs = max(itemList, key=lambda item: item.created_on if (item) else )
+		# 	listQs[itemList.index(min_qs)].remove(min_qs)
+		# 	# print(itemList.index(min_qs))
+		# 	print(listQs)
+
+
+		# allqs = list(chain(qs2,qs1,qs3))
+		# allqs1= qs1.union(qs2, all=True)
+		# print(allqs)
+		# print(allqs1.first().source)
+
+		result = super(StockViewSet, self).list(request)
+		if result.data:
+			return result
+		else:
+			storeId = request.GET.get('store')
+			store = Store.objects.get(id=storeId)
+			if store:
+				return Response(data=[{"store":{"id":storeId,"name":store.name}}], status=status.HTTP_200_OK)
+			else:
+				return Response(data={"message":"no content"}, status=status.HTTP_204_NO_CONTENT)
+			
+			
+	@action(methods=['get'], detail=False)
+	def user_location(self, request, *args, **kwargs):
+		token = request.META.get('HTTP_AUTHORIZATION')
+		user = decodeJWT(token)
+		if user:
+			location = user.location
+			store = Store.objects.filter(location=location.id)
+			if store:
+				stocks = self.queryset.filter(store=store.first().id)
+				if stocks:
+					serializer = StockListSerializer(stocks,many=True)
+					return Response(data=serializer.data, status=status.HTTP_200_OK)
+				else:
+					return Response(data=[{"store":store.first().name}], status=status.HTTP_200_OK)
+			else:
+				return Response(data={"message":"no content"}, status=status.HTTP_204_NO_CONTENT)
+		else:
+			return Response(data={"message":"no content"}, status=status.HTTP_204_NO_CONTENT)
+
 
 
 

@@ -72,7 +72,6 @@ export const DashboardSidebar = (props) => {
 
   const { open, onClose } = props;
   const router = useRouter();
-  const [role, setRole] = useState(localStorage.getItem("role"))
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'), {
     defaultMatches: true,
     noSsr: false
@@ -148,14 +147,14 @@ export const DashboardSidebar = (props) => {
             href="/"
             title='Tableau de Bord'
           />
-          { UXAccess.hasProductAccess() && <NavItem
+          <NavItem
             key='Stock'
             icon={(<CopyIcon fontSize="large" />)}
             // href="/products/list-product"
             title="Stock"
             aria-describedby={id1}
             onClick={handleClick1}
-          />}
+          />
           <Popover
             id={id}
             sx={{
@@ -183,12 +182,12 @@ export const DashboardSidebar = (props) => {
               }}
             >
             <MenuList>
-              <SubNavItem href='/products' 
-                title='Articles'/>
-              <SubNavItem href='/category' 
-                title='Categories'/>
-              <SubNavItem href='#' 
-                title='Inventaire (coming soon)'/>
+              { UXAccess.hasProductAccess() && <SubNavItem href='/products' 
+                title='Articles'/>}
+              { UXAccess.hasProductAccess() && <SubNavItem href='/category' 
+                title='Categories'/> }
+              <SubNavItem href={UXAccess.hasStoreAccess() ? '/store' : '/stock'} 
+                title='Inventaire'/>
             </MenuList>
             </Box>
             
@@ -237,6 +236,8 @@ export const DashboardSidebar = (props) => {
                 title='Achat'/>}
               <SubNavItem href='/purchase-order' 
                 title='Bon de commande'/>
+              <SubNavItem href='/receipt' 
+                title='Bon de reception'/>
               { UXAccess.hasSupplierAccess() && <SubNavItem href='/supplier' 
                 title='Fournisseur'/>}
             </MenuList>
@@ -310,7 +311,7 @@ export const DashboardSidebar = (props) => {
           sx: {
             backgroundColor: 'neutral.900',
             color: '#FFFFFF',
-            width: 280
+            width: 200
           }
         }}
         variant="permanent"

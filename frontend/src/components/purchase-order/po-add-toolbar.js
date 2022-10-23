@@ -23,6 +23,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import PrintIcon from '@mui/icons-material/Print';
 import CancelIcon from '@mui/icons-material/Cancel';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
+import ReceiptIcon from '@mui/icons-material/Receipt';
 
 import UXAccess from '../../utils/ux-access'
 
@@ -91,6 +92,14 @@ export const POAddToolbar = ({props, isAdd = true ,id, confirmed=false }) => {
     }
   }
 
+  const handleReceipt = () => {
+    const data = {
+     pathname: '/receipt/add-receipt',
+     query:{'id':id}
+    }
+    router.push(data);
+  }
+
 
   const handleBackButton = (e) => {
     router.back()
@@ -144,7 +153,10 @@ export const POAddToolbar = ({props, isAdd = true ,id, confirmed=false }) => {
             'aria-labelledby': 'action-btn',
           }}
         >
-          
+          <MenuItem onClick={(event) => handleReceipt(event)} >
+            <ReceiptIcon />
+            Accuser la réception
+          </MenuItem> 
           <MenuItem onClick={(event) => handlePrint(event)} >
             <PrintIcon />
             Imprimer la demande
@@ -166,6 +178,8 @@ export const POAddToolbar = ({props, isAdd = true ,id, confirmed=false }) => {
         >
           Confirmer
         </Button>}
+
+        
         
       </Box>
     </Box>

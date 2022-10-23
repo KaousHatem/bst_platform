@@ -2,7 +2,7 @@ from rest_framework.viewsets import ModelViewSet
 from .serializers import (
     CreateUserSerializer, CustomUser, LoginSerializer, UpdatePasswordSerializer,
     CustomUserSerializer, UserActivities, UserActivitiesSerializer, GroupSerializer,
-    ActivateSerializer, CustomUserSignSerializer
+    ActivateSerializer, CustomUserSignSerializer,CustomUserListSerializer
 )
 from rest_framework.response import Response
 from rest_framework import status
@@ -33,7 +33,7 @@ class CreateUserView(ModelViewSet):
 
     def create(self, request):
         valid_request = self.serializer_class(data=request.data)
-        # print(self.queryset.get(username="chakib"))
+        
         if self.queryset.filter(username=request.data['username']):
             return Response(
                     {'message':"username already exists"},
@@ -210,6 +210,13 @@ class UsersView(ModelViewSet):
         data = self.serializer_class(users, many=True).data
         return Response(data)
 
+    @action(detail=False, methods=['get'],serializer_class=CustomUserListSerializer)
+    def short(self, request):
+        users = self.queryset.filter(is_superuser=False)
+        data = self.serializer_class(users, many=True).data
+          
+
+        return Response(data, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['get'],serializer_class=CustomUserSignSerializer)
     def signature(self, request, pk, *args, **kwargs):

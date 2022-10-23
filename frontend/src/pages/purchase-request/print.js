@@ -59,11 +59,6 @@ const PurchaseRequestPage = () => {
                       setLoading(false)
                   },
                   )
-              
-              
-             
-              
-              
             },
             (error) => {
               console.log(error)

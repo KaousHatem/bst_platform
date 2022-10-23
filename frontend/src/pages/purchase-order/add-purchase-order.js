@@ -114,7 +114,7 @@ const AddPurchaseOrder = () => {
       purchaseRequest: purchaseRequestValue,
       supplier: parseInt(e.target.supplier.value),
     }
-    console.log(data)
+    
     setLoadingOpen(true)
     PurchaseOrderProvider.addPurchaseOrder(data).then(
       response=>{

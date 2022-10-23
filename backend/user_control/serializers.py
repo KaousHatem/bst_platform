@@ -44,6 +44,8 @@ class CustomUserSerializer(serializers.ModelSerializer):
 		model = CustomUser
 		exclude = ("password","private_key" )
 
+
+
 class CustomUserSignSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = CustomUser

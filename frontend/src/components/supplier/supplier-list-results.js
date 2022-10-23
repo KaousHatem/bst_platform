@@ -80,7 +80,7 @@ export const SupplierListResults = ({ supplierList, ...rest}) => {
     let newSelectedSupplierIds;
 
     if (event.target.checked) {
-      newSelectedSupplierIds = locations.map((location) => location.id);
+      newSelectedSupplierIds = suppliers.map((supplier) => supplier.id);
     } else {
       newSelectedSupplierIds = [];
     }
@@ -204,7 +204,7 @@ export const SupplierListResults = ({ supplierList, ...rest}) => {
                     {supplier.register_number}
                   </TableCell>
                   <TableCell>
-                    {location.state}
+                    {supplier.state}
                   </TableCell>
                   <TableCell
                     >
