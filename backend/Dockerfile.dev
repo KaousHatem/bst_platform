@@ -10,8 +10,8 @@ ENV PYTHONUNBUFFERED 1
 
 # RUN echo "http://dl-8.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
 # install psycopg2 dependencies
-RUN apt-get add --no-cache postgresql-dev python3-dev libstdc++ && \
-    apt-get add --no-cache g++ && \
+RUN apt-get install postgresql-dev python3-dev libstdc++ && \
+    apt-get install g++ && \
     ln -s /usr/include/locale.h /usr/include/xlocale.h && \
     pip3 install numpy && \
     pip3 install pandas
