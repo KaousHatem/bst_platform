@@ -163,7 +163,8 @@ export const ReceiptListResults = ({ receiptList, ...rest}) => {
                     >
                       <ViewIcon 
                         sx={{
-                          mx:1
+                          mx:1,
+                          cursor: "pointer"
                         }}
                         onClick = {(event) => {handleClickEdit(event, receipt)}}
                        />

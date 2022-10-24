@@ -262,20 +262,23 @@ export const ProvisionListResults = ({ provision_list, ...rest }) => {
                     {provision.status !== '0' &&
                       <ViewIcon 
                         sx={{
-                          mx:1
+                          mx:1,
+                          cursor: "pointer"
                         }}
                         onClick = {(event) => {handleClickEdit(event, provision)}}
                        />
                       || <><EditIcon 
                         sx={{
-                          mx:1
+                          mx:1,
+                          cursor: "pointer"
                         }}
                         onClick = {(event) => {handleClickEdit(event, provision)}}
                        />
                         
                        <DeleteIcon 
                         sx={{
-                          mx:1
+                          mx:1,
+                          cursor: "pointer"
                         }}
                         onClick = {(event) => {handleDeleteOpen(event, provision.id)}}
                       /></>

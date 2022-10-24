@@ -302,20 +302,23 @@ export const ProvisionAddProduct = ({selectedProducts,setSelectedProducts, setAl
                         <SaveIcon
                           onClick={(event) => handleOnSave(event, product)}
                           sx={{
-                            mx:1
+                            mx:1,
+                          cursor: "pointer"
                           }}
                         /> ||
                         <EditIcon 
                           onClick={(event) => handleOnEdit(event, product)}
                           sx={{
-                            mx:1
+                            mx:1,
+                          cursor: "pointer"
                           }}
                          />
                       }
                       
                       <DeleteIcon 
                         sx={{
-                          mx:1
+                          mx:1,
+                          cursor: "pointer"
                         }}
                         onClick={(event) => {
                           setSelectedProducts(selectedProducts.filter((row) => {return row.data.id !== product.data.id}))

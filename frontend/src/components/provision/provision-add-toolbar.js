@@ -172,7 +172,7 @@ export const ProvisionAddToolbar = ({props, isAddPage=false, handleReject, handl
             onClick={handleAddPurchaseRequest}
           >
             <InsertDriveFileIcon />
-            Creer une demande d`&apos;`achat
+            Creer une demande d&apos;achat
           </MenuItem>}
         </StyledMenu>
         { (!provisionStatus || provisionStatus==='0') && <Button

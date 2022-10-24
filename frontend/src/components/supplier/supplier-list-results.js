@@ -218,14 +218,16 @@ export const SupplierListResults = ({ supplierList, ...rest}) => {
                     
                       <EditIcon 
                         sx={{
-                          mx:1
+                          mx:1,
+                          cursor: "pointer"
                         }}
                         onClick = {(event) => {handleClickEdit(event, supplier)}}
                        />
                         
                        <DeleteIcon 
                         sx={{
-                          mx:1
+                          mx:1,
+                          cursor: "pointer"
                         }}
                         onClick = {(event) => {handleDeleteOpen(event, supplier.id)}}
                       />

@@ -278,13 +278,15 @@ export const PRAddProduct = ({provisionProducts, selecetedProducts, setSelectedP
                       doneModeProducts.includes(product.productProvision.id) &&
                       <ConvertIcon 
                         sx={{
-                          mx:1
+                          mx:1,
+                          cursor: "pointer"
                         }}
                         onClick={(event) => handleOnConvert(event,product)}
                       /> ||
                       <DoneIcon 
                         sx={{
-                          mx:1
+                          mx:1,
+                          cursor: "pointer"
                         }}
                         onClick={(event) => handleOnDone(event,product)}
                       />
@@ -292,7 +294,8 @@ export const PRAddProduct = ({provisionProducts, selecetedProducts, setSelectedP
                     }
                       <DeleteIcon 
                         sx={{
-                          mx:1
+                          mx:1,
+                          cursor: "pointer"
                         }}
                         onClick={(event) => {
                           setSelectedProducts(selecetedProducts.filter((row) => {return row.productProvision.id !== product.productProvision.id}))

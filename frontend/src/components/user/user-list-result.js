@@ -301,20 +301,23 @@ export const UserListResults = ({ user_list=[], ...rest }) => {
                     
                       <EditIcon 
                         sx={{
-                          mx:1
+                          mx:1,
+                          cursor: "pointer"
                         }}
                         onClick = {(event) => {handleClickEdit(event, user)}}
                        />
                         
                        <DeleteIcon 
                         sx={{
-                          mx:1
+                          mx:1,
+                          cursor: "pointer"
                         }}
                         onClick = {(event) => {handleDeleteOpen(event, user.id)}}
                       />
                       <ThreeDotsIcon 
                         sx={{
-                          mx:1
+                          mx:1,
+                          cursor: "pointer"
                         }}
                         id="edit-btn"
                         aria-haspopup="true"

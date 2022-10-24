@@ -208,7 +208,7 @@ export const PRListResults = ({ purchaseReqList, ...rest}) => {
                   Reference
                 </TableCell>
                 <TableCell>
-                  demande d`&apos;`appro
+                  demande d&apos;appro
                 </TableCell>
                 <TableCell>
                   Destination
@@ -270,20 +270,23 @@ export const PRListResults = ({ purchaseReqList, ...rest}) => {
                     { purchaseRequest.status !== '0' &&
                       <ViewIcon 
                         sx={{
-                          mx:1
+                          mx:1,
+                          cursor: "pointer"
                         }}
                         onClick = {(event) => {handleClickEdit(event, purchaseRequest)}}
                        />
                       || <>
                       <EditIcon 
                         sx={{
-                          mx:1
+                          mx:1,
+                          cursor: "pointer"
                         }}
                         onClick = {(event) => {handleClickEdit(event, purchaseRequest)}}
                        />
                        <DeleteIcon 
                         sx={{
-                          mx:1
+                          mx:1,
+                          cursor: "pointer"
                         }}
                         onClick = {(event) => {handleDeleteOpen(event, purchaseRequest.id)}}
                       />

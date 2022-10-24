@@ -325,7 +325,7 @@ const EditPurchaseRequest = () => {
                     <Grid item 
                     xs={6}>
                       <InputLabel>
-                        Demande D`&apos;`appro
+                        Demande D&apos;appro
                       </InputLabel>
                       <Select
                         name="provision"

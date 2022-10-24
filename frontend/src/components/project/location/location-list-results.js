@@ -226,14 +226,16 @@ export const LocationListResults = ({ location_list, ...rest}) => {
                     
                       <EditIcon 
                         sx={{
-                          mx:1
+                          mx:1,
+                          cursor: "pointer"
                         }}
                         onClick = {(event) => {handleClickEdit(event, location)}}
                        />
                         
                        <DeleteIcon 
                         sx={{
-                          mx:1
+                          mx:1,
+                          cursor: "pointer"
                         }}
                         onClick = {(event) => {handleDeleteOpen(event, location.id)}}
                       />

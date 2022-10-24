@@ -112,7 +112,7 @@ export const OUnitAddDialog = ({open, units, setOpen, baseUnit, convertedUnits, 
         >
           <FormControl fullWidth>
             <InputLabel>
-              Type d`&apos;`Unité
+              Type d&apos;Unité
             </InputLabel>
             <Select
               fullWidth

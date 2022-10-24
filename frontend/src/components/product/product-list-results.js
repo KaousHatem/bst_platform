@@ -280,20 +280,23 @@ export const ProductListResults = ({ product, categories, ...rest }) => {
                     >
                       <EditIcon 
                         sx={{
-                          mx:1
+                          mx:1,
+                          cursor: "pointer"
                         }}
                         onClick = {(event) => {handleClickEdit(event, product)}}
                        />
                       <DeleteIcon 
                         sx={{
-                          mx:1
+                          mx:1,
+                          cursor: "pointer"
                         }}
                         onClick = {(event) => {handleClickOpen(event, product.id)}}
                       />
                       
                       <ThreeDotsIcon 
                         sx={{
-                          mx:1
+                          mx:1,
+                          cursor: "pointer"
                         }}
                         id="edit-btn"
                         aria-haspopup="true"

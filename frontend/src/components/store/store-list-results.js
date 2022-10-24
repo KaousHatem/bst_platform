@@ -235,7 +235,7 @@ export const StoreListResults = ({ storeList, ...rest}) => {
                 <TableRow>
                   <TableCell colSpan={7}
                   align="center" >
-                    Aucun article existe
+                    Aucun magasin existe
                   </TableCell>
                 </TableRow>
               }

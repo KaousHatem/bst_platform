@@ -201,7 +201,7 @@ export const ProductAddDialog = ({open,  handleClickOpen, setOpen, selectedProdu
                   <TableCell 
                   colSpan={3} 
                   align="center">
-                    L`&apos;`article n`&apos;`existe pas
+                    L&apos;article n&apos;existe pas
                   </TableCell>
                 </TableRow>
               }
