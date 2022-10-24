@@ -11,8 +11,8 @@ ENV PYTHONUNBUFFERED 1
 RUN echo "http://dl-8.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories \
 # install psycopg2 dependencies
 RUN apk update \
-    && apk add postgresql-dev gcc python3-dev musl-dev g++
-    && apk add py3-numpy py3-pandas
+    && apk add postgresql-dev gcc python3-dev musl-dev g++ py3-numpy py3-pandas
+
  
 
 
