@@ -10,14 +10,14 @@ ENV PYTHONUNBUFFERED 1
 
 RUN echo "http://dl-8.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
 # install psycopg2 dependencies
-RUN apk add --no-cache postgresql-dev python3-dev libstdc++ && \
-    apk add --no-cache g++ && \
-    ln -s /usr/include/locale.h /usr/include/xlocale.h && \
-    pip3 install numpy && \
-    pip3 install pandas
+# RUN apk add --no-cache postgresql-dev python3-dev libstdc++ && \
+#     apk add --no-cache g++ && \
+#     ln -s /usr/include/locale.h /usr/include/xlocale.h && \
+#     pip3 install numpy && \
+#     pip3 install pandas
 
-# RUN apk update \
-#     && apk add postgresql-dev gcc python3-dev musl-dev g++ py3-numpy py3-pandas
+RUN apk update \
+    && apk add postgresql-dev gcc python3-dev musl-dev g++ py3-numpy py3-pandas
 ENV PYTHONPATH=/usr/lib/python3.9/site-packages
 
 
