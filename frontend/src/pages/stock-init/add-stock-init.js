@@ -266,7 +266,7 @@ const AddStockInit = () => {
                       sx={{
                           my: 2
                         }} >
-                        {selectedProduct ? selectedProduct.base_unit.ref : "-"}
+                        {selectedProduct ? selectedProduct.base_unit.ref ? selectedProduct.base_unit.ref : selectedProduct.base_unit : "-"}
                       </Typography>
                     </Grid>
                     {storeId && <Grid item
