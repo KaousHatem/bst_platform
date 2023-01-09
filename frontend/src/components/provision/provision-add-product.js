@@ -224,7 +224,7 @@ export const ProvisionAddProduct = ({selectedProducts,setSelectedProducts, setAl
               </TableRow>
             </TableHead>
             <TableBody>
-              {selectedProducts.slice(0, limit).map((product) => (
+              {selectedProducts.slice(page*limit, page*limit+limit).map((product) => (
                 <TableRow
                   hover
                   key={product.data.id}
