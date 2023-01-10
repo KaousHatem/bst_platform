@@ -184,6 +184,7 @@ class StockIn(models.Model):
 		('0', _("PURCHASE")),
 		('1', _("CASH_PURCHASE")),
 		('2', _("TRANSFER")),
+		('2', _("OTHER")),
 	)
 	ref = models.CharField(max_length=20, unique=True, null=True)
 	stock = models.ForeignKey(Stock, on_delete=models.DO_NOTHING, related_name="stock_in")
@@ -194,6 +195,7 @@ class StockIn(models.Model):
 	created_by = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING)
 	created_on = models.DateTimeField(auto_now_add=True)
 	updated_on = models.DateTimeField(auto_now=True)
+	note = models.TextField(null=True, blank=True)
 
 	class Meta:
 		ordering = ('created_on',)
@@ -222,7 +224,7 @@ class StockIn(models.Model):
 		else:
 			if self.price:
 				stock = self.stock	
-				stock.price = round((stock.price * stock.quantity + self.price * self.quantity)/(stock.quantity+self.quantity),2)
+				stock.price = round((stock.price * (stock.quantity-self.quantity) + self.price * self.quantity)/(stock.quantity),2)
 				stock.save()
 			super(StockIn, self).save(*args, **kwargs)
 
@@ -250,6 +252,7 @@ class StockOut(models.Model):
 	created_by = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING)
 	created_on = models.DateTimeField(auto_now_add=True)
 	updated_on = models.DateTimeField(auto_now=True)
+	note = models.TextField(null=True, blank=True)
 
 	class Meta:
 		ordering = ('created_on',)

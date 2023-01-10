@@ -15,6 +15,7 @@ from .models import (
 	UnitConversion, 
 	PurchaseReqProductRel, 
 	Provision, 
+	ProvisionProductRel,
 	PurchaseOrder,
 	PurchaseOrderProductRel,
 	Receipt,
@@ -33,6 +34,7 @@ admin.site.register(Category)
 admin.site.register(PurchaseRequest)
 admin.site.register(PurchaseReqProductRel)
 admin.site.register(Provision)
+admin.site.register(ProvisionProductRel)
 admin.site.register(PurchaseOrder)
 admin.site.register(PurchaseOrderProductRel)
 admin.site.register(Receipt)
