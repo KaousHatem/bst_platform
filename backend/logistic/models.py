@@ -301,7 +301,7 @@ class Provision(models.Model):
 	approved_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE,related_name='provision_approved_by', null=True, blank=True, default=None)
 	status = models.CharField(_("status"),max_length=220, default="new",choices=STATUS)
 	delay = models.DateField()
-	created_on = models.DateTimeField(auto_now_add=True)
+	created_on = models.DateTimeField(auto_now_add=True,editable=True)
 	updated_on = models.DateTimeField(auto_now=True)
 	approved_on = models.DateTimeField(null=True, blank=True)
 
