@@ -248,7 +248,7 @@ const EditPurchaseOrder = () => {
                       sx={{
                           my: 2
                         }} >
-                        {purchaseOrder.purchaseRequest.provision.destination}
+                        {purchaseOrder.purchaseRequest.provision.destination.name}
                       </Typography>
                     </Grid>
                     <Grid item

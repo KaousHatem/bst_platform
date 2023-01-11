@@ -245,7 +245,7 @@ export const PRListResults = ({ purchaseReqList, ...rest}) => {
                     {purchaseRequest.provision.ref}
                   </TableCell>
                   <TableCell>
-                    {purchaseRequest.provision.destination}
+                    {purchaseRequest.provision.destination.name}
                   </TableCell>
                   <TableCell>
                     {purchaseRequest.created_by.username}

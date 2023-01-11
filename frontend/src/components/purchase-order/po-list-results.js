@@ -153,7 +153,7 @@ export const POListResults = ({ purchaseOrderList, ...rest}) => {
                     {purchaseOrder.purchaseRequest.ref}
                   </TableCell>}
                   <TableCell>
-                    {purchaseOrder.purchaseRequest.provision.destination}
+                    {purchaseOrder.purchaseRequest.provision.destination.name}
                   </TableCell>
                   <TableCell>
                     {purchaseOrder.supplier.name}

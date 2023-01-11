@@ -277,7 +277,7 @@ const AddPurchaseOrder = () => {
                           value={purchaseRequest.id}>{purchaseRequest.ref}</MenuItem>
                         ))|| <MenuItem key={0} 
                           value={0} 
-                          disabled>aucune demande d`&apos;`achat</MenuItem>}
+                          disabled>aucune demande d&apos;achat</MenuItem>}
                       </Select>
                     </Grid>
                     <Grid item 
@@ -307,7 +307,7 @@ const AddPurchaseOrder = () => {
                     <Grid item
                     xs={4}>
                       <InputLabel>
-                        Reference de la demande d`&apos;`appro
+                        Reference de la demande d&apos;appro
                       </InputLabel>
                       <Typography
                       sx={{

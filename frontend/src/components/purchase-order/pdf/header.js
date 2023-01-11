@@ -19,6 +19,7 @@ const styles = StyleSheet.create({
     },
 
     headerCompany:{
+        maxWidth:"50%",
 
     },
 
@@ -129,11 +130,11 @@ const Header = ({purchaseOrder}) => {
         <View style={styles.headerPO}>
 
             <View style={styles.headerCompany}>
-                <Text style={styles.headerCompanyName}>Eurl BST</Text>
+                <Text style={styles.headerCompanyName}>EURL BESTAOUI FOUAD BST</Text>
                 <Text>Direction Logistique</Text>
-                <Text>Address: Oran</Text>
-                <Text>Tel: 000 00 00 00</Text>
-                <Text>Email: hichem@eurlbst.com</Text>
+                <Text>Address: 03,Rue BENHALED Lahouari, Bâtiment B1, 1er étage, Oran, Algerie.</Text>
+                <Text>Tel: 041361518</Text>
+                <Text>Email: bst.oran.31@gmail.com</Text>
             </View>
             <View style={styles.headerPurchaseOrder}>
                 <Text style={styles.headerPurchaseOrderName}>BON DE COMMANDE</Text>
@@ -184,10 +185,9 @@ const Header = ({purchaseOrder}) => {
                     </Text>
                 </View>
                 <View  style={styles.subHeaderContent} >
-                    <Text>Project Unité A</Text>
-                    <Text>33 Rue Didouche Mourad,</Text>
-                    <Text>Alger 16000</Text>
-                    <Text>0556 75 34 93</Text>
+                    <Text>{purchaseOrder.purchaseRequest.provision.destination.name}</Text>
+                    <Text>{purchaseOrder.purchaseRequest.provision.destination.city} {purchaseOrder.purchaseRequest.provision.destination.codePostal}</Text>
+                    {/*<Text>0556 75 34 93</Text>*/}
                 </View>
             </View>
         </View>
