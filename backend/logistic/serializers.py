@@ -266,7 +266,8 @@ class ProvisionSerializer(serializers.ModelSerializer):
 		return Provision.objects.create(**validated_data)
 
 class ProvisionSerializerListing(serializers.ModelSerializer):
-	destination = serializers.SlugRelatedField(queryset = Location.objects.all() ,slug_field='name')
+	# destination = serializers.SlugRelatedField(queryset = Location.objects.all() ,slug_field='name')
+	destination = LocationSerializer()
 	created_by = CustomUserListSerializer(read_only=True,required=False)
 	class Meta:
 		model = Provision
