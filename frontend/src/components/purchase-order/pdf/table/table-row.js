@@ -13,7 +13,8 @@ const styles = StyleSheet.create({
         // borderRight: '1 solid '+borderColor,
         // borderLeft: '1 solid '+borderColor,
         alignItems: 'center',
-        height: 24,
+        // height: 50,
+        minHeight:24,
         textAlign: 'center',
         flexGrow: 1,
 
@@ -31,12 +32,18 @@ const styles = StyleSheet.create({
     description: {
         color: textColor,
         display: 'flex',
+        // flex:"1",
         justifyContent: "center",
-        textAlign: 'center',
+        textAlign: 'left',
+        paddingHorizontal:"5px",
         height: '100%',
-        width: '50%',
+        width: '62%',
+        maxWidth: '62%',
         borderRight: '1 solid '+borderColor,
         borderBottom: '1 solid '+borderColor,
+        // overflowWrap: "break-all",
+        flexWrap: 'wrap',
+
     },
     unit: {
         color: textColor,
@@ -44,7 +51,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         textAlign: 'center',
         height: '100%',
-        width: '21%',
+        width: '15%',
         borderRight: '1 solid '+borderColor,
         borderBottom: '1 solid '+borderColor,
         
@@ -55,7 +62,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         textAlign: 'center',
         height: '100%',
-        width: '21%',
+        width: '15%',
         borderRight: '1 solid '+borderColor,
         borderBottom: '1 solid '+borderColor,
     },

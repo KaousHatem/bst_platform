@@ -14,7 +14,8 @@ const styles = StyleSheet.create({
         // borderRight: '1 solid '+borderColor,
         // borderLeft: '1 solid '+borderColor,
         alignItems: 'center',
-        height: 24,
+        // height: 24,
+        minHeight: 24,
         textAlign: 'center',
         flexGrow: 1,
 
