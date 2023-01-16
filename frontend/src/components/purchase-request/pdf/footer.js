@@ -71,7 +71,7 @@ const Footer = ({creator, approver,purchaseRequest}) => {
     return(
     <View style={styles.footerContainer}>
         <View style={styles.visaDemand}>
-            <Text style={styles.text}>Demandeur: {purchaseRequest.created_by.fullname}</Text>
+            <Text style={styles.text}>Direction Logistique</Text>
             <Text style={styles.text}>Date: {getDate(purchaseRequest.created_on)}</Text>
             <Text style={styles.text}>Visa:</Text>
             <View style={styles.chop}>
