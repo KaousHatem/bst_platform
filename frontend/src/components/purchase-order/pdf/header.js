@@ -169,7 +169,7 @@ const Header = ({purchaseOrder}) => {
                     </Text>
                 </View>
                 <View style={styles.subHeaderContent}>
-                    <Text>{purchaseOrder.supplier.name}</Text>
+                    <Text style={{fontFamily: 'Helvetica-Bold'}}>{purchaseOrder.supplier.name}</Text>
                     <Text>{purchaseOrder.supplier.register_number}</Text>
                     <Text>{purchaseOrder.supplier.address}</Text>
                     <Text>{purchaseOrder.supplier.city}</Text>

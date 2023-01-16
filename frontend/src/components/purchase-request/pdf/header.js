@@ -56,7 +56,7 @@ const Header = ({purchaseRequest}) => {
         <Text style={styles.directionTitle}>direction logistique:</Text>
         <View style={styles.projectContainer}>
             <Text style={styles.projectTitle}>Projets:</Text>
-            <Text style={styles.projectText}>Réalisation de la zone de stockage du dépot central de réserve de carburant / MOSBAH</Text>
+            <Text style={styles.projectText}>{purchaseRequest.provision.destination}</Text>
         </View>      
     </View>
   );
