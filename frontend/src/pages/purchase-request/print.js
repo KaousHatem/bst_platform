@@ -88,7 +88,8 @@ const PurchaseRequestPage = () => {
             height={window && window.innerHeight} >
 				<Document>
                     {[...Array(pages).keys()].map((page)=>(
-                        <Page size="A4" 
+                        <Page size="A4"
+                        key={page} 
                         style={styles.page}>
                             <Header purchaseRequest={purchaseRequest} 
                             pages={pages} 
