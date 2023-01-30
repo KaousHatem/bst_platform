@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     num: {
         color: textColor,
         height: '100%',
-        width: '8%',
+        width: '6%',
         display: 'flex',
         justifyContent: "center",
         textAlign: 'center',
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         textAlign: 'center',
         height: '100%',
-        width: '50%',
+        width: '62%',
         borderRightColor: borderColor,
         borderRightWidth: 1,
     },
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         textAlign: 'center',
         height: '100%',
-        width: '13%',
+        width: '10%',
         borderRightColor: borderColor,
         borderRightWidth: 1,
     },
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         textAlign: 'center',
         height: '100%',
-        width: '13%',
+        width: '10%',
         borderRightColor: borderColor,
         borderRightWidth: 1,
     },
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         textAlign: 'center',
         height: '100%',
-        width: '16%'
+        width: '12%'
     },
   });
 

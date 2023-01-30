@@ -14,8 +14,8 @@ const styles = StyleSheet.create({
         // borderRight: '1 solid '+borderColor,
         // borderLeft: '1 solid '+borderColor,
         alignItems: 'center',
-        // height: 24,
-        minHeight: 24,
+        // height: 17,
+        minHeight: 17,
         textAlign: 'center',
         flexGrow: 1,
 
@@ -23,10 +23,11 @@ const styles = StyleSheet.create({
     num: {
         color: textColor,
         height: '100%',
-        width: '8%',
+        width: '6%',
         display: 'flex',
         justifyContent: "center",
         textAlign: 'center',
+        fontSize:'9',
         borderRight: '1 solid '+borderColor,
         borderBottom: '1 solid '+borderColor,
     },
@@ -37,7 +38,8 @@ const styles = StyleSheet.create({
         textAlign: 'left',
         paddingHorizontal:'5px',
         height: '100%',
-        width: '50%',
+        width: '62%',
+        fontSize:'9',
         borderRight: '1 solid '+borderColor,
         borderBottom: '1 solid '+borderColor,
     },
@@ -47,7 +49,8 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         textAlign: 'center',
         height: '100%',
-        width: '13%',
+        width: '10%',
+        fontSize:'9',
         borderRight: '1 solid '+borderColor,
         borderBottom: '1 solid '+borderColor,
         
@@ -58,7 +61,8 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         textAlign: 'center',
         height: '100%',
-        width: '13%',
+        width: '10%',
+        fontSize:'9',
         borderRight: '1 solid '+borderColor,
         borderBottom: '1 solid '+borderColor,
     },
@@ -69,7 +73,8 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         textAlign: 'center',
         height: '100%',
-        width: '16%'
+        width: '12%',
+        fontSize:'9',
     },
     last:{
         borderBottom: '0'

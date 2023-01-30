@@ -11,8 +11,8 @@ const styles = StyleSheet.create({
     footerContainer:{
         display:'flex',
         flexDirection: 'row',
-        // justifyContent: "space-between",
-        marginTop: 'auto',
+        justifyContent: "space-between",
+        // marginTop: 'auto',
         // marginBottom: 128,
     },
     text:{
@@ -20,17 +20,17 @@ const styles = StyleSheet.create({
         letterSpacing: 0.5,
         fontFamily: 'Helvetica-Bold',
         fontSize:11,
-        marginTop:15,
+        marginTop:5,
     },
 
     visaDemand: {
         display: 'flex',
-        width: '70%',
+        // width: '70%',
 
     },
     VisaLogistic: {
         marginLeft:'auto',
-        width: '30%',
+        // width: '30%',
     },
     chop:{
         display:'flex',
@@ -46,8 +46,8 @@ const styles = StyleSheet.create({
         borderRadius: 10,
     },
     qrCode:{
-        height: 90,
-        width: 90,
+        height: 75,
+        width: 75,
     },
     logo:{
         height:30,
@@ -58,12 +58,11 @@ const styles = StyleSheet.create({
   });
 
 
-const FooterProvision = ({value,provision}) => {
+const FooterProvision = ({value,provision, creator, approver}) => {
 
     const getDate = (date) => {
         const [year, month, day] = date.split('-')
-        console.log(day+'/'+month+'/'+year)
-        return format(new Date(date),'yyyy/MM/dd')
+        return format(new Date(date),'dd/MM/yyyy')
     }
 
  
@@ -73,10 +72,9 @@ const FooterProvision = ({value,provision}) => {
         <View style={styles.visaDemand}>
             <Text style={styles.text}>Demandeur: {provision.created_by.fullname}</Text>
             <Text style={styles.text}>Date: {getDate(provision.created_on)}</Text>
-            <Text style={styles.text}>Visa:</Text>
             <View style={styles.chop}>
                 <Image style={styles.qrCode} 
-                src={document.getElementById(value).toDataURL()}/>
+                src={document.getElementById(creator).toDataURL()}/>
                 <Image style={styles.logo}
                 src={bstLogo.src}/>
             </View>
@@ -85,10 +83,9 @@ const FooterProvision = ({value,provision}) => {
         <View style={styles.VisaLogistic}>
             <Text style={styles.text}>St. Logistique</Text>
             <Text style={styles.text}>Date: {provision.approved_on!==null && getDate(provision.approved_on)}</Text>
-            <Text style={styles.text}>Visa:</Text>
             {provision.approved_by!==null && <View style={styles.chop}>
                 <Image style={styles.qrCode} 
-                src={document.getElementById(value).toDataURL()}/>
+                src={document.getElementById(approver).toDataURL()}/>
                 <Image style={styles.logo}
                 src={bstLogo.src}/>
             </View>}

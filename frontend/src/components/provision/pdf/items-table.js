@@ -10,20 +10,12 @@ const styles = StyleSheet.create({
         // flexDirection: 'row',
         // marginTop: 20,
     },
-    documentTitle:{
-        marginTop: 20,
-        color: 'black',
-        textTransform: 'uppercase',
-        textAlign: 'center',
-        fontSize: 20,
-        fontFamily: 'Helvetica-Bold',
-
-    },
+    
     
   });
 
 
-const ItemsTable = ({provision}) => {
+const ItemsTable = ({provision, page, length}) => {
 
     
     
@@ -31,7 +23,9 @@ const ItemsTable = ({provision}) => {
     <View style={styles.headerContainer}>
         <TableHeader />
         <TableBody provisionProducts={provision.provisionProducts} 
-        delay={provision.delay} />
+        delay={provision.delay} 
+        length= {length}
+        page={page}/>
         
     </View>
   );
