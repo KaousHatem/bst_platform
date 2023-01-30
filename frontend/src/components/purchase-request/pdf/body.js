@@ -8,27 +8,21 @@ const styles = StyleSheet.create({
     headerContainer:{
         // flexDirection: 'row',
         // marginBottom: 300,
+        marginBottom: 'auto',
     },
-    documentTitle:{
-        marginTop: 20,
-        marginBottom: 20,
-        color: 'black',
-        textTransform: 'uppercase',
-        textAlign: 'center',
-        fontSize: 20,
-        fontFamily: 'Helvetica-Bold',
-
-    },
+    
     
   });
 
 
-const Body = ({purchaseRequest}) => {
+const Body = ({purchaseRequest, page, length}) => {
     
     return(
     <View style={styles.headerContainer}>
-        <Text style={styles.documentTitle}>Demande d&apos;achat</Text>
-        <ItemsTable purchaseRequest={purchaseRequest}/>
+        
+        <ItemsTable purchaseRequest={purchaseRequest}
+        length={length}
+        page={page}/>
     </View>
   );
 

@@ -10,20 +10,12 @@ const styles = StyleSheet.create({
         // flexDirection: 'row',
         // marginTop: 20,
     },
-    documentTitle:{
-        marginTop: 20,
-        color: 'black',
-        textTransform: 'uppercase',
-        textAlign: 'center',
-        fontSize: 20,
-        fontFamily: 'Helvetica-Bold',
-
-    },
+    
     
   });
 
 
-const ItemsTable = ({purchaseRequest}) => {
+const ItemsTable = ({purchaseRequest, page, length}) => {
 
     
     
@@ -31,7 +23,9 @@ const ItemsTable = ({purchaseRequest}) => {
     <View style={styles.headerContainer}>
         <TableHeader />
         <TableBody products={purchaseRequest.purchaseReqProducts} 
-        delay={purchaseRequest.provision.delay} />
+        delay={purchaseRequest.provision.delay} 
+        length= {length}
+        page={page}/>
         
     </View>
   );

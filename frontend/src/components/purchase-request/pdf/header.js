@@ -6,11 +6,34 @@ import header from '../../../header.png'
 const styles = StyleSheet.create({
    
     headerContainer:{
-        // flexDirection: 'row',
-        // marginTop: 20,
+        display:'flex',
+        flexDirection: 'column',
+        marginBottom: 20,
+    },
+    headerHorizontal:{
+        display:'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    headerPage:{
+        border:'1 solid black',
+        padding: '5 15',
+        display:'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        alignSelf:'center',
+        justifyContent: "center",
+        lineHeight:'100%',
+    },
+    page:{
+        marginLeft: '10',
+        height:'100%',
+        display: 'flex',
+        justifyContent: "center",
+        textAlign: 'center',
     },
     refrence:{
-        marginTop: 20,
+        marginTop: 1,
         color: 'black',
         letterSpacing: 1,
     },
@@ -18,8 +41,9 @@ const styles = StyleSheet.create({
         color: 'black',
         letterSpacing: 0.5,
         textTransform: 'uppercase',
+        fontSize: 14,
         fontFamily: 'Helvetica-Bold',
-        marginTop:12,
+        // marginTop:5,
     },
     projectContainer: {
         marginTop: 5,
@@ -31,29 +55,53 @@ const styles = StyleSheet.create({
         letterSpacing: 0.5,
         fontFamily: 'Helvetica-Bold',
         fontSize:11,
-        marginTop:15,
+        // marginTop:5,
     },
     projectText: {
-        marginTop: 2
+        marginTop: 1,
+        marginLeft: 10,
     },
     logo: {
         height: 66,
         marginBottom: 5,
-        // marginLeft: 'auto',
-        // marginRight: 'auto'
+    },
+    documentTitle:{
+        marginTop: 10,
+        marginBottom: 20,
+        color: 'black',
+        textTransform: 'uppercase',
+        textAlign: 'center',
+        fontSize: 16,
+        fontFamily: 'Helvetica-Bold',
+
     },
   });
 
 
-const Header = ({purchaseRequest}) => {
+const Header = ({purchaseRequest, page, pages}) => {
     
     return(
     <View style={styles.headerContainer}>
         <Image width={window && window.innerWidth} 
         style={styles.logo} 
         src={header.src} />
-        <Text style={styles.refrence}>Ref: BST/LOG/n° {purchaseRequest.ref}</Text>
-        <Text style={styles.directionTitle}>direction logistique:</Text>
+        <Text style={styles.documentTitle}>Demande d&apos;achat</Text>
+        <View style={styles.headerHorizontal}>
+            <View>
+                <Text style={styles.directionTitle}>direction logistique</Text>
+                <Text style={styles.refrence}>Ref: BST/LOG/n° {purchaseRequest.ref}</Text>
+            </View>
+            <View style={styles.headerPage}> 
+                <Text>Page:</Text>  
+
+                <View style={styles.page}>
+                    <Text>
+                        {page} sur {pages}
+                    </Text>
+                </View>
+            </View>
+        </View>
+        
         <View style={styles.projectContainer}>
             <Text style={styles.projectTitle}>Projets:</Text>
             <Text style={styles.projectText}>{purchaseRequest.provision.destination}</Text>

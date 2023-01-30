@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import {Text, View, StyleSheet, Image } from '@react-pdf/renderer';
 import TableRow from './table-row'
 
+import {parseNumber} from '../../../../utils/parsers'
+
 const borderColor = 'black'
 const textColor = 'black'
 const styles = StyleSheet.create({
@@ -22,19 +24,19 @@ const styles = StyleSheet.create({
   });
 
 
-const TableBody = ({products ,delay}) => {
+const TableBody = ({products ,delay, page, length}) => {
 
     
     return(
         <View style={styles.container}>
-            {products.map((product) => (
+            {products.slice(page*length,page*length+length).map((product) => (
                 <TableRow 
-                key={'0'+(products.indexOf(product)+1)}
-                num={'0'+(products.indexOf(product)+1)} 
+                key={(products.indexOf(product)+1)}
+                num={parseNumber(products.indexOf(product)+1)} 
                 product={product.provisionProduct} 
                 delay_data={delay} 
                 delay={products.indexOf(product)===0} 
-                last={products.indexOf(product)===products.length-1} />
+                last={products.indexOf(product)===(page+1)*length-1 || products.indexOf(product)===products.length-1} />
             ))}
             
             

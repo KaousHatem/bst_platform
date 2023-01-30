@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
     footerContainer:{
         display:'flex',
         flexDirection: 'row',
-        // justifyContent: "space-between",
+        justifyContent: "space-between",
         marginTop: 'auto',
         // marginBottom: 128,
     },
@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
         letterSpacing: 0.5,
         fontFamily: 'Helvetica-Bold',
         fontSize:11,
-        marginTop:15,
+        marginTop:5,
     },
 
     visaDemand: {
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     },
     VisaLogistic: {
         marginLeft:'auto',
-        width: '30%',
+        // width: '30%',
     },
     chop:{
         display:'flex',
@@ -46,8 +46,8 @@ const styles = StyleSheet.create({
         borderRadius: 10,
     },
     qrCode:{
-        height: 90,
-        width: 90,
+        height: 75,
+        width: 75,
     },
     logo:{
         height:30,
@@ -73,7 +73,7 @@ const Footer = ({creator, approver,purchaseRequest}) => {
         <View style={styles.visaDemand}>
             <Text style={styles.text}>Direction Logistique</Text>
             <Text style={styles.text}>Date: {getDate(purchaseRequest.created_on)}</Text>
-            <Text style={styles.text}>Visa:</Text>
+            
             <View style={styles.chop}>
                 <Image style={styles.qrCode} 
                 src={document.getElementById(creator).toDataURL()}/>
@@ -85,7 +85,7 @@ const Footer = ({creator, approver,purchaseRequest}) => {
         <View style={styles.VisaLogistic}>
             <Text style={styles.text}>Directeur General</Text>
             <Text style={styles.text}>Date: {purchaseRequest.approved_on!==null && getDate(purchaseRequest.approved_on)}</Text>
-            <Text style={styles.text}>Visa:</Text>
+            
             {purchaseRequest.approved_by!==null && <View style={styles.chop}>
                 <Image style={styles.qrCode} 
                 src={document.getElementById(approver).toDataURL()}/>
