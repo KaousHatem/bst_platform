@@ -10,6 +10,8 @@ import Header from '../../components/purchase-request/pdf/header'
 import Body from '../../components/purchase-request/pdf/body'
 import Footer from '../../components/purchase-request/pdf/footer'
 import QRGenerator from '../../components/purchase-request/pdf/qr-generator'
+import StaticFooter from '../../components/purchase-request/pdf/static-footer'
+
 
 import PurchaseRequestProvider from '../../services/purchase-request-provider'
 import UserProvider from '../../services/user-provider'
@@ -18,10 +20,10 @@ const styles = StyleSheet.create({
     page: {
         fontFamily: 'Helvetica',
         fontSize: 11,
-        paddingTop: 30,
+        paddingTop: 10,
         paddingLeft:40,
         paddingRight:40,
-        paddingBottom:30,
+        paddingBottom:5,
         lineHeight: 1.5,
         display:'flex',
         flexDirection: 'column',
@@ -38,6 +40,8 @@ const PurchaseRequestPage = () => {
     const [purchaseRequestId, setPurchaseRequestId] = useState(router.query.id)
     const [purchaseRequest, setPurchaseRequest] = useState()
 
+    const [pages, setPages] = useState(1)
+
 
 
     useEffect(()=>{
@@ -46,6 +50,7 @@ const PurchaseRequestPage = () => {
           PurchaseRequestProvider.getPurchaseRequests(purchaseRequestId).then(
             (response) => {
               setPurchaseRequest(response.data)
+              setPages(Math.ceil(response.data.purchaseReqProducts.length/20))
               console.log(response.data)
               Promise.all([
                   UserProvider.getUserSignature(response.data.created_by.id),
@@ -82,16 +87,18 @@ const PurchaseRequestPage = () => {
 			<PDFViewer width={window && window.innerWidth} 
             height={window && window.innerHeight} >
 				<Document>
-					<Page size="A4" 
-                    style={styles.page}>
-                    {console.log(purchaseRequest)}
-						<Header purchaseRequest={purchaseRequest} />
-						<Body purchaseRequest={purchaseRequest} />
-                        <Footer creator={creator} 
-                            approver={approver}
-                        purchaseRequest={purchaseRequest}/>
-                        
-					</Page>
+                    {[...Array(pages).keys()].map((page)=>(
+                        <Page size="A4" 
+                        style={styles.page}>
+                            <Header purchaseRequest={purchaseRequest} pages={pages} page={page+1}/>
+                            <Body purchaseRequest={purchaseRequest} page={page} length="20"/>
+                            {page+1 == pages && <Footer creator={creator} 
+                                approver={approver}
+                            purchaseRequest={purchaseRequest}/>}
+                            <StaticFooter />
+                            
+                        </Page>
+                    ))}
 				</Document>
 			</PDFViewer>
 		</Fragment>
