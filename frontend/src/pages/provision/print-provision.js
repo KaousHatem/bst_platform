@@ -123,8 +123,12 @@ const ProvisionPage = () => {
                     {[...Array(pages).keys()].map((page)=>(
                         <Page size="A4" 
                         style={styles.page}>
-                            <HeaderProvision provision={provision} pages={pages} page={page+1}/>
-                            <BodyProvision provision={provision} page={page} length="20"/>
+                            <HeaderProvision provision={provision} 
+                            pages={pages} 
+                            page={page+1}/>
+                            <BodyProvision provision={provision} 
+                            page={page} 
+                            length="20"/>
                             {page+1 == pages && 
                                 <FooterProvision value={value} 
                                 provision={provision}

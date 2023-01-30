@@ -90,8 +90,12 @@ const PurchaseRequestPage = () => {
                     {[...Array(pages).keys()].map((page)=>(
                         <Page size="A4" 
                         style={styles.page}>
-                            <Header purchaseRequest={purchaseRequest} pages={pages} page={page+1}/>
-                            <Body purchaseRequest={purchaseRequest} page={page} length="20"/>
+                            <Header purchaseRequest={purchaseRequest} 
+                            pages={pages} 
+                            page={page+1}/>
+                            <Body purchaseRequest={purchaseRequest} 
+                            page={page} 
+                            length="20"/>
                             {page+1 == pages && <Footer creator={creator} 
                                 approver={approver}
                             purchaseRequest={purchaseRequest}/>}
