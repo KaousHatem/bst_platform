@@ -9,6 +9,7 @@ import {  Select, MenuItem, Box, Button, Container, Grid, Link, TextField, Typog
 import Header from '../../components/purchase-order/pdf/header'
 import Body from '../../components/purchase-order/pdf/body'
 import Footer from '../../components/purchase-order/pdf/footer'
+import StaticFooter from '../../components/purchase-order/pdf/static-footer'
 
 import PurchaseOrderProvider from '../../services/purchase-order-provider'
 import UserProvider from '../../services/user-provider'
@@ -38,11 +39,10 @@ const PurchaseOrderPage = () => {
 
     const router = useRouter()
     const [loading, setLoading] = useState(true)
-    const [svgQrCode, setSvgQrCode] = useState()
-    const [creator, setCreator] = useState(null)
-    const [approver, setApprover] = useState(null)
     const [purchaseOrderId, setPurchaseOrderId] = useState(router.query.id)
     const [purchaseOrder, setPurchaseOrder] = useState()
+
+    const [pages, setPages] = useState(1)
 
 
 
@@ -71,11 +71,11 @@ const PurchaseOrderPage = () => {
             height={window && window.innerHeight} >
 				<Document>
 					<Page size="A4" 
-                    style={styles.page}>
-                    {console.log(purchaseOrder)}
+            style={styles.page}>
 						<Header purchaseOrder={purchaseOrder} />
 						<Body purchaseOrder={purchaseOrder} />
             <Footer />
+            <StaticFooter />
                         
 					</Page>
 				</Document>

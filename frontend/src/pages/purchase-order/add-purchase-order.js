@@ -257,7 +257,7 @@ const AddPurchaseOrder = () => {
                     <Grid item 
                     xs={6}>
                       <InputLabel>
-                        Reference De la demande d`&apos;`achat
+                        Reference De la demande d&apos;achat
                       </InputLabel>
                       <Select
                         name="purchaseRequest"

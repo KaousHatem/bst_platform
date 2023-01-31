@@ -153,14 +153,15 @@ export const POAddToolbar = ({props, isAdd = true ,id, received=false, confirmed
             'aria-labelledby': 'action-btn',
           }}
         >
-          {!received && <MenuItem onClick={(event) => handleReceipt(event)} >
-            <ReceiptIcon />
-            Accuser la réception
-          </MenuItem> }
           <MenuItem onClick={(event) => handlePrint(event)} >
             <PrintIcon />
             Imprimer la demande
           </MenuItem>
+          {!received && <MenuItem onClick={(event) => handleReceipt(event)} >
+            <ReceiptIcon />
+            Accuser la réception
+          </MenuItem> }
+          
           {/*<MenuItem >
             <PrintIcon />
             Approver le bon de commande
