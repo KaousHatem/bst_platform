@@ -116,11 +116,39 @@ const styles = StyleSheet.create({
         paddingLeft:5,
     },
 
+    headerPage:{
+        border:'1 solid black',
+        // padding: '5 15',
+        // display:'flex',
+        // flexDirection: 'row',
+        // alignItems: 'center',
+        // // alignSelf:'center',
+        // justifyContent:'flex-end',
+        // // alignContent:'right',
+        // lineHeight:'100%',
+
+        display:'flex',
+        justifyContent:'flex-end',
+        flexDirection:'row',
+        alignContent:'right',
+        height:'20',
+        alignItems: 'center',
+        lineHeight:'100%',
+        fontSize:12,
+    },
+    page:{
+        marginLeft: '10',
+        height:'100%',
+        display: 'flex',
+        justifyContent: "center",
+        textAlign: 'center',
+    },
+
     
   });
 
 
-const Header = ({purchaseOrder}) => {
+const Header = ({purchaseOrder, pages, page}) => {
     
     return(
     <View style={styles.headerContainer}>
@@ -156,6 +184,15 @@ const Header = ({purchaseOrder}) => {
                             </Text>
                         </View>  
                     </View>
+                    {/*<View style={styles.headerPage}> 
+                        <Text>Page:</Text>  
+
+                        <View style={styles.page}>
+                            <Text>
+                                {page} sur {pages}
+                            </Text>
+                        </View>
+                    </View>*/}
                 </View>
             </View>
 

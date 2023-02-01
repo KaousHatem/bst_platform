@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
     footerContainer:{
         display:'flex',
         flexDirection: 'row',
-        // justifyContent: "space-between",
+        justifyContent: "space-between",
         marginTop: 'auto',
         paddingBottom:'30%',
         // backgroundColor:'green',
@@ -67,7 +67,7 @@ const Footer = ({}) => {
     return(
     <View style={styles.footerContainer}>
         <View style={styles.visaDemand}>
-            <Text style={styles.text}>Visa Fournisseur: </Text>
+            <Text style={styles.text}>Accusé Fournisseur: </Text>
             
         </View>
         <View style={styles.VisaLogistic}>
