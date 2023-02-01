@@ -52,7 +52,9 @@ const PurchaseOrderPage = () => {
           PurchaseOrderProvider.getPurchaseOrders(purchaseOrderId).then(
             (response) => {
               setPurchaseOrder(response.data)
-              console.log(response.data)
+              setPages(Math.ceil(response.data.purchaseOrderProducts.length/20))
+
+
               setLoading(false)
             },
             (error) => {
@@ -70,6 +72,20 @@ const PurchaseOrderPage = () => {
 			<PDFViewer width={window && window.innerWidth} 
             height={window && window.innerHeight} >
 				<Document>
+          {/*{[...Array(pages).keys()].map((page)=>(
+              <Page size="A4"
+              key={page}
+              style={styles.page}>
+                  <Header purchaseOrder={purchaseOrder} 
+                  pages={pages} 
+                  page={page+1}/>
+                  <Body purchaseOrder={purchaseOrder} 
+                  />
+                  {page+1 == pages && <Footer/>}
+                  <StaticFooter />
+                  
+              </Page>
+            ))}*/}
 					<Page size="A4" 
             style={styles.page}>
 						<Header purchaseOrder={purchaseOrder} />
