@@ -209,7 +209,7 @@ class StockIn(models.Model):
     created_by = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING)
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
-    note = models.TextField(null=True, blank=True)
+    note = models.CharField(max_length=500, null=True, blank=True)
 
     class Meta:
         ordering = ('created_on',)
@@ -271,7 +271,7 @@ class StockOut(models.Model):
     created_by = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING)
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
-    note = models.TextField(null=True, blank=True)
+    note = models.CharField(max_length=500, null=True, blank=True)
 
     class Meta:
         ordering = ('created_on',)
