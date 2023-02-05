@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'logistic',
     'django_filters',
     'project',
+    'finance',
 
     
 ]

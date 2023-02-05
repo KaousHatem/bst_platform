@@ -871,7 +871,7 @@ class ReceiptProductViewSet(ModelViewSet):
 		product_id = provisionProduct['product']['id']
 
 		location_id = provisionProduct['provision']['destination']['id']
-
+		
 		store = Store.objects.filter(location=location_id)[0]
 		
 		stock = Stock.objects.filter(product=product_id,store=store.id)
@@ -892,6 +892,7 @@ class ReceiptProductViewSet(ModelViewSet):
 			'created_by':CustomUser.objects.first().id,
 			'source_id':receiptProduct.data['id'],
 		}
+		print(data)
 
 		
 
