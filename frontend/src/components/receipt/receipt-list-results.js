@@ -20,30 +20,30 @@ import {
 } from '@mui/material';
 import { getInitials } from '../../utils/get-initials';
 
-import {ThreeDots as ThreeDotsIcon} from '../../icons/three-dots'
-import {Edit as EditIcon} from '../../icons/edit'
-import {Delete as DeleteIcon} from '../../icons/delete'
-import {View as ViewIcon} from '../../icons/view'
+import { ThreeDots as ThreeDotsIcon } from '../../icons/three-dots'
+import { Edit as EditIcon } from '../../icons/edit'
+import { Delete as DeleteIcon } from '../../icons/delete'
+import { View as ViewIcon } from '../../icons/view'
 
 
 import UXAccess from '../../utils/ux-access'
- 
+
 import Label from '../Label';
 
 
 
 
-export const ReceiptListResults = ({ receiptList, ...rest}) => {
+export const ReceiptListResults = ({ receiptList, ...rest }) => {
 
 
-  
+
   const [selectedReceiptIds, setSelectedReceiptIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
 
   const [receipts, SetReceipts] = useState(receiptList)
   const router = useRouter();
-  
+
   const handleSelectAll = (event) => {
     let newSelectedReceiptIds;
 
@@ -84,20 +84,20 @@ export const ReceiptListResults = ({ receiptList, ...rest}) => {
     setPage(newPage);
   };
 
-  const handleClickEdit = (e,receipt) => {
+  const handleClickEdit = (e, receipt) => {
 
     const data = {
-     pathname: '/receipt/edit-receipt/',
-     query:{'id':receipt.id}
+      pathname: '/receipt/edit-receipt/',
+      query: { 'id': receipt.id }
     }
     router.push(data);
   }
 
 
-  return(
+  return (
     <Box {...rest}>
       <PerfectScrollbar>
-        <Box sx={{minWidth: "100%"}} >
+        <Box sx={{ minWidth: "100%" }} >
           <Table>
             <TableHead sx={{
               backgroundColor: '#F4F7FC',
@@ -128,7 +128,7 @@ export const ReceiptListResults = ({ receiptList, ...rest}) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {receipts.slice(page*limit, page*limit+limit).map((receipt)=>(
+              {receipts.slice(page * limit, page * limit + limit).map((receipt) => (
                 <TableRow
                   hover
                   key={receipt.id}
@@ -137,14 +137,14 @@ export const ReceiptListResults = ({ receiptList, ...rest}) => {
                   <TableCell>
                     {receipt.ref}
                   </TableCell>
-                  <TableCell align="center"> 
-                    {format(new Date(receipt.created_on),'dd-MM-yyyy')}
+                  <TableCell align="center">
+                    {format(new Date(receipt.created_on), 'dd-MM-yyyy')}
                   </TableCell>
                   <TableCell align="center">
                     {receipt.purchaseOrder.ref}
                   </TableCell>
                   <TableCell>
-                    {format(new Date(receipt.purchaseOrder.created_on),'dd-MM-yyyy')}
+                    {format(new Date(receipt.purchaseOrder.created_on), 'dd-MM-yyyy')}
                   </TableCell>
                   <TableCell>
                     {receipt.created_by.username}
@@ -153,31 +153,31 @@ export const ReceiptListResults = ({ receiptList, ...rest}) => {
                     {receipt.purchaseOrder.purchaseRequest.provision.destination.name}
                   </TableCell>
                   <TableCell
-                    >
+                  >
                     <Box
                       align="center"
                       sx={{
-                          justifyContent: 'center',
-                          display: 'flex'
+                        justifyContent: 'center',
+                        display: 'flex'
                       }}
                     >
-                      <ViewIcon 
+                      <ViewIcon
                         sx={{
-                          mx:1,
+                          mx: 1,
                           cursor: "pointer"
                         }}
-                        onClick = {(event) => {handleClickEdit(event, receipt)}}
-                       />
-                      
+                        onClick={(event) => { handleClickEdit(event, receipt) }}
+                      />
+
                     </Box>
-                    
+
                   </TableCell>
                 </TableRow>
               ))}
-              {receipts.length === 0 && 
+              {receipts.length === 0 &&
                 <TableRow>
                   <TableCell colSpan={7}
-                  align="center" >
+                    align="center" >
                     Aucun Bon de reception existe
                   </TableCell>
                 </TableRow>
@@ -185,7 +185,7 @@ export const ReceiptListResults = ({ receiptList, ...rest}) => {
             </TableBody>
           </Table>
         </Box>
-      </PerfectScrollbar>  
+      </PerfectScrollbar>
       <TablePagination
         component="div"
         count={receipts.length}
@@ -193,10 +193,10 @@ export const ReceiptListResults = ({ receiptList, ...rest}) => {
         onRowsPerPageChange={handleLimitChange}
         page={page}
         rowsPerPage={limit}
-        rowsPerPageOptions={[5, 10, 25]}
+        rowsPerPageOptions={[10, 25, 50]}
       />
-      
-      
+
+
     </Box>
 
 

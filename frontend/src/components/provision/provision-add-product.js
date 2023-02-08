@@ -37,29 +37,29 @@ import { getInitials } from '../../utils/get-initials';
 import { Positive as PositiveIcon } from '../../icons/positive';
 
 
-import {ThreeDots as ThreeDotsIcon} from '../../icons/three-dots'
-import {Edit as EditIcon} from '../../icons/edit'
-import {Delete as DeleteIcon} from '../../icons/delete'
-import {Save as SaveIcon} from '../../icons/save'
+import { ThreeDots as ThreeDotsIcon } from '../../icons/three-dots'
+import { Edit as EditIcon } from '../../icons/edit'
+import { Delete as DeleteIcon } from '../../icons/delete'
+import { Save as SaveIcon } from '../../icons/save'
 
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 
 import Label from '../Label';
 
-import {ProductAddDialog} from './product-add-dialog'
+import { ProductAddDialog } from './product-add-dialog'
 
 
 
-export const ProvisionAddProduct = ({selectedProducts,setSelectedProducts, setAllConfirmed, isDraft=true,...rest}) => {
-  
+export const ProvisionAddProduct = ({ selectedProducts, setSelectedProducts, setAllConfirmed, isDraft = true, ...rest }) => {
+
 
   const [selectedProductIds, setSelectedProductIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
 
-  
-  let [savedModeProducts, setSavedModeProducts] = useState(selectedProducts.map((product)=>{return(selectedProducts.indexOf(product))}))
+
+  let [savedModeProducts, setSavedModeProducts] = useState(selectedProducts.map((product) => { return (selectedProducts.indexOf(product)) }))
 
 
 
@@ -75,23 +75,23 @@ export const ProvisionAddProduct = ({selectedProducts,setSelectedProducts, setAl
 
   const handleOnEdit = (event, product) => {
     console.log(savedModeProducts)
-    if( savedModeProducts.includes(selectedProducts.indexOf(product)) ){
+    if (savedModeProducts.includes(selectedProducts.indexOf(product))) {
       const newArray = savedModeProducts.filter((item) => item !== selectedProducts.indexOf(product))
       setSavedModeProducts(newArray)
     }
   }
 
   const handleOnSave = (event, product) => {
-    if( !savedModeProducts.includes(selectedProducts.indexOf(product)) ){
-      if (product.quantity && product.quantity > 0){
-        setSavedModeProducts([ ...savedModeProducts , selectedProducts.indexOf(product)])
+    if (!savedModeProducts.includes(selectedProducts.indexOf(product))) {
+      if (product.quantity && product.quantity > 0) {
+        setSavedModeProducts([...savedModeProducts, selectedProducts.indexOf(product)])
       } else {
         setQuantityOpen(true)
         // alert("Veuillez saisir la quantité de l'article")
       }
-      
+
     }
-    
+
   }
 
   const handleSelectAll = (event) => {
@@ -149,31 +149,31 @@ export const ProvisionAddProduct = ({selectedProducts,setSelectedProducts, setAl
     setSelectedProducts([...selectedProducts]);
   }
 
-  const handleUnitChange = (event,product) => {
+  const handleUnitChange = (event, product) => {
 
     product.unit = event.target.value;
     setSelectedProducts([...selectedProducts]);
   }
 
-  useEffect(()=>{
-    if(selectedProducts.length){
-      setAllConfirmed(savedModeProducts.length===selectedProducts.length)
+  useEffect(() => {
+    if (selectedProducts.length) {
+      setAllConfirmed(savedModeProducts.length === selectedProducts.length)
     }
-    
-  },[savedModeProducts])
 
- 
+  }, [savedModeProducts])
+
+
 
   return (
 
     <Card {...rest}>
       <PerfectScrollbar>
         <Box sx={{ minWidth: "100%" }}>
-          {isDraft && <Grid item 
+          {isDraft && <Grid item
             xs={5}>
             <Button
               sx={{
-                my:3
+                my: 3
               }}
               color="primary"
               variant="contained"
@@ -183,16 +183,16 @@ export const ProvisionAddProduct = ({selectedProducts,setSelectedProducts, setAl
               Ajouter un Article
             </Button>
           </Grid>}
-          {selectedProducts && <ProductAddDialog open={open} 
-          handleClickOpen={handleClickOpen} 
-          setOpen={setOpen}
-          selectedProducts={selectedProducts} 
-          setSelectedProducts={setSelectedProducts}/>}
+          {selectedProducts && <ProductAddDialog open={open}
+            handleClickOpen={handleClickOpen}
+            setOpen={setOpen}
+            selectedProducts={selectedProducts}
+            setSelectedProducts={setSelectedProducts} />}
           <Table>
             <TableHead sx={{
               backgroundColor: '#F4F7FC',
               textAlign: 'center'
-            }} 
+            }}
             >
               <TableRow>
                 <TableCell padding="checkbox">
@@ -224,12 +224,12 @@ export const ProvisionAddProduct = ({selectedProducts,setSelectedProducts, setAl
               </TableRow>
             </TableHead>
             <TableBody>
-              {selectedProducts.slice(page*limit, page*limit+limit).map((product) => (
+              {selectedProducts.slice(page * limit, page * limit + limit).map((product) => (
                 <TableRow
                   hover
                   key={product.data.id}
                   selected={selectedProductIds.indexOf(product.data.id) !== -1}
-                  
+
                 >
                   <TableCell padding="checkbox">
                     <Checkbox
@@ -248,86 +248,86 @@ export const ProvisionAddProduct = ({selectedProducts,setSelectedProducts, setAl
                   <TableCell
                     align="center"
                   >
-                  {isDraft && !savedModeProducts.includes(selectedProducts.indexOf(product)) &&
-                    <Select
-                      fullWidth
-                      name="unit"
-                      margin="normal"
-                      defaultValue={product.unit}
-                      onChange={event => handleUnitChange(event,product)}
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                    >
-                       <MenuItem 
-                        key={product.data.base_unit}
-                        value={product.data.base_unit}>{product.data.base_unit}</MenuItem>
-                      
-                      {product.data.unit_conversions && product.data.unit_conversions.map((unit)=>(
-                        <MenuItem 
-                          key={unit.to_unit.ref}
-                          value={unit.to_unit.ref} >{unit.to_unit.ref}</MenuItem>))}
-                    </Select> ||
-                    product.unit
-                  }
+                    {isDraft && !savedModeProducts.includes(selectedProducts.indexOf(product)) &&
+                      <Select
+                        fullWidth
+                        name="unit"
+                        margin="normal"
+                        defaultValue={product.unit}
+                        onChange={event => handleUnitChange(event, product)}
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                      >
+                        <MenuItem
+                          key={product.data.base_unit}
+                          value={product.data.base_unit}>{product.data.base_unit}</MenuItem>
+
+                        {product.data.unit_conversions && product.data.unit_conversions.map((unit) => (
+                          <MenuItem
+                            key={unit.to_unit.ref}
+                            value={unit.to_unit.ref} >{unit.to_unit.ref}</MenuItem>))}
+                      </Select> ||
+                      product.unit
+                    }
 
 
                   </TableCell>
 
 
                   <TableCell align="center">
-                  {isDraft && !savedModeProducts.includes(selectedProducts.indexOf(product)) &&
-                    <TextField
-                    inputStyle={{ textAlign: 'center' }}
-                      sx={{
-                        width: '10ch'
-                      }}
-                      defaultValue={product.quantity}
-                      onChange={event => handleQuantityChange(event,product)}
-                    /> ||
-                    product.quantity
-                  }
+                    {isDraft && !savedModeProducts.includes(selectedProducts.indexOf(product)) &&
+                      <TextField
+                        inputStyle={{ textAlign: 'center' }}
+                        sx={{
+                          width: '10ch'
+                        }}
+                        defaultValue={product.quantity}
+                        onChange={event => handleQuantityChange(event, product)}
+                      /> ||
+                      product.quantity
+                    }
                   </TableCell>
                   <TableCell
-                    >
-                    { isDraft &&
-                    <Box
-                      align="center"
-                      sx={{
+                  >
+                    {isDraft &&
+                      <Box
+                        align="center"
+                        sx={{
                           justifyContent: 'center',
                           display: 'flex'
-                      }}
-                    >
-                      {
-                        !savedModeProducts.includes(selectedProducts.indexOf(product)) &&
-                        <SaveIcon
-                          onClick={(event) => handleOnSave(event, product)}
-                          sx={{
-                            mx:1,
-                          cursor: "pointer"
-                          }}
-                        /> ||
-                        <EditIcon 
-                          onClick={(event) => handleOnEdit(event, product)}
-                          sx={{
-                            mx:1,
-                          cursor: "pointer"
-                          }}
-                         />
-                      }
-                      
-                      <DeleteIcon 
-                        sx={{
-                          mx:1,
-                          cursor: "pointer"
                         }}
-                        onClick={(event) => {
-                          setSelectedProducts(selectedProducts.filter((row) => {return row.data.id !== product.data.id}))
-                        }}
-                      />
-              
-                    </Box>
+                      >
+                        {
+                          !savedModeProducts.includes(selectedProducts.indexOf(product)) &&
+                          <SaveIcon
+                            onClick={(event) => handleOnSave(event, product)}
+                            sx={{
+                              mx: 1,
+                              cursor: "pointer"
+                            }}
+                          /> ||
+                          <EditIcon
+                            onClick={(event) => handleOnEdit(event, product)}
+                            sx={{
+                              mx: 1,
+                              cursor: "pointer"
+                            }}
+                          />
+                        }
+
+                        <DeleteIcon
+                          sx={{
+                            mx: 1,
+                            cursor: "pointer"
+                          }}
+                          onClick={(event) => {
+                            setSelectedProducts(selectedProducts.filter((row) => { return row.data.id !== product.data.id }))
+                          }}
+                        />
+
+                      </Box>
                     }
-                    
+
                   </TableCell>
                 </TableRow>
               ))}
@@ -342,17 +342,17 @@ export const ProvisionAddProduct = ({selectedProducts,setSelectedProducts, setAl
         onRowsPerPageChange={handleLimitChange}
         page={page}
         rowsPerPage={limit}
-        rowsPerPageOptions={[5, 10, 25]}
+        rowsPerPageOptions={[10, 25, 50]}
       />
-      <Snackbar open={quantityOpen} 
-      onClose={handleClose}>
-        <Alert variant="filled" 
-        severity="error">
+      <Snackbar open={quantityOpen}
+        onClose={handleClose}>
+        <Alert variant="filled"
+          severity="error">
           Veuillez saisir la quantité de l&apos;article
         </Alert>
       </Snackbar>
-      
-      
+
+
     </Card>
   );
 };

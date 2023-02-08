@@ -22,16 +22,16 @@ import {
 } from '@mui/material';
 import { getInitials } from '../../utils/get-initials';
 
-import {ThreeDots as ThreeDotsIcon} from '../../icons/three-dots'
-import {Edit as EditIcon} from '../../icons/edit'
-import {Delete as DeleteIcon} from '../../icons/delete'
-import {View as ViewIcon} from '../../icons/view'
+import { ThreeDots as ThreeDotsIcon } from '../../icons/three-dots'
+import { Edit as EditIcon } from '../../icons/edit'
+import { Delete as DeleteIcon } from '../../icons/delete'
+import { View as ViewIcon } from '../../icons/view'
 
 import CategoryProvider from '../../services/category-provider'
 
-import {CategoryDeleteDialog} from './category-delete-dialog'
+import { CategoryDeleteDialog } from './category-delete-dialog'
 
-export const CategoryListResults = ({ category_list, ...rest}) => {
+export const CategoryListResults = ({ category_list, ...rest }) => {
   const [selectedCategoryIds, setSelectedCategoryIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
@@ -64,7 +64,7 @@ export const CategoryListResults = ({ category_list, ...rest}) => {
     setLoadingOpen(true)
     CategoryProvider.deleteCategory(categoryIdDelete).then(
       (response) => {
-        setCategories(categories.filter(function(category) {
+        setCategories(categories.filter(function (category) {
           return category.id !== categoryIdDelete
         }))
         setLoadingOpen(false)
@@ -116,11 +116,11 @@ export const CategoryListResults = ({ category_list, ...rest}) => {
     setPage(newPage);
   };
 
-  const handleClickEdit = (e,category) => {
+  const handleClickEdit = (e, category) => {
 
     const data = {
-     pathname: '/category/edit-category/',
-     query:{'id':category.id}
+      pathname: '/category/edit-category/',
+      query: { 'id': category.id }
     }
     router.push(data);
   }
@@ -138,17 +138,17 @@ export const CategoryListResults = ({ category_list, ...rest}) => {
 
 
 
-  return(
+  return (
     <Box {...rest}>
       <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={loadingOpen}
-        onClick={()=>{setLoadingOpen(false)}}
+        onClick={() => { setLoadingOpen(false) }}
       >
         <CircularProgress color="inherit" />
       </Backdrop>
       <PerfectScrollbar>
-        <Box sx={{minWidth: "100%"}} >
+        <Box sx={{ minWidth: "100%" }} >
           <Table>
             <TableHead sx={{
               backgroundColor: '#F4F7FC',
@@ -178,7 +178,7 @@ export const CategoryListResults = ({ category_list, ...rest}) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {categories.slice(page*limit, page*limit+limit).map((category)=>(
+              {categories.slice(page * limit, page * limit + limit).map((category) => (
                 <TableRow
                   hover
                   key={category.id}
@@ -198,44 +198,44 @@ export const CategoryListResults = ({ category_list, ...rest}) => {
                     {category.name}
                   </TableCell>
                   <TableCell
-                    >
+                  >
                     <Box
                       align="center"
                       sx={{
-                          justifyContent: 'center',
-                          display: 'flex'
+                        justifyContent: 'center',
+                        display: 'flex'
                       }}
                     >
-                    
-                      <EditIcon 
+
+                      <EditIcon
                         sx={{
-                          mx:1
+                          mx: 1
                         }}
-                        onClick = {(event) => {handleClickEdit(event, category)}}
-                       />
-                        
-                       <DeleteIcon 
+                        onClick={(event) => { handleClickEdit(event, category) }}
+                      />
+
+                      <DeleteIcon
                         sx={{
-                          mx:1
+                          mx: 1
                         }}
-                        onClick = {(event) => {handleDeleteOpen(event, category.id)}}
+                        onClick={(event) => { handleDeleteOpen(event, category.id) }}
                       />
                     </Box>
                   </TableCell>
                 </TableRow>
               ))}
-              {categories.length === 0 && 
+              {categories.length === 0 &&
                 <TableRow>
                   <TableCell colSpan={7}
-                  align="center" >
-                    Aucun site existe
+                    align="center" >
+                    Aucune categorie existe
                   </TableCell>
                 </TableRow>
               }
             </TableBody>
           </Table>
         </Box>
-      </PerfectScrollbar>  
+      </PerfectScrollbar>
       <TablePagination
         component="div"
         count={categories.length}
@@ -245,14 +245,14 @@ export const CategoryListResults = ({ category_list, ...rest}) => {
         rowsPerPage={limit}
         rowsPerPageOptions={[5, 10, 25]}
       />
-      <CategoryDeleteDialog open={deleteOpen} 
-      handleDeleteOpen={handleDeleteOpen} 
-      handleClose={handleClose}
-      handleDeleteCategory={handleDeleteCategory} />
-      <Snackbar open={errorSBOpen} 
-      onClose={handleSBClose}>
-        <Alert variant="filled" 
-        severity="error">
+      <CategoryDeleteDialog open={deleteOpen}
+        handleDeleteOpen={handleDeleteOpen}
+        handleClose={handleClose}
+        handleDeleteCategory={handleDeleteCategory} />
+      <Snackbar open={errorSBOpen}
+        onClose={handleSBClose}>
+        <Alert variant="filled"
+          severity="error">
           {errorSBText}
         </Alert>
       </Snackbar>

@@ -22,14 +22,14 @@ import {
 } from '@mui/material';
 import { getInitials } from '../../utils/get-initials';
 
-import {ThreeDots as ThreeDotsIcon} from '../../icons/three-dots'
-import {Edit as EditIcon} from '../../icons/edit'
-import {Delete as DeleteIcon} from '../../icons/delete'
-import {View as ViewIcon} from '../../icons/view'
+import { ThreeDots as ThreeDotsIcon } from '../../icons/three-dots'
+import { Edit as EditIcon } from '../../icons/edit'
+import { Delete as DeleteIcon } from '../../icons/delete'
+import { View as ViewIcon } from '../../icons/view'
 
 
 
-export const StockListResults = ({ stockList, ...rest}) => {
+export const StockListResults = ({ stockList, ...rest }) => {
 
   const [selectedStockIds, setSelectedStockIds] = useState([]);
   const [limit, setLimit] = useState(10);
@@ -53,9 +53,9 @@ export const StockListResults = ({ stockList, ...rest}) => {
   const handleClose = () => {
     setDeleteOpen(false)
   }
-  
 
-  
+
+
 
   const handleSelectAll = (event) => {
     let newSelectedStockIds;
@@ -97,12 +97,12 @@ export const StockListResults = ({ stockList, ...rest}) => {
     setPage(newPage);
   };
 
-  
 
-  const handleClickStock = (e,stock) => {
+
+  const handleClickStock = (e, stock) => {
     const data = {
-     pathname: '/stock/detail-stock',
-     query:{'stockId':stock.id}
+      pathname: '/stock/detail-stock',
+      query: { 'stockId': stock.id }
     }
     router.push(data);
   }
@@ -117,17 +117,17 @@ export const StockListResults = ({ stockList, ...rest}) => {
   }
 
 
-  return(
+  return (
     <Box {...rest}>
-    <Backdrop
-      sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-      open={loadingOpen}
-      onClick={()=>{setLoadingOpen(false)}}
-    >
-      <CircularProgress color="inherit" />
-    </Backdrop>
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loadingOpen}
+        onClick={() => { setLoadingOpen(false) }}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <PerfectScrollbar>
-        <Box sx={{minWidth: "100%"}} >
+        <Box sx={{ minWidth: "100%" }} >
           <Table>
             <TableHead sx={{
               backgroundColor: '#F4F7FC',
@@ -169,7 +169,7 @@ export const StockListResults = ({ stockList, ...rest}) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {stocks.slice(page*limit, page*limit+limit).map((stock)=>(
+              {stocks.slice(page * limit, page * limit + limit).map((stock) => (
                 <TableRow
                   hover
                   key={stock.id}
@@ -198,36 +198,36 @@ export const StockListResults = ({ stockList, ...rest}) => {
                     {stock.price}
                   </TableCell>
                   <TableCell>
-                    {format(new Date(stock.updated_on),"dd/MM/yyyy hh:mm")}
+                    {format(new Date(stock.updated_on), "dd/MM/yyyy hh:mm")}
                   </TableCell>
                   <TableCell
-                    >
+                  >
                     <Box
                       align="center"
                       sx={{
-                          justifyContent: 'center',
-                          display: 'flex'
+                        justifyContent: 'center',
+                        display: 'flex'
                       }}
                     >
-                    
-                      
-                       <ViewIcon 
+
+
+                      <ViewIcon
                         sx={{
-                          mx:1,
+                          mx: 1,
                           cursor: "pointer"
                         }}
-                        onClick = {(event) => {handleClickStock(event,stock)}}
-                       />
-                        
-                       
+                        onClick={(event) => { handleClickStock(event, stock) }}
+                      />
+
+
                     </Box>
                   </TableCell>
                 </TableRow>
               ))}
-              {stocks.length === 0 && 
+              {stocks.length === 0 &&
                 <TableRow>
                   <TableCell colSpan={7}
-                  align="center" >
+                    align="center" >
                     Aucun article existe
                   </TableCell>
                 </TableRow>
@@ -235,7 +235,7 @@ export const StockListResults = ({ stockList, ...rest}) => {
             </TableBody>
           </Table>
         </Box>
-      </PerfectScrollbar>  
+      </PerfectScrollbar>
       <TablePagination
         component="div"
         count={stocks.length}
@@ -243,13 +243,13 @@ export const StockListResults = ({ stockList, ...rest}) => {
         onRowsPerPageChange={handleLimitChange}
         page={page}
         rowsPerPage={limit}
-        rowsPerPageOptions={[5, 10, 25]}
+        rowsPerPageOptions={[10, 25, 50]}
       />
-      
-      <Snackbar open={errorSBOpen} 
-      onClose={handleSBClose}>
-        <Alert variant="filled" 
-        severity="error">
+
+      <Snackbar open={errorSBOpen}
+        onClose={handleSBClose}>
+        <Alert variant="filled"
+          severity="error">
           {errorSBText}
         </Alert>
       </Snackbar>

@@ -24,10 +24,10 @@ import {
 } from '@mui/material';
 import { getInitials } from '../../utils/get-initials';
 
-import {ThreeDots as ThreeDotsIcon} from '../../icons/three-dots'
-import {Edit as EditIcon} from '../../icons/edit'
-import {Delete as DeleteIcon} from '../../icons/delete'
-import {View as ViewIcon} from '../../icons/view'
+import { ThreeDots as ThreeDotsIcon } from '../../icons/three-dots'
+import { Edit as EditIcon } from '../../icons/edit'
+import { Delete as DeleteIcon } from '../../icons/delete'
+import { View as ViewIcon } from '../../icons/view'
 import Label from '../Label';
 import LocationProvider from '../../services/location-provider'
 import UserProvider from '../../services/user-provider'
@@ -36,8 +36,8 @@ import { UserDeleteDialog } from './user-delete-dialog'
 
 
 
-export const UserListResults = ({ user_list=[], ...rest }) => {
-  
+export const UserListResults = ({ user_list = [], ...rest }) => {
+
   const [selectedUserIds, setSelectedUserIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
@@ -45,10 +45,10 @@ export const UserListResults = ({ user_list=[], ...rest }) => {
 
   const [users, setUsers] = useState(user_list)
 
-  
+
   const [anchorEl, setAnchorEl] = useState(null);
   const menuOpen = Boolean(anchorEl);
-  
+
   const router = useRouter();
 
   const roles = {
@@ -70,7 +70,7 @@ export const UserListResults = ({ user_list=[], ...rest }) => {
   const CANNOT_DELETE_ERROR = "Cet utilisateur ne peux pas etre supprimer."
   const CONNECTION_ERROR = "Probleme de connexion, Veuillez de ressayer"
 
-  
+
 
   const handleClickMenu = (event, user) => {
     setClickedId(user.id)
@@ -100,7 +100,7 @@ export const UserListResults = ({ user_list=[], ...rest }) => {
     setLoadingOpen(true)
     UserProvider.deleteUser(userIdDelete).then(
       (response) => {
-        setUsers(users.filter(function(user) {
+        setUsers(users.filter(function (user) {
           return user.id !== userIdDelete
         }))
         setLoadingOpen(false)
@@ -108,7 +108,7 @@ export const UserListResults = ({ user_list=[], ...rest }) => {
       error => {
         setLoadingOpen(false)
         handleSBOpen(CANNOT_DELETE_ERROR)
-        
+
       }
     )
   }
@@ -153,11 +153,11 @@ export const UserListResults = ({ user_list=[], ...rest }) => {
     setPage(newPage);
   };
 
-  const handleClickEdit = (e,user) => {
+  const handleClickEdit = (e, user) => {
 
     const data = {
-     pathname: '/user/edit-user',
-     query:{'id':user.id}
+      pathname: '/user/edit-user',
+      query: { 'id': user.id }
     }
     router.push(data);
   }
@@ -170,13 +170,13 @@ export const UserListResults = ({ user_list=[], ...rest }) => {
       is_active: true
     }
     setLoadingOpen(true)
-    UserProvider.activateUser(data,clickedId).then(
+    UserProvider.activateUser(data, clickedId).then(
       (response) => {
         users[index].is_active = true
         // console.log(users)
         // setUsers(users)
         setLoadingOpen(false)
-      },error=>{
+      }, error => {
         setLoadingOpen(false)
         handleSBOpen(CONNECTION_ERROR)
       })
@@ -190,7 +190,7 @@ export const UserListResults = ({ user_list=[], ...rest }) => {
     const data = {
       is_active: false
     }
-    UserProvider.activateUser(data,clickedId).then(
+    UserProvider.activateUser(data, clickedId).then(
       (response) => {
         users[index].is_active = false
         // console.log(users)
@@ -215,7 +215,7 @@ export const UserListResults = ({ user_list=[], ...rest }) => {
       <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={loadingOpen}
-        onClick={()=>{setLoadingOpen(false)}}
+        onClick={() => { setLoadingOpen(false) }}
       >
         <CircularProgress color="inherit" />
       </Backdrop>
@@ -225,7 +225,7 @@ export const UserListResults = ({ user_list=[], ...rest }) => {
             <TableHead sx={{
               backgroundColor: '#F4F7FC',
               textAlign: 'center'
-            }} 
+            }}
             >
               <TableRow>
                 <TableCell padding="checkbox">
@@ -260,12 +260,12 @@ export const UserListResults = ({ user_list=[], ...rest }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {users.slice(page*limit, page*limit+limit).map((user) => (
+              {users.slice(page * limit, page * limit + limit).map((user) => (
                 <TableRow
                   hover
                   key={user.id}
                   selected={selectedUserIds.indexOf(user.id) !== -1}
-                  
+
                 >
                   <TableCell padding="checkbox">
                     <Checkbox
@@ -281,42 +281,42 @@ export const UserListResults = ({ user_list=[], ...rest }) => {
                     {roles[user.role]}
                   </TableCell>
                   <TableCell>
-                     {user.location}
+                    {user.location}
                   </TableCell>
                   <TableCell>
-                    {format(new Date(user.last_login),'yyyy-MM-dd hh:mm')}
+                    {format(new Date(user.last_login), 'yyyy-MM-dd hh:mm')}
                   </TableCell>
                   <TableCell align="center">
                     {user.is_active && "active" || "non active"}
                   </TableCell>
                   <TableCell
-                    >
+                  >
                     <Box
                       align="center"
                       sx={{
-                          justifyContent: 'center',
-                          display: 'flex'
+                        justifyContent: 'center',
+                        display: 'flex'
                       }}
                     >
-                    
-                      <EditIcon 
+
+                      <EditIcon
                         sx={{
-                          mx:1,
+                          mx: 1,
                           cursor: "pointer"
                         }}
-                        onClick = {(event) => {handleClickEdit(event, user)}}
-                       />
-                        
-                       <DeleteIcon 
-                        sx={{
-                          mx:1,
-                          cursor: "pointer"
-                        }}
-                        onClick = {(event) => {handleDeleteOpen(event, user.id)}}
+                        onClick={(event) => { handleClickEdit(event, user) }}
                       />
-                      <ThreeDotsIcon 
+
+                      <DeleteIcon
                         sx={{
-                          mx:1,
+                          mx: 1,
+                          cursor: "pointer"
+                        }}
+                        onClick={(event) => { handleDeleteOpen(event, user.id) }}
+                      />
+                      <ThreeDotsIcon
+                        sx={{
+                          mx: 1,
                           cursor: "pointer"
                         }}
                         id="edit-btn"
@@ -334,25 +334,25 @@ export const UserListResults = ({ user_list=[], ...rest }) => {
                           'aria-labelledby': 'edit-btn',
                         }}
                       >
-                        { clickedStatus && <MenuItem onClick={(event) => handleDeactivate(event)}>Deactiver</MenuItem>
-                        || <MenuItem onClick={(event) => handleActivate(event)}>Activer</MenuItem>}
-                        
+                        {clickedStatus && <MenuItem onClick={(event) => handleDeactivate(event)}>Deactiver</MenuItem>
+                          || <MenuItem onClick={(event) => handleActivate(event)}>Activer</MenuItem>}
+
                       </Menu>
 
                     </Box>
-                    
+
                   </TableCell>
-                  
+
                 </TableRow>
               ))}
-              {users.length === 0 && 
-                    <TableRow>
-                      <TableCell colSpan={7} 
-                      align="center">
-                        Aucun utilisateur existe
-                      </TableCell>
-                    </TableRow>
-                  }
+              {users.length === 0 &&
+                <TableRow>
+                  <TableCell colSpan={7}
+                    align="center">
+                    Aucun utilisateur existe
+                  </TableCell>
+                </TableRow>
+              }
             </TableBody>
           </Table>
         </Box>
@@ -364,17 +364,17 @@ export const UserListResults = ({ user_list=[], ...rest }) => {
         onRowsPerPageChange={handleLimitChange}
         page={page}
         rowsPerPage={limit}
-        rowsPerPageOptions={[5, 10, 25]}
+        rowsPerPageOptions={[10, 25, 50]}
       />
-      <UserDeleteDialog open={deleteOpen} 
-      handleDeleteOpen={handleDeleteOpen} 
-      handleClose={handleClose} 
-      handleDeleteUser={handleDeleteUser} />
+      <UserDeleteDialog open={deleteOpen}
+        handleDeleteOpen={handleDeleteOpen}
+        handleClose={handleClose}
+        handleDeleteUser={handleDeleteUser} />
 
-      <Snackbar open={errorSBOpen} 
-      onClose={handleSBClose}>
-        <Alert variant="filled" 
-        severity="error">
+      <Snackbar open={errorSBOpen}
+        onClose={handleSBClose}>
+        <Alert variant="filled"
+          severity="error">
           {errorSBText}
         </Alert>
       </Snackbar>

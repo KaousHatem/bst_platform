@@ -24,14 +24,14 @@ import {
 } from '@mui/material';
 import { getInitials } from '../../utils/get-initials';
 
-import {ThreeDots as ThreeDotsIcon} from '../../icons/three-dots'
-import {Edit as EditIcon} from '../../icons/edit'
-import {Delete as DeleteIcon} from '../../icons/delete'
+import { ThreeDots as ThreeDotsIcon } from '../../icons/three-dots'
+import { Edit as EditIcon } from '../../icons/edit'
+import { Delete as DeleteIcon } from '../../icons/delete'
 import Label from '../Label';
 
 import ProductProvider from '../../services/product-provider'
-import {ProductDeleteDialog} from './product-delete-dialog'
-import {ProductFilter} from './product-filter'
+import { ProductDeleteDialog } from './product-delete-dialog'
+import { ProductFilter } from './product-filter'
 
 
 
@@ -81,7 +81,7 @@ export const ProductListResults = ({ product, categories, ...rest }) => {
     setOpen(false)
   }
 
- 
+
   const handleSelectAll = (event) => {
     let newSelectedProductIds;
 
@@ -122,10 +122,10 @@ export const ProductListResults = ({ product, categories, ...rest }) => {
     setPage(newPage);
   };
 
-  const handleClickEdit = (e,product) => {
-    router.push({ 
-     pathname: '/products/edit-product',
-     query: {id:product.id}
+  const handleClickEdit = (e, product) => {
+    router.push({
+      pathname: '/products/edit-product',
+      query: { id: product.id }
     });
   }
 
@@ -133,26 +133,26 @@ export const ProductListResults = ({ product, categories, ...rest }) => {
     setOpen(false)
     setLoadingOpen(true)
     ProductProvider.deleteProduct(id).then(
-        (response) => {
-          console.log(response)
-          console.log('item: '+id+' is deleted')
-          setFilteredProducts(filteredProducts.filter(function(product) {
-            return product.id !== id
-          }))
-          setLoadingOpen(false)
-        },
-        error => {  
-          setLoadingOpen(false)
-          handleSBOpen(CONNECTION_ERROR)
-        }
-      )
+      (response) => {
+        console.log(response)
+        console.log('item: ' + id + ' is deleted')
+        setFilteredProducts(filteredProducts.filter(function (product) {
+          return product.id !== id
+        }))
+        setLoadingOpen(false)
+      },
+      error => {
+        setLoadingOpen(false)
+        handleSBOpen(CONNECTION_ERROR)
+      }
+    )
   }
 
   const handleActivate = (e) => {
     const index = filteredProducts.findIndex(item => item.id === clickedId)
     const tmpProduct = filteredProducts[index]
     tmpProduct.status = false
-    ProductProvider.editProduct(filteredProducts[index],clickedId).then(
+    ProductProvider.editProduct(filteredProducts[index], clickedId).then(
       (response) => {
         filteredProducts[index].status = false
       })
@@ -163,7 +163,7 @@ export const ProductListResults = ({ product, categories, ...rest }) => {
     const index = filteredProducts.findIndex(item => item.id === clickedId)
     const tmpProduct = filteredProducts[index]
     tmpProduct.status = true
-    ProductProvider.editProduct(filteredProducts[index],clickedId).then(
+    ProductProvider.editProduct(filteredProducts[index], clickedId).then(
       (response) => {
         filteredProducts[index].status = true
       })
@@ -185,20 +185,20 @@ export const ProductListResults = ({ product, categories, ...rest }) => {
       <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={loadingOpen}
-        onClick={()=>{setLoadingOpen(false)}}
+        onClick={() => { setLoadingOpen(false) }}
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-      <ProductFilter products={products} 
-      setFilteredProducts={setFilteredProducts} 
-      categories={categories} />
+      <ProductFilter products={products}
+        setFilteredProducts={setFilteredProducts}
+        categories={categories} />
       <PerfectScrollbar>
         <Box sx={{ minWidth: "100%" }}>
           <Table>
             <TableHead sx={{
               backgroundColor: '#F4F7FC',
               textAlign: 'center'
-            }} 
+            }}
             >
               <TableRow>
                 <TableCell padding="checkbox">
@@ -233,12 +233,12 @@ export const ProductListResults = ({ product, categories, ...rest }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredProducts.slice(page*limit, page*limit+limit).map((product) => (
+              {filteredProducts.slice(page * limit, page * limit + limit).map((product) => (
                 <TableRow
                   hover
                   key={product.id}
                   selected={selectedProductIds.indexOf(product.id) !== -1}
-                  
+
                 >
                   <TableCell padding="checkbox">
                     <Checkbox
@@ -248,7 +248,7 @@ export const ProductListResults = ({ product, categories, ...rest }) => {
                     />
                   </TableCell>
                   <TableCell>
-                    { product.sku === '' && '-' || product.sku}
+                    {product.sku === '' && '-' || product.sku}
                   </TableCell>
                   <TableCell>
                     {product.name}
@@ -270,32 +270,32 @@ export const ProductListResults = ({ product, categories, ...rest }) => {
                     </Label>
                   </TableCell>
                   <TableCell
-                    >
+                  >
                     <Box
                       align="center"
                       sx={{
-                          justifyContent: 'center',
-                          display: 'flex'
+                        justifyContent: 'center',
+                        display: 'flex'
                       }}
                     >
-                      <EditIcon 
+                      <EditIcon
                         sx={{
-                          mx:1,
+                          mx: 1,
                           cursor: "pointer"
                         }}
-                        onClick = {(event) => {handleClickEdit(event, product)}}
-                       />
-                      <DeleteIcon 
-                        sx={{
-                          mx:1,
-                          cursor: "pointer"
-                        }}
-                        onClick = {(event) => {handleClickOpen(event, product.id)}}
+                        onClick={(event) => { handleClickEdit(event, product) }}
                       />
-                      
-                      <ThreeDotsIcon 
+                      <DeleteIcon
                         sx={{
-                          mx:1,
+                          mx: 1,
+                          cursor: "pointer"
+                        }}
+                        onClick={(event) => { handleClickOpen(event, product.id) }}
+                      />
+
+                      <ThreeDotsIcon
+                        sx={{
+                          mx: 1,
                           cursor: "pointer"
                         }}
                         id="edit-btn"
@@ -313,12 +313,12 @@ export const ProductListResults = ({ product, categories, ...rest }) => {
                           'aria-labelledby': 'edit-btn',
                         }}
                       >
-                        { clickedStatus && <MenuItem onClick={(event) => handleActivate(event)}>Deactiver</MenuItem>
-                        || <MenuItem onClick={(event) => handleDeactivate(event)}>Activer</MenuItem>}
-                        
+                        {clickedStatus && <MenuItem onClick={(event) => handleActivate(event)}>Deactiver</MenuItem>
+                          || <MenuItem onClick={(event) => handleDeactivate(event)}>Activer</MenuItem>}
+
                       </Menu>
                     </Box>
-                    
+
                   </TableCell>
                 </TableRow>
               ))}
@@ -333,17 +333,17 @@ export const ProductListResults = ({ product, categories, ...rest }) => {
         onRowsPerPageChange={handleLimitChange}
         page={page}
         rowsPerPage={limit}
-        rowsPerPageOptions={[5, 10, 25]}
+        rowsPerPageOptions={[10, 25, 50]}
       />
-      <ProductDeleteDialog open={open} 
-      handleClickOpen={handleClickOpen} 
-      handleClose={handleClose} 
-      handleDelete={handleDelete} />
+      <ProductDeleteDialog open={open}
+        handleClickOpen={handleClickOpen}
+        handleClose={handleClose}
+        handleDelete={handleDelete} />
 
-      <Snackbar open={errorSBOpen} 
-      onClose={handleSBClose}>
-        <Alert variant="filled" 
-        severity="error">
+      <Snackbar open={errorSBOpen}
+        onClose={handleSBClose}>
+        <Alert variant="filled"
+          severity="error">
           Probleme de connexion, Veuillez de ressayer
         </Alert>
       </Snackbar>

@@ -24,15 +24,15 @@ import {
 } from '@mui/material';
 import { getInitials } from '../../utils/get-initials';
 
-import {ThreeDots as ThreeDotsIcon} from '../../icons/three-dots'
-import {Edit as EditIcon} from '../../icons/edit'
-import {Delete as DeleteIcon} from '../../icons/delete'
-import {View as ViewIcon} from '../../icons/view'
+import { ThreeDots as ThreeDotsIcon } from '../../icons/three-dots'
+import { Edit as EditIcon } from '../../icons/edit'
+import { Delete as DeleteIcon } from '../../icons/delete'
+import { View as ViewIcon } from '../../icons/view'
 import Label from '../Label';
 
 import ProvisionsProvider from '../../services/provision-provider'
-import {ProvisionDeleteDialog} from './provision-delete-dialog'
-import {ProvisionFilter} from './provision-filter'
+import { ProvisionDeleteDialog } from './provision-delete-dialog'
+import { ProvisionFilter } from './provision-filter'
 
 
 
@@ -57,12 +57,12 @@ export const ProvisionListResults = ({ provision_list, ...rest }) => {
   }
 
   const status_style = {
-    0: ['outlined','text'],
-    1: ['filled','primary'],
-    4: ['filled','error'],
-    9: ['filled','secondary'],
-    99: ['filled','info'],
-    999: ['filled','warning']
+    0: ['outlined', 'text'],
+    1: ['filled', 'primary'],
+    4: ['filled', 'error'],
+    9: ['filled', 'secondary'],
+    99: ['filled', 'info'],
+    999: ['filled', 'warning']
   }
 
   const [deleteOpen, setDeleteOpen] = useState(false)
@@ -75,8 +75,8 @@ export const ProvisionListResults = ({ provision_list, ...rest }) => {
 
   const [loadingOpen, setLoadingOpen] = useState(false)
 
- 
-  
+
+
   const handleClose = () => {
     setDeleteOpen(false)
   }
@@ -90,7 +90,7 @@ export const ProvisionListResults = ({ provision_list, ...rest }) => {
     setLoadingOpen(true)
     ProvisionsProvider.deleteProvision(provisionIdDelete).then(
       (response) => {
-        setFilteredProvision(filteredProvision.filter(function(provision) {
+        setFilteredProvision(filteredProvision.filter(function (provision) {
           return provision.id !== provisionIdDelete
         }))
         setLoadingOpen(false)
@@ -142,11 +142,11 @@ export const ProvisionListResults = ({ provision_list, ...rest }) => {
     setPage(newPage);
   };
 
-  const handleClickEdit = (e,provision) => {
+  const handleClickEdit = (e, provision) => {
 
     const data = {
-     pathname: '/provision/edit-provision',
-     query:{'provisionId':provision.id}
+      pathname: '/provision/edit-provision',
+      query: { 'provisionId': provision.id }
     }
     router.push(data);
   }
@@ -160,26 +160,26 @@ export const ProvisionListResults = ({ provision_list, ...rest }) => {
     setErrorSBOpen(true)
   }
 
-  
+
   return (
     <Box {...rest}>
 
       <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={loadingOpen}
-        onClick={()=>{setLoadingOpen(false)}}
+        onClick={() => { setLoadingOpen(false) }}
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-      {provisions.length!==0 &&<ProvisionFilter provisions={provisions} 
-      setFilteredProvision={setFilteredProvision} />}
+      {provisions.length !== 0 && <ProvisionFilter provisions={provisions}
+        setFilteredProvision={setFilteredProvision} />}
       <PerfectScrollbar>
         <Box sx={{ minWidth: "100%" }}>
           <Table>
             <TableHead sx={{
               backgroundColor: '#F4F7FC',
               textAlign: 'center'
-            }} 
+            }}
             >
               <TableRow>
                 <TableCell padding="checkbox">
@@ -214,15 +214,15 @@ export const ProvisionListResults = ({ provision_list, ...rest }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredProvision.slice(page*limit, page*limit+limit).map((provision) => (
+              {filteredProvision.slice(page * limit, page * limit + limit).map((provision) => (
 
                 <TableRow
                   hover
                   key={provision.id}
                   selected={selectedProvisionIds.indexOf(provision.id) !== -1}
-                  
+
                 >
-                {console.log(provision.created_on)}
+                  {console.log(provision.created_on)}
                   <TableCell padding="checkbox">
                     <Checkbox
                       checked={selectedProvisionIds.indexOf(provision.id) !== -1}
@@ -251,49 +251,49 @@ export const ProvisionListResults = ({ provision_list, ...rest }) => {
                     </Label>
                   </TableCell>
                   <TableCell
-                    >
+                  >
                     <Box
                       align="center"
                       sx={{
-                          justifyContent: 'center',
-                          display: 'flex'
+                        justifyContent: 'center',
+                        display: 'flex'
                       }}
                     >
-                    {provision.status !== '0' &&
-                      <ViewIcon 
-                        sx={{
-                          mx:1,
-                          cursor: "pointer"
-                        }}
-                        onClick = {(event) => {handleClickEdit(event, provision)}}
-                       />
-                      || <><EditIcon 
-                        sx={{
-                          mx:1,
-                          cursor: "pointer"
-                        }}
-                        onClick = {(event) => {handleClickEdit(event, provision)}}
-                       />
-                        
-                       <DeleteIcon 
-                        sx={{
-                          mx:1,
-                          cursor: "pointer"
-                        }}
-                        onClick = {(event) => {handleDeleteOpen(event, provision.id)}}
-                      /></>
-                     }
-                      
+                      {provision.status !== '0' &&
+                        <ViewIcon
+                          sx={{
+                            mx: 1,
+                            cursor: "pointer"
+                          }}
+                          onClick={(event) => { handleClickEdit(event, provision) }}
+                        />
+                        || <><EditIcon
+                          sx={{
+                            mx: 1,
+                            cursor: "pointer"
+                          }}
+                          onClick={(event) => { handleClickEdit(event, provision) }}
+                        />
+
+                          <DeleteIcon
+                            sx={{
+                              mx: 1,
+                              cursor: "pointer"
+                            }}
+                            onClick={(event) => { handleDeleteOpen(event, provision.id) }}
+                          /></>
+                      }
+
 
                     </Box>
-                    
+
                   </TableCell>
                 </TableRow>
               ))}
-              {filteredProvision.length === 0 && 
+              {filteredProvision.length === 0 &&
                 <TableRow>
                   <TableCell colSpan={7}
-                  align="center" >
+                    align="center" >
                     Aucune demande d&apos;appro existe
                   </TableCell>
                 </TableRow>
@@ -309,16 +309,16 @@ export const ProvisionListResults = ({ provision_list, ...rest }) => {
         onRowsPerPageChange={handleLimitChange}
         page={page}
         rowsPerPage={limit}
-        rowsPerPageOptions={[5, 10, 25]}
+        rowsPerPageOptions={[10, 25, 50]}
       />
-      <ProvisionDeleteDialog open={deleteOpen} 
-      handleDeleteOpen={handleDeleteOpen} 
-      handleClose={handleClose} 
-      handleDeleteProvision={handleDeleteProvision} />
-      <Snackbar open={errorSBOpen} 
-      onClose={handleSBClose}>
-        <Alert variant="filled" 
-        severity="error">
+      <ProvisionDeleteDialog open={deleteOpen}
+        handleDeleteOpen={handleDeleteOpen}
+        handleClose={handleClose}
+        handleDeleteProvision={handleDeleteProvision} />
+      <Snackbar open={errorSBOpen}
+        onClose={handleSBClose}>
+        <Alert variant="filled"
+          severity="error">
           Probleme de connexion, Veuillez de ressayer
         </Alert>
       </Snackbar>

@@ -20,20 +20,20 @@ import {
 } from '@mui/material';
 import { getInitials } from '../../utils/get-initials';
 
-import {ThreeDots as ThreeDotsIcon} from '../../icons/three-dots'
-import {Edit as EditIcon} from '../../icons/edit'
-import {Delete as DeleteIcon} from '../../icons/delete'
-import {View as ViewIcon} from '../../icons/view'
+import { ThreeDots as ThreeDotsIcon } from '../../icons/three-dots'
+import { Edit as EditIcon } from '../../icons/edit'
+import { Delete as DeleteIcon } from '../../icons/delete'
+import { View as ViewIcon } from '../../icons/view'
 
 import PurchaseRequestProvider from '../../services/purchase-request-provider'
 import PRProductProvider from '../../services/pr-product-provider'
 
-import {PRDeleteDialog} from './pr-delete-dialog'
-import {PRApproveDialog} from './pr-approve-dialog'
- 
+import { PRDeleteDialog } from './pr-delete-dialog'
+import { PRApproveDialog } from './pr-approve-dialog'
+
 import Label from '../Label';
 
-export const PRListResults = ({ purchaseReqList, ...rest}) => {
+export const PRListResults = ({ purchaseReqList, ...rest }) => {
 
   const status_text = {
     0: "Brouillon",
@@ -43,11 +43,11 @@ export const PRListResults = ({ purchaseReqList, ...rest}) => {
   }
 
   const status_style = {
-    0: ['outlined','text'],
-    1: ['filled','primary'],
-    4: ['filled','error'],
-    9: ['filled','secondary'],
-    
+    0: ['outlined', 'text'],
+    1: ['filled', 'primary'],
+    4: ['filled', 'error'],
+    9: ['filled', 'secondary'],
+
   }
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -56,7 +56,7 @@ export const PRListResults = ({ purchaseReqList, ...rest}) => {
 
   const [approveOpen, setApproveOpen] = useState(false)
   const [purchaseRequestIdApprove, setPurchaseRequestIdApprove] = useState()
-  
+
   const [selectedPRIds, setSelectedPRIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
@@ -80,15 +80,15 @@ export const PRListResults = ({ purchaseReqList, ...rest}) => {
     const data = {
       status: status,
     }
-    if (clickedId){
+    if (clickedId) {
       PurchaseRequestProvider.approvePurchaseRequest(clickedId).then(
-      (response) => {
-        alert("done")
-        router.push('/purchase-request');
-      },
-      (error) => {
-        alert("error")
-      })
+        (response) => {
+          alert("done")
+          router.push('/purchase-request');
+        },
+        (error) => {
+          alert("error")
+        })
     }
   }
 
@@ -104,8 +104,8 @@ export const PRListResults = ({ purchaseReqList, ...rest}) => {
     setDeleteOpen(false)
     PurchaseRequestProvider.deletePurchaseRequest(purchaseRequestIdDelete).then(
       (response) => {
-        console.log('PurchaseRequest: '+purchaseRequestIdDelete+' is deleted')
-        setPurchaseRequests(purchaseRequests.filter(function(purchaseRequest) {
+        console.log('PurchaseRequest: ' + purchaseRequestIdDelete + ' is deleted')
+        setPurchaseRequests(purchaseRequests.filter(function (purchaseRequest) {
           return purchaseRequest.id !== purchaseRequestIdDelete
         }))
       },
@@ -161,11 +161,11 @@ export const PRListResults = ({ purchaseReqList, ...rest}) => {
     setPage(newPage);
   };
 
-  const handleClickEdit = (e,purchaseRequest) => {
+  const handleClickEdit = (e, purchaseRequest) => {
 
     const data = {
-     pathname: '/purchase-request/edit-purchase-request/',
-     query:{'id':purchaseRequest.id}
+      pathname: '/purchase-request/edit-purchase-request/',
+      query: { 'id': purchaseRequest.id }
     }
     router.push(data);
   }
@@ -180,13 +180,13 @@ export const PRListResults = ({ purchaseReqList, ...rest}) => {
     setAnchorEl(null);
   };
 
- 
 
 
-  return(
+
+  return (
     <Box {...rest}>
       <PerfectScrollbar>
-        <Box sx={{minWidth: "100%"}} >
+        <Box sx={{ minWidth: "100%" }} >
           <Table>
             <TableHead sx={{
               backgroundColor: '#F4F7FC',
@@ -225,7 +225,7 @@ export const PRListResults = ({ purchaseReqList, ...rest}) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {purchaseRequests.slice(page*limit, page*limit+limit).map((purchaseRequest)=>(
+              {purchaseRequests.slice(page * limit, page * limit + limit).map((purchaseRequest) => (
                 <TableRow
                   hover
                   key={purchaseRequest.id}
@@ -259,48 +259,48 @@ export const PRListResults = ({ purchaseReqList, ...rest}) => {
                     </Label>
                   </TableCell>
                   <TableCell
-                    >
+                  >
                     <Box
                       align="center"
                       sx={{
-                          justifyContent: 'center',
-                          display: 'flex'
+                        justifyContent: 'center',
+                        display: 'flex'
                       }}
                     >
-                    { purchaseRequest.status !== '0' &&
-                      <ViewIcon 
-                        sx={{
-                          mx:1,
-                          cursor: "pointer"
-                        }}
-                        onClick = {(event) => {handleClickEdit(event, purchaseRequest)}}
-                       />
-                      || <>
-                      <EditIcon 
-                        sx={{
-                          mx:1,
-                          cursor: "pointer"
-                        }}
-                        onClick = {(event) => {handleClickEdit(event, purchaseRequest)}}
-                       />
-                       <DeleteIcon 
-                        sx={{
-                          mx:1,
-                          cursor: "pointer"
-                        }}
-                        onClick = {(event) => {handleDeleteOpen(event, purchaseRequest.id)}}
-                      />
-                       </>
-                    }
+                      {purchaseRequest.status !== '0' &&
+                        <ViewIcon
+                          sx={{
+                            mx: 1,
+                            cursor: "pointer"
+                          }}
+                          onClick={(event) => { handleClickEdit(event, purchaseRequest) }}
+                        />
+                        || <>
+                          <EditIcon
+                            sx={{
+                              mx: 1,
+                              cursor: "pointer"
+                            }}
+                            onClick={(event) => { handleClickEdit(event, purchaseRequest) }}
+                          />
+                          <DeleteIcon
+                            sx={{
+                              mx: 1,
+                              cursor: "pointer"
+                            }}
+                            onClick={(event) => { handleDeleteOpen(event, purchaseRequest.id) }}
+                          />
+                        </>
+                      }
                     </Box>
-                    
+
                   </TableCell>
                 </TableRow>
               ))}
-              {purchaseRequests.length === 0 && 
+              {purchaseRequests.length === 0 &&
                 <TableRow>
                   <TableCell colSpan={7}
-                  align="center" >
+                    align="center" >
                     Aucune demande d`&apos;`achat existe
                   </TableCell>
                 </TableRow>
@@ -308,7 +308,7 @@ export const PRListResults = ({ purchaseReqList, ...rest}) => {
             </TableBody>
           </Table>
         </Box>
-      </PerfectScrollbar>  
+      </PerfectScrollbar>
       <TablePagination
         component="div"
         count={purchaseRequests.length}
@@ -316,16 +316,16 @@ export const PRListResults = ({ purchaseReqList, ...rest}) => {
         onRowsPerPageChange={handleLimitChange}
         page={page}
         rowsPerPage={limit}
-        rowsPerPageOptions={[5, 10, 25]}
+        rowsPerPageOptions={[10, 25, 50]}
       />
-      <PRDeleteDialog open={deleteOpen} 
-      handleDeleteOpen={handleDeleteOpen} 
-      handleClose={handleClose}
-      handleDeletePurchaseRequest={handleDeletePurchaseRequest} />
-      <PRApproveDialog approveOpen={approveOpen} 
-      handleApproveOpen={handleApproveOpen} 
-      handleApproveClose={handleApproveClose}
-      handleApprovePurchaseRequest={handleApprovePurchaseRequest} />
+      <PRDeleteDialog open={deleteOpen}
+        handleDeleteOpen={handleDeleteOpen}
+        handleClose={handleClose}
+        handleDeletePurchaseRequest={handleDeletePurchaseRequest} />
+      <PRApproveDialog approveOpen={approveOpen}
+        handleApproveOpen={handleApproveOpen}
+        handleApproveClose={handleApproveClose}
+        handleApprovePurchaseRequest={handleApprovePurchaseRequest} />
     </Box>
 
 

@@ -35,12 +35,12 @@ import { getInitials } from '../../utils/get-initials';
 import { Positive as PositiveIcon } from '../../icons/positive';
 
 
-import {ThreeDots as ThreeDotsIcon} from '../../icons/three-dots'
-import {Edit as EditIcon} from '../../icons/edit'
-import {Delete as DeleteIcon} from '../../icons/delete'
-import {Save as SaveIcon} from '../../icons/save'
-import {Done as DoneIcon} from '../../icons/done'
-import {Convert as ConvertIcon} from '../../icons/convert'
+import { ThreeDots as ThreeDotsIcon } from '../../icons/three-dots'
+import { Edit as EditIcon } from '../../icons/edit'
+import { Delete as DeleteIcon } from '../../icons/delete'
+import { Save as SaveIcon } from '../../icons/save'
+import { Done as DoneIcon } from '../../icons/done'
+import { Convert as ConvertIcon } from '../../icons/convert'
 
 import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
@@ -52,16 +52,16 @@ import Label from '../Label';
 
 
 
-export const PurchaseOrderProduct = ({setPurchaseProducts, purchaseProducts=[],...rest}) => {
+export const PurchaseOrderProduct = ({ setPurchaseProducts, purchaseProducts = [], ...rest }) => {
 
   const [selectedProductIds, setSelectedProductIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
   const [changed, setChanged] = useState(false)
 
-  
 
-  
+
+
 
   const handleLimitChange = (event) => {
     setLimit(event.target.value);
@@ -75,10 +75,10 @@ export const PurchaseOrderProduct = ({setPurchaseProducts, purchaseProducts=[],.
   const updatePrice = (event, product) => {
     setChanged(true)
     const data_index = purchaseProducts.indexOf(product)
-    purchaseProducts[data_index].unitPrice = event.target.value 
-    setPurchaseProducts([...purchaseProducts])       
+    purchaseProducts[data_index].unitPrice = event.target.value
+    setPurchaseProducts([...purchaseProducts])
   }
-   
+
 
   return (
 
@@ -89,7 +89,7 @@ export const PurchaseOrderProduct = ({setPurchaseProducts, purchaseProducts=[],.
             <TableHead sx={{
               backgroundColor: '#F4F7FC',
               textAlign: 'center'
-            }} 
+            }}
             >
               <TableRow>
                 <TableCell>
@@ -114,7 +114,7 @@ export const PurchaseOrderProduct = ({setPurchaseProducts, purchaseProducts=[],.
                 <TableRow
                   hover
                   key={product.id}
-                  
+
                 >
                   <TableCell>
                     {product.sku}
@@ -129,26 +129,26 @@ export const PurchaseOrderProduct = ({setPurchaseProducts, purchaseProducts=[],.
                     {product.quantity}
                   </TableCell>
                   {UXAccess.hasAccessToPrice() && <TableCell align="center">
-                    {(product.unitPrice && !changed) && 
+                    {(product.unitPrice && !changed) &&
                       product.unitPrice ||
                       <TextField
                         inputStyle={{ textAlign: 'center' }}
-                          sx={{
-                            width: '10ch'
-                          }}
+                        sx={{
+                          width: '10ch'
+                        }}
                         value={product.unitPrice}
-                        onChange={e=>{ updatePrice(e,product)}}
-                      /> 
+                        onChange={e => { updatePrice(e, product) }}
+                      />
                     }
-                    
+
                   </TableCell>}
-                  
+
                 </TableRow>
               ))}
-              {purchaseProducts.length === 0 && 
+              {purchaseProducts.length === 0 &&
                 <TableRow>
                   <TableCell colSpan={7}
-                  align="center" >
+                    align="center" >
                     Aucun Article existe
                   </TableCell>
                 </TableRow>
@@ -164,10 +164,10 @@ export const PurchaseOrderProduct = ({setPurchaseProducts, purchaseProducts=[],.
         onRowsPerPageChange={handleLimitChange}
         page={page}
         rowsPerPage={limit}
-        rowsPerPageOptions={[5, 10, 25]}
+        rowsPerPageOptions={[10, 25, 50]}
       />
-      
-      
+
+
     </Card>
   );
 };

@@ -22,16 +22,16 @@ import {
 } from '@mui/material';
 import { getInitials } from '../../utils/get-initials';
 
-import {ThreeDots as ThreeDotsIcon} from '../../icons/three-dots'
-import {Edit as EditIcon} from '../../icons/edit'
-import {Delete as DeleteIcon} from '../../icons/delete'
-import {View as ViewIcon} from '../../icons/view'
+import { ThreeDots as ThreeDotsIcon } from '../../icons/three-dots'
+import { Edit as EditIcon } from '../../icons/edit'
+import { Delete as DeleteIcon } from '../../icons/delete'
+import { View as ViewIcon } from '../../icons/view'
 
 import SupplierProvider from '../../services/supplier-provider'
 
-import {SupplierDeleteDialog} from './supplier-delete-dialog'
+import { SupplierDeleteDialog } from './supplier-delete-dialog'
 
-export const SupplierListResults = ({ supplierList, ...rest}) => {
+export const SupplierListResults = ({ supplierList, ...rest }) => {
   const [selectedSupplierIds, setSelectedSupplierIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
@@ -64,7 +64,7 @@ export const SupplierListResults = ({ supplierList, ...rest}) => {
     setLoadingOpen(true)
     SupplierProvider.deleteSupplier(supplierIdDelete).then(
       (response) => {
-        setSuppliers(suppliers.filter(function(supplier) {
+        setSuppliers(suppliers.filter(function (supplier) {
           return supplier.id !== supplierIdDelete
         }))
         setLoadingOpen(false)
@@ -116,11 +116,11 @@ export const SupplierListResults = ({ supplierList, ...rest}) => {
     setPage(newPage);
   };
 
-  const handleClickEdit = (e,supplier) => {
+  const handleClickEdit = (e, supplier) => {
 
     const data = {
-     pathname: '/supplier/edit-supplier/',
-     query:{'id':supplier.id}
+      pathname: '/supplier/edit-supplier/',
+      query: { 'id': supplier.id }
     }
     router.push(data);
   }
@@ -135,17 +135,17 @@ export const SupplierListResults = ({ supplierList, ...rest}) => {
   }
 
 
-  return(
+  return (
     <Box {...rest}>
-    <Backdrop
-      sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-      open={loadingOpen}
-      onClick={()=>{setLoadingOpen(false)}}
-    >
-      <CircularProgress color="inherit" />
-    </Backdrop>
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loadingOpen}
+        onClick={() => { setLoadingOpen(false) }}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <PerfectScrollbar>
-        <Box sx={{minWidth: "100%"}} >
+        <Box sx={{ minWidth: "100%" }} >
           <Table>
             <TableHead sx={{
               backgroundColor: '#F4F7FC',
@@ -181,7 +181,7 @@ export const SupplierListResults = ({ supplierList, ...rest}) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {suppliers.slice(page*limit, page*limit+limit).map((supplier)=>(
+              {suppliers.slice(page * limit, page * limit + limit).map((supplier) => (
                 <TableRow
                   hover
                   key={supplier.id}
@@ -207,38 +207,38 @@ export const SupplierListResults = ({ supplierList, ...rest}) => {
                     {supplier.state}
                   </TableCell>
                   <TableCell
-                    >
+                  >
                     <Box
                       align="center"
                       sx={{
-                          justifyContent: 'center',
-                          display: 'flex'
+                        justifyContent: 'center',
+                        display: 'flex'
                       }}
                     >
-                    
-                      <EditIcon 
+
+                      <EditIcon
                         sx={{
-                          mx:1,
+                          mx: 1,
                           cursor: "pointer"
                         }}
-                        onClick = {(event) => {handleClickEdit(event, supplier)}}
-                       />
-                        
-                       <DeleteIcon 
+                        onClick={(event) => { handleClickEdit(event, supplier) }}
+                      />
+
+                      <DeleteIcon
                         sx={{
-                          mx:1,
+                          mx: 1,
                           cursor: "pointer"
                         }}
-                        onClick = {(event) => {handleDeleteOpen(event, supplier.id)}}
+                        onClick={(event) => { handleDeleteOpen(event, supplier.id) }}
                       />
                     </Box>
                   </TableCell>
                 </TableRow>
               ))}
-              {suppliers.length === 0 && 
+              {suppliers.length === 0 &&
                 <TableRow>
                   <TableCell colSpan={7}
-                  align="center" >
+                    align="center" >
                     Aucun fournisseur existe
                   </TableCell>
                 </TableRow>
@@ -246,7 +246,7 @@ export const SupplierListResults = ({ supplierList, ...rest}) => {
             </TableBody>
           </Table>
         </Box>
-      </PerfectScrollbar>  
+      </PerfectScrollbar>
       <TablePagination
         component="div"
         count={suppliers.length}
@@ -254,16 +254,16 @@ export const SupplierListResults = ({ supplierList, ...rest}) => {
         onRowsPerPageChange={handleLimitChange}
         page={page}
         rowsPerPage={limit}
-        rowsPerPageOptions={[5, 10, 25]}
+        rowsPerPageOptions={[10, 25, 50]}
       />
-      <SupplierDeleteDialog open={deleteOpen} 
-      handleDeleteOpen={handleDeleteOpen} 
-      handleClose={handleClose}
-      handleDeleteSupplier={handleDeleteSupplier} />
-      <Snackbar open={errorSBOpen} 
-      onClose={handleSBClose}>
-        <Alert variant="filled" 
-        severity="error">
+      <SupplierDeleteDialog open={deleteOpen}
+        handleDeleteOpen={handleDeleteOpen}
+        handleClose={handleClose}
+        handleDeleteSupplier={handleDeleteSupplier} />
+      <Snackbar open={errorSBOpen}
+        onClose={handleSBClose}>
+        <Alert variant="filled"
+          severity="error">
           {errorSBText}
         </Alert>
       </Snackbar>

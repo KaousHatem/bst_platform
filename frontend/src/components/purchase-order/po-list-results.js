@@ -20,10 +20,10 @@ import {
 } from '@mui/material';
 import { getInitials } from '../../utils/get-initials';
 
-import {ThreeDots as ThreeDotsIcon} from '../../icons/three-dots'
-import {Edit as EditIcon} from '../../icons/edit'
-import {Delete as DeleteIcon} from '../../icons/delete'
-import {View as ViewIcon} from '../../icons/view'
+import { ThreeDots as ThreeDotsIcon } from '../../icons/three-dots'
+import { Edit as EditIcon } from '../../icons/edit'
+import { Delete as DeleteIcon } from '../../icons/delete'
+import { View as ViewIcon } from '../../icons/view'
 
 import PurchaseOrderProvider from '../../services/purchase-order-provider'
 
@@ -32,15 +32,15 @@ import PurchaseOrderProvider from '../../services/purchase-order-provider'
 // import {PRApproveDialog} from './pr-approve-dialog'
 
 import UXAccess from '../../utils/ux-access'
- 
+
 import Label from '../Label';
 
-export const POListResults = ({ purchaseOrderList, ...rest}) => {
+export const POListResults = ({ purchaseOrderList, ...rest }) => {
 
 
- 
 
-  
+
+
   const [selectedPOIds, setSelectedPOIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
@@ -48,10 +48,10 @@ export const POListResults = ({ purchaseOrderList, ...rest}) => {
   const [purchaseOrders, setPurchaseOrders] = useState(purchaseOrderList)
   const router = useRouter();
 
-  
-  
 
-  
+
+
+
   const handleSelectAll = (event) => {
     let newSelectedPurchaseOrderIds;
 
@@ -92,20 +92,20 @@ export const POListResults = ({ purchaseOrderList, ...rest}) => {
     setPage(newPage);
   };
 
-  const handleClickEdit = (e,purchaseOrder) => {
+  const handleClickEdit = (e, purchaseOrder) => {
 
     const data = {
-     pathname: '/purchase-order/edit-purchase-order/',
-     query:{'id':purchaseOrder.id}
+      pathname: '/purchase-order/edit-purchase-order/',
+      query: { 'id': purchaseOrder.id }
     }
     router.push(data);
   }
 
 
-  return(
+  return (
     <Box {...rest}>
       <PerfectScrollbar>
-        <Box sx={{minWidth: "100%"}} >
+        <Box sx={{ minWidth: "100%" }} >
           <Table>
             <TableHead sx={{
               backgroundColor: '#F4F7FC',
@@ -136,17 +136,17 @@ export const POListResults = ({ purchaseOrderList, ...rest}) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {purchaseOrders.slice(page*limit, page*limit+limit).map((purchaseOrder)=>(
+              {purchaseOrders.slice(page * limit, page * limit + limit).map((purchaseOrder) => (
                 <TableRow
                   hover
                   key={purchaseOrder.id}
                   selected={selectedPOIds.indexOf(purchaseOrder.id) !== -1}
                 >
-                  
+
                   <TableCell>
                     {purchaseOrder.ref}
                   </TableCell>
-                  <TableCell align="center"> 
+                  <TableCell align="center">
                     {purchaseOrder.purchaseRequest.provision.ref}
                   </TableCell>
                   {UXAccess.hasRefPRinPO() && <TableCell align="center">
@@ -162,31 +162,31 @@ export const POListResults = ({ purchaseOrderList, ...rest}) => {
                     {purchaseOrder.created_by.username}
                   </TableCell>
                   <TableCell
-                    >
+                  >
                     <Box
                       align="center"
                       sx={{
-                          justifyContent: 'center',
-                          display: 'flex'
+                        justifyContent: 'center',
+                        display: 'flex'
                       }}
                     >
-                      <ViewIcon 
+                      <ViewIcon
                         sx={{
-                          mx:1,
+                          mx: 1,
                           cursor: "pointer"
                         }}
-                        onClick = {(event) => {handleClickEdit(event, purchaseOrder)}}
-                       />
-                      
+                        onClick={(event) => { handleClickEdit(event, purchaseOrder) }}
+                      />
+
                     </Box>
-                    
+
                   </TableCell>
                 </TableRow>
               ))}
-              {purchaseOrders.length === 0 && 
+              {purchaseOrders.length === 0 &&
                 <TableRow>
                   <TableCell colSpan={7}
-                  align="center" >
+                    align="center" >
                     Aucun Bon de commande existe
                   </TableCell>
                 </TableRow>
@@ -194,7 +194,7 @@ export const POListResults = ({ purchaseOrderList, ...rest}) => {
             </TableBody>
           </Table>
         </Box>
-      </PerfectScrollbar>  
+      </PerfectScrollbar>
       <TablePagination
         component="div"
         count={purchaseOrders.length}
@@ -202,10 +202,10 @@ export const POListResults = ({ purchaseOrderList, ...rest}) => {
         onRowsPerPageChange={handleLimitChange}
         page={page}
         rowsPerPage={limit}
-        rowsPerPageOptions={[5, 10, 25]}
+        rowsPerPageOptions={[10, 25, 50]}
       />
-      
-      
+
+
     </Box>
 
 

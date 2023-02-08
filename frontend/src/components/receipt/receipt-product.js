@@ -37,10 +37,10 @@ import { getInitials } from '../../utils/get-initials';
 import { Positive as PositiveIcon } from '../../icons/positive';
 
 
-import {ThreeDots as ThreeDotsIcon} from '../../icons/three-dots'
-import {Edit as EditIcon} from '../../icons/edit'
-import {Delete as DeleteIcon} from '../../icons/delete'
-import {Save as SaveIcon} from '../../icons/save'
+import { ThreeDots as ThreeDotsIcon } from '../../icons/three-dots'
+import { Edit as EditIcon } from '../../icons/edit'
+import { Delete as DeleteIcon } from '../../icons/delete'
+import { Save as SaveIcon } from '../../icons/save'
 
 
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -49,18 +49,18 @@ import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
 
 import Label from '../Label';
 
-import {ReceiptProductDialog} from './receipt-product-dialog'
+import { ReceiptProductDialog } from './receipt-product-dialog'
 
 
-export const ReceiptProduct = ({selectedProducts,setSelectedProducts, setAllConfirmed, isDraft=true,...rest}) => {
-  
+export const ReceiptProduct = ({ selectedProducts, setSelectedProducts, setAllConfirmed, isDraft = true, ...rest }) => {
+
 
   const [selectedProductIds, setSelectedProductIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
 
-  
-  let [savedModeProducts, setSavedModeProducts] = useState(selectedProducts.map((product)=>{return(selectedProducts.indexOf(product))}))
+
+  let [savedModeProducts, setSavedModeProducts] = useState(selectedProducts.map((product) => { return (selectedProducts.indexOf(product)) }))
 
 
 
@@ -76,23 +76,23 @@ export const ReceiptProduct = ({selectedProducts,setSelectedProducts, setAllConf
 
   const handleOnEdit = (event, product) => {
     console.log(savedModeProducts)
-    if( savedModeProducts.includes(selectedProducts.indexOf(product)) ){
+    if (savedModeProducts.includes(selectedProducts.indexOf(product))) {
       const newArray = savedModeProducts.filter((item) => item !== selectedProducts.indexOf(product))
       setSavedModeProducts(newArray)
     }
   }
 
   const handleOnSave = (event, product) => {
-    if( !savedModeProducts.includes(selectedProducts.indexOf(product)) ){
-      if (product.quantity && product.quantity > 0){
-        setSavedModeProducts([ ...savedModeProducts , selectedProducts.indexOf(product)])
+    if (!savedModeProducts.includes(selectedProducts.indexOf(product))) {
+      if (product.quantity && product.quantity > 0) {
+        setSavedModeProducts([...savedModeProducts, selectedProducts.indexOf(product)])
       } else {
         setQuantityOpen(true)
         // alert("Veuillez saisir la quantité de l'article")
       }
-      
+
     }
-    
+
   }
 
   const handleSelectAll = (event) => {
@@ -151,35 +151,35 @@ export const ReceiptProduct = ({selectedProducts,setSelectedProducts, setAllConf
     setSelectedProducts([...selectedProducts]);
   }
 
-  const handleUnitChange = (event,product) => {
+  const handleUnitChange = (event, product) => {
 
     product.unit = event.target.value;
     setSelectedProducts([...selectedProducts]);
   }
 
-  
 
- 
+
+
 
   return (
 
     <Card {...rest}>
       <PerfectScrollbar>
         <Box sx={{ minWidth: "100%" }}>
-          {selectedProduct && 
-            <ReceiptProductDialog 
-              products={selectedProducts} 
-              setProducts={setSelectedProducts} 
-              product={selectedProduct} 
-              open={open} 
-              setOpen={setOpen} 
+          {selectedProduct &&
+            <ReceiptProductDialog
+              products={selectedProducts}
+              setProducts={setSelectedProducts}
+              product={selectedProduct}
+              open={open}
+              setOpen={setOpen}
             />}
-          
+
           <Table>
             <TableHead sx={{
               backgroundColor: '#F4F7FC',
               textAlign: 'center'
-            }} 
+            }}
             >
               <TableRow>
                 <TableCell padding="checkbox">
@@ -225,7 +225,7 @@ export const ReceiptProduct = ({selectedProducts,setSelectedProducts, setAllConf
                   hover
                   key={product.id}
                   selected={selectedProductIds.indexOf(product.id) !== -1}
-                  
+
                 >
                   <TableCell padding="checkbox">
                     <Checkbox
@@ -247,26 +247,26 @@ export const ReceiptProduct = ({selectedProducts,setSelectedProducts, setAllConf
                     {product.quantity}
                   </TableCell>
                   <TableCell>
-                    {product.quantityReceipt && product.quantityReceipt || "-" }
+                    {product.quantityReceipt && product.quantityReceipt || "-"}
                   </TableCell>
                   <TableCell>
-                    {product.quantityAccepted && product.quantityAccepted || "-" }
+                    {product.quantityAccepted && product.quantityAccepted || "-"}
                   </TableCell>
                   <TableCell>
-                    {product.conformity === true ? "oui" : product.conformity === false ? "non" : "-" }
+                    {product.conformity === true ? "oui" : product.conformity === false ? "non" : "-"}
                   </TableCell>
 
                   <TableCell
-                    >
-                    <DoneOutlineIcon 
-                          onClick={()=>{handleClickOpen(product)}}
-                          sx={{
-                            mx:1,
-                            cursor: "pointer",
-                            
-                          }}
-                         />
-                    
+                  >
+                    <DoneOutlineIcon
+                      onClick={() => { handleClickOpen(product) }}
+                      sx={{
+                        mx: 1,
+                        cursor: "pointer",
+
+                      }}
+                    />
+
                   </TableCell>
                 </TableRow>
               ))}
@@ -281,17 +281,17 @@ export const ReceiptProduct = ({selectedProducts,setSelectedProducts, setAllConf
         onRowsPerPageChange={handleLimitChange}
         page={page}
         rowsPerPage={limit}
-        rowsPerPageOptions={[5, 10, 25]}
+        rowsPerPageOptions={[10, 25, 50]}
       />
-      <Snackbar open={quantityOpen} 
-      onClose={handleClose}>
-        <Alert variant="filled" 
-        severity="error">
+      <Snackbar open={quantityOpen}
+        onClose={handleClose}>
+        <Alert variant="filled"
+          severity="error">
           Veuillez saisir la quantité de l&apos;article
         </Alert>
       </Snackbar>
-      
-      
+
+
     </Card>
   );
 };

@@ -22,14 +22,14 @@ import {
 } from '@mui/material';
 import { getInitials } from '../../utils/get-initials';
 
-import {ThreeDots as ThreeDotsIcon} from '../../icons/three-dots'
-import {Edit as EditIcon} from '../../icons/edit'
-import {Delete as DeleteIcon} from '../../icons/delete'
-import {View as ViewIcon} from '../../icons/view'
+import { ThreeDots as ThreeDotsIcon } from '../../icons/three-dots'
+import { Edit as EditIcon } from '../../icons/edit'
+import { Delete as DeleteIcon } from '../../icons/delete'
+import { View as ViewIcon } from '../../icons/view'
 
 
 
-export const StoreListResults = ({ storeList, ...rest}) => {
+export const StoreListResults = ({ storeList, ...rest }) => {
 
   const [selectedStoreIds, setSelectedStoreIds] = useState([]);
   const [limit, setLimit] = useState(10);
@@ -53,9 +53,9 @@ export const StoreListResults = ({ storeList, ...rest}) => {
   const handleClose = () => {
     setDeleteOpen(false)
   }
-  
 
-  
+
+
 
   const handleSelectAll = (event) => {
     let newSelectedStoreIds;
@@ -97,19 +97,19 @@ export const StoreListResults = ({ storeList, ...rest}) => {
     setPage(newPage);
   };
 
-  const handleClickEdit = (e,store) => {
+  const handleClickEdit = (e, store) => {
 
     const data = {
-     pathname: '/store/edit-store/',
-     query:{'id':store.id}
+      pathname: '/store/edit-store/',
+      query: { 'id': store.id }
     }
     router.push(data);
   }
 
   const handleClickStock = (e, store) => {
     const data = {
-     pathname: '/stock/',
-     query:{'id':store.id}
+      pathname: '/stock/',
+      query: { 'id': store.id }
     }
     router.push(data);
   }
@@ -124,17 +124,17 @@ export const StoreListResults = ({ storeList, ...rest}) => {
   }
 
 
-  return(
+  return (
     <Box {...rest}>
-    <Backdrop
-      sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-      open={loadingOpen}
-      onClick={()=>{setLoadingOpen(false)}}
-    >
-      <CircularProgress color="inherit" />
-    </Backdrop>
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loadingOpen}
+        onClick={() => { setLoadingOpen(false) }}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <PerfectScrollbar>
-        <Box sx={{minWidth: "100%"}} >
+        <Box sx={{ minWidth: "100%" }} >
           <Table>
             <TableHead sx={{
               backgroundColor: '#F4F7FC',
@@ -173,7 +173,7 @@ export const StoreListResults = ({ storeList, ...rest}) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {stores.slice(page*limit, page*limit+limit).map((store)=>(
+              {stores.slice(page * limit, page * limit + limit).map((store) => (
                 <TableRow
                   hover
                   key={store.id}
@@ -202,39 +202,39 @@ export const StoreListResults = ({ storeList, ...rest}) => {
                     {store.products}
                   </TableCell>
                   <TableCell
-                    >
+                  >
                     <Box
                       align="center"
                       sx={{
-                          justifyContent: 'center',
-                          display: 'flex'
+                        justifyContent: 'center',
+                        display: 'flex'
                       }}
                     >
-                    
-                      <EditIcon 
+
+                      <EditIcon
                         sx={{
-                          mx:1,
+                          mx: 1,
                           cursor: "pointer"
                         }}
-                        onClick = {(event) => {handleClickEdit(event, store)}}
-                       />
-                       <ViewIcon 
+                        onClick={(event) => { handleClickEdit(event, store) }}
+                      />
+                      <ViewIcon
                         sx={{
-                          mx:1,
+                          mx: 1,
                           cursor: "pointer"
                         }}
-                        onClick = {(event) => {handleClickStock(event, store)}}
-                       />
-                        
-                       
+                        onClick={(event) => { handleClickStock(event, store) }}
+                      />
+
+
                     </Box>
                   </TableCell>
                 </TableRow>
               ))}
-              {stores.length === 0 && 
+              {stores.length === 0 &&
                 <TableRow>
                   <TableCell colSpan={7}
-                  align="center" >
+                    align="center" >
                     Aucun magasin existe
                   </TableCell>
                 </TableRow>
@@ -242,7 +242,7 @@ export const StoreListResults = ({ storeList, ...rest}) => {
             </TableBody>
           </Table>
         </Box>
-      </PerfectScrollbar>  
+      </PerfectScrollbar>
       <TablePagination
         component="div"
         count={stores.length}
@@ -250,13 +250,13 @@ export const StoreListResults = ({ storeList, ...rest}) => {
         onRowsPerPageChange={handleLimitChange}
         page={page}
         rowsPerPage={limit}
-        rowsPerPageOptions={[5, 10, 25]}
+        rowsPerPageOptions={[10, 25, 50]}
       />
-      
-      <Snackbar open={errorSBOpen} 
-      onClose={handleSBClose}>
-        <Alert variant="filled" 
-        severity="error">
+
+      <Snackbar open={errorSBOpen}
+        onClose={handleSBClose}>
+        <Alert variant="filled"
+          severity="error">
           {errorSBText}
         </Alert>
       </Snackbar>

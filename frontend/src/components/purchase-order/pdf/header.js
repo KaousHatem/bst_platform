@@ -118,23 +118,20 @@ const styles = StyleSheet.create({
 
     headerPage:{
         border:'1 solid black',
-        // padding: '5 15',
-        // display:'flex',
-        // flexDirection: 'row',
-        // alignItems: 'center',
-        // // alignSelf:'center',
-        // justifyContent:'flex-end',
-        // // alignContent:'right',
-        // lineHeight:'100%',
-
-        display:'flex',
-        justifyContent:'flex-end',
-        flexDirection:'row',
-        alignContent:'right',
+        width:'80',
         height:'20',
-        alignItems: 'center',
         lineHeight:'100%',
-        fontSize:12,
+        display: 'flex',
+        justifyContent:'flex-end',
+        // justifyContent: "right",
+        textAlign: 'center',
+        marginLeft:5,
+        fontSize:11,
+
+        flexDirection:'row',
+        // alignContent:'right',
+        // alignItems: 'center',
+        lineHeight:'100%',
     },
     page:{
         marginLeft: '10',
@@ -184,7 +181,7 @@ const Header = ({purchaseOrder, pages, page}) => {
                             </Text>
                         </View>  
                     </View>
-                    {/*<View style={styles.headerPage}> 
+                    <View style={styles.headerPage}> 
                         <Text>Page:</Text>  
 
                         <View style={styles.page}>
@@ -192,7 +189,7 @@ const Header = ({purchaseOrder, pages, page}) => {
                                 {page} sur {pages}
                             </Text>
                         </View>
-                    </View>*/}
+                    </View>
                 </View>
             </View>
 
