@@ -24,17 +24,17 @@ const styles = StyleSheet.create({
   });
 
 
-const TableBody = ({products ,delay}) => {
+const TableBody = ({products ,delay, page, length}) => {
 
     
     return(
         <View style={styles.container}>
-            {products.map((product) => (
+            {products.slice(page*length,page*length+length).map((product) => (
                 <TableRow 
                 key={(products.indexOf(product)+1)}
                 num={parseNumber(products.indexOf(product)+1)} 
                 product={product.purchaseProduct} 
-                last={products.indexOf(product)===products.length-1} />
+                last={products.indexOf(product)===(page+1)*products.length-1 || products.indexOf(product)===products.length-1} />
             ))}
             
             

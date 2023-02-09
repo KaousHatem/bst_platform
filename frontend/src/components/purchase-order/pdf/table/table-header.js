@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import {Text, View, StyleSheet, Image } from '@react-pdf/renderer';
+import { Text, View, StyleSheet, Image } from '@react-pdf/renderer';
 
 
 const borderColor = '#04006e'
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     num: {
         color: textColor,
         height: '100%',
-        width: '8%',
+        width: '6%',
         display: 'flex',
         justifyContent: "center",
         textAlign: 'center',
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         textAlign: 'center',
         height: '100%',
-        width: '62%',
+        width: '76%',
         borderRightColor: borderColor,
         borderRightWidth: 1,
     },
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         textAlign: 'center',
         height: '100%',
-        width: '15%',
+        width: '8%',
         borderRightColor: borderColor,
         borderRightWidth: 1,
     },
@@ -56,18 +56,18 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         textAlign: 'center',
         height: '100%',
-        width: '15%',
+        width: '10%',
         borderRightColor: borderColor,
         borderRightWidth: 1,
     },
-    
-    
-  });
+
+
+});
 
 
 const TableHeader = () => {
-    
-    return(
+
+    return (
         <View style={styles.container}>
             <View style={styles.num}>
                 <Text >N°</Text>
@@ -81,10 +81,10 @@ const TableHeader = () => {
             <View style={styles.qty}>
                 <Text>Quantité</Text>
             </View>
-            
+
         </View>
-  );
+    );
 
 }
-  
-  export default TableHeader
+
+export default TableHeader

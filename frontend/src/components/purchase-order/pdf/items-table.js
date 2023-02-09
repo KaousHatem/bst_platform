@@ -1,31 +1,33 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import {Text, View, StyleSheet, Image } from '@react-pdf/renderer';
+import { Text, View, StyleSheet, Image } from '@react-pdf/renderer';
 import TableHeader from './table/table-header'
 import TableBody from './table/table-body'
 
 const styles = StyleSheet.create({
-   
-    headerContainer:{
-        // flexDirection: 'row',
-        marginTop: 20,
-    },
-    
-  });
+
+  headerContainer: {
+    // flexDirection: 'row',
+    marginTop: 20,
+  },
+
+});
 
 
-const ItemsTable = ({purchaseOrder}) => {
+const ItemsTable = ({ purchaseOrder, page, length }) => {
 
-    
-    
-    return(
+
+
+  return (
     <View style={styles.headerContainer}>
-        <TableHeader />
-        <TableBody products={purchaseOrder.purchaseOrderProducts}  />
-        
+      <TableHeader />
+      <TableBody products={purchaseOrder.purchaseOrderProducts}
+        length={length}
+        page={page} />
+
     </View>
   );
 
 }
-  
+
 export default ItemsTable

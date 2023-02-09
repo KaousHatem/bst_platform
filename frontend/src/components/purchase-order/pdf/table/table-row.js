@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import {Text, View, StyleSheet, Image } from '@react-pdf/renderer';
+import { Text, View, StyleSheet, Image } from '@react-pdf/renderer';
 
 const borderColor = 'black'
 const textColor = 'black'
@@ -10,38 +10,34 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         backgroundColor: 'white',
-        // borderRight: '1 solid '+borderColor,
-        // borderLeft: '1 solid '+borderColor,
         alignItems: 'center',
-        height: 24,
-        // minHeight:24,
+        minHeight: 17,
         textAlign: 'center',
         flexGrow: 1,
+        fontSize: '9',
+        // width: "80%"
 
     },
     num: {
         color: textColor,
         height: '100%',
-        width: '8%',
+        width: '6%',
         display: 'flex',
         justifyContent: "center",
         textAlign: 'center',
-        borderRight: '1 solid '+borderColor,
-        borderBottom: '1 solid '+borderColor,
+        borderRight: '1 solid ' + borderColor,
+        borderBottom: '1 solid ' + borderColor,
     },
     description: {
         color: textColor,
         display: 'flex',
-        // flex:"1",
         justifyContent: "center",
         textAlign: 'left',
-        paddingHorizontal:"5px",
+        paddingHorizontal: "5px",
         height: '100%',
-        width: '62%',
-        maxWidth: '62%',
-        borderRight: '1 solid '+borderColor,
-        borderBottom: '1 solid '+borderColor,
-        // overflowWrap: "break-all",
+        width: '76%',
+        borderRight: '1 solid ' + borderColor,
+        borderBottom: '1 solid ' + borderColor,
         flexWrap: 'wrap',
 
     },
@@ -51,10 +47,10 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         textAlign: 'center',
         height: '100%',
-        width: '15%',
-        borderRight: '1 solid '+borderColor,
-        borderBottom: '1 solid '+borderColor,
-        
+        width: '8%',
+        borderRight: '1 solid ' + borderColor,
+        borderBottom: '1 solid ' + borderColor,
+
     },
     qty: {
         color: textColor,
@@ -62,24 +58,24 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         textAlign: 'center',
         height: '100%',
-        width: '15%',
-        borderRight: '1 solid '+borderColor,
-        borderBottom: '1 solid '+borderColor,
+        width: '10%',
+        // borderRight: '1 solid ' + borderColor,
+        borderBottom: '1 solid ' + borderColor,
     },
-    
-    
-    last:{
+
+
+    last: {
         borderBottom: '0'
     }
-  });
+});
 
 
-const TableRow = ({num, product, last=false}) => {
+const TableRow = ({ num, product, last = false }) => {
 
-    
-    
-    
-    return(
+
+
+
+    return (
         <View style={styles.container}>
             <View style={[styles.num, last && styles.last]}>
                 <Text >{num}</Text>
@@ -94,8 +90,8 @@ const TableRow = ({num, product, last=false}) => {
                 <Text>{product.quantity}</Text>
             </View>
         </View>
-  );
+    );
 
 }
-  
-  export default TableRow
+
+export default TableRow
