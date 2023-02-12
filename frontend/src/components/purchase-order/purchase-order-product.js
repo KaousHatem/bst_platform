@@ -110,7 +110,7 @@ export const PurchaseOrderProduct = ({ setPurchaseProducts, purchaseProducts = [
               </TableRow>
             </TableHead>
             <TableBody>
-              {purchaseProducts.slice(0, limit).map((product) => (
+              {purchaseProducts.slice(page * limit, page * limit + limit).map((product) => (
                 <TableRow
                   hover
                   key={product.id}
