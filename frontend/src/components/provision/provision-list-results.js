@@ -178,7 +178,8 @@ export const ProvisionListResults = ({ provision_list, ...rest }) => {
           <Table>
             <TableHead sx={{
               backgroundColor: '#F4F7FC',
-              textAlign: 'center'
+              textAlign: 'center',
+
             }}
             >
               <TableRow>
@@ -233,11 +234,13 @@ export const ProvisionListResults = ({ provision_list, ...rest }) => {
                   <TableCell>
                     {provision.ref == null && '_' || provision.ref}
                   </TableCell>
-                  <TableCell>
+                  <TableCell sx={{
+                    width: '40%',
+                  }}>
                     {provision.destination}
                   </TableCell>
                   <TableCell>
-                    {provision.created_by.username}
+                    {provision.created_by.fullname}
                   </TableCell>
                   <TableCell>
                     {provision.delay}
