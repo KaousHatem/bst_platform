@@ -342,7 +342,6 @@ const EditProvision = () => {
                           label="Date de livraison *"
                           inputFormat="dd/MM/yyyy"
                           dateFormat="dd/MM/yyyy"
-                          value={provision.delay}
                           selected={provision.delay}
                           onChange={handleChange}
                           renderInput={(params) => <TextField {...params}
@@ -370,7 +369,7 @@ const EditProvision = () => {
                           sx={{
                             my: 2
                           }} >
-                          {provision.created_by.username}
+                          {provision.created_by.fullname}
                         </Typography>
                       </Grid>
                       <Grid item
@@ -394,7 +393,7 @@ const EditProvision = () => {
                           sx={{
                             my: 2
                           }} >
-                          {provision.approved_by === null && "_" || provision.approved_by.username}
+                          {provision.approved_by === null && "_" || provision.approved_by.fullname}
                         </Typography>
                       </Grid>
 
