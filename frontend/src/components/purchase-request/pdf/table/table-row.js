@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import {Text, View, StyleSheet, Image } from '@react-pdf/renderer';
+import { Text, View, StyleSheet, Image } from '@react-pdf/renderer';
 import { format } from 'date-fns'
 
 const borderColor = 'black'
@@ -11,13 +11,11 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         backgroundColor: 'white',
-        // borderRight: '1 solid '+borderColor,
-        // borderLeft: '1 solid '+borderColor,
         alignItems: 'center',
         minHeight: 17,
         textAlign: 'center',
         flexGrow: 1,
-        fontSize:'9',
+        fontSize: '9',
 
     },
     num: {
@@ -27,19 +25,19 @@ const styles = StyleSheet.create({
         display: 'flex',
         justifyContent: "center",
         textAlign: 'center',
-        borderRight: '1 solid '+borderColor,
-        borderBottom: '1 solid '+borderColor,
+        borderRight: '1 solid ' + borderColor,
+        borderBottom: '1 solid ' + borderColor,
     },
     description: {
         color: textColor,
         display: 'flex',
         justifyContent: "center",
         textAlign: 'left',
-        paddingHorizontal:'5px',
+        paddingHorizontal: '5px',
         height: '100%',
         width: '62%',
-        borderRight: '1 solid '+borderColor,
-        borderBottom: '1 solid '+borderColor,
+        borderRight: '1 solid ' + borderColor,
+        borderBottom: '1 solid ' + borderColor,
     },
     unit: {
         color: textColor,
@@ -48,9 +46,9 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         height: '100%',
         width: '10%',
-        borderRight: '1 solid '+borderColor,
-        borderBottom: '1 solid '+borderColor,
-        
+        borderRight: '1 solid ' + borderColor,
+        borderBottom: '1 solid ' + borderColor,
+
     },
     qty: {
         color: textColor,
@@ -59,10 +57,10 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         height: '100%',
         width: '10%',
-        borderRight: '1 solid '+borderColor,
-        borderBottom: '1 solid '+borderColor,
+        borderRight: '1 solid ' + borderColor,
+        borderBottom: '1 solid ' + borderColor,
     },
-    
+
     delay: {
         color: textColor,
         display: 'flex',
@@ -71,19 +69,19 @@ const styles = StyleSheet.create({
         height: '100%',
         width: '12%'
     },
-    last:{
+    last: {
         borderBottom: '0'
     }
-  });
+});
 
 
-const TableRow = ({num, product, delay_data, delay=false, last=false}) => {
-     const getDate = (date) => {
-        return format(new Date(date),'dd/MM/yyyy')
+const TableRow = ({ num, product, delay_data, delay = false, last = false }) => {
+    const getDate = (date) => {
+        return format(new Date(date), 'dd/MM/yyyy')
     }
 
-    
-    return(
+
+    return (
         <View style={styles.container}>
             <View style={[styles.num, last && styles.last]}>
                 <Text >{num}</Text>
@@ -98,11 +96,11 @@ const TableRow = ({num, product, delay_data, delay=false, last=false}) => {
                 <Text>{product.quantity}</Text>
             </View>
             <View style={styles.delay}>
-                {delay && <Text>{getDate(delay_data)}</Text>}  
+                {delay && <Text>{getDate(delay_data)}</Text>}
             </View>
         </View>
-  );
+    );
 
 }
-  
-  export default TableRow
+
+export default TableRow
