@@ -146,20 +146,28 @@ export const POListResults = ({ purchaseOrderList, ...rest }) => {
                   <TableCell>
                     {purchaseOrder.ref}
                   </TableCell>
-                  <TableCell align="center">
+                  <TableCell align="center"
+                    sx={{
+                      width: '10%'
+                    }}>
                     {purchaseOrder.purchaseRequest.provision.ref}
-                  </TableCell>
-                  {UXAccess.hasRefPRinPO() && <TableCell align="center">
+                  </TableCell >
+                  {UXAccess.hasRefPRinPO() && <TableCell align="center"
+                    sx={{
+                      width: '10%'
+                    }}>
                     {purchaseOrder.purchaseRequest.ref}
                   </TableCell>}
-                  <TableCell>
+                  <TableCell sx={{
+                    width: '40%'
+                  }}>
                     {purchaseOrder.purchaseRequest.provision.destination.name}
                   </TableCell>
                   <TableCell>
                     {purchaseOrder.supplier.name}
                   </TableCell>
                   <TableCell>
-                    {purchaseOrder.created_by.username}
+                    {purchaseOrder.created_by.fullname}
                   </TableCell>
                   <TableCell
                   >
