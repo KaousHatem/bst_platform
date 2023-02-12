@@ -224,7 +224,7 @@ export const PRAddProduct = ({ provisionProducts, selecetedProducts, setSelected
               </TableRow>
             </TableHead>
             <TableBody>
-              {selecetedProducts.slice(0, limit).map((product) => (
+              {selecetedProducts.slice(page * limit, page * limit + limit).map((product) => (
                 <TableRow
                   hover
                   key={product.productProvision.id}
