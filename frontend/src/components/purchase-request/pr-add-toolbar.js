@@ -23,7 +23,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import PrintIcon from '@mui/icons-material/Print';
 import CancelIcon from '@mui/icons-material/Cancel';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
-
+import PostAddIcon from '@mui/icons-material/PostAdd';
 import UXAccess from '../../utils/ux-access'
 
 
@@ -69,10 +69,10 @@ const StyledMenu = styled((props) => (
   },
 }));
 
-export const PRAddToolbar = ({props, isAddPage=false, handleReject, handleApprove , purchaseRequestStatus, purchaseRequestId , handleSaveAsDraft}) => {
+export const PRAddToolbar = ({ props, isAddPage = false, handleReject, handleApprove, purchaseRequestStatus, purchaseRequestId, handleSaveAsDraft }) => {
 
   const router = useRouter();
-  
+
   const [anchorEl, setAnchorEl] = useState(null);
   const menuOpen = Boolean(anchorEl);
 
@@ -85,22 +85,22 @@ export const PRAddToolbar = ({props, isAddPage=false, handleReject, handleApprov
   };
 
   const handlePrint = () => {
-    if(purchaseRequestId){
+    if (purchaseRequestId) {
       // const data = {
       //  pathname: '/provision/print-provision',
       //  query:{'id':purchaseRequestId}
       // }
       // router.push(data);
-      const url = '/purchase-request/print?id='+purchaseRequestId
+      const url = '/purchase-request/print?id=' + purchaseRequestId
       window.open(url, "_blank")
     }
   }
 
   const handleAddPurchaseOrder = () => {
-    if(purchaseRequestId){
+    if (purchaseRequestId) {
       const data = {
-       pathname: '/purchase-order/add-purchase-order',
-       query:{'id':purchaseRequestId}
+        pathname: '/purchase-order/add-purchase-order',
+        query: { 'id': purchaseRequestId }
       }
       router.push(data);
     }
@@ -112,7 +112,7 @@ export const PRAddToolbar = ({props, isAddPage=false, handleReject, handleApprov
   }
 
 
-  return(<Box {...props}>
+  return (<Box {...props}>
     <Box
       sx={{
         alignItems: 'center',
@@ -132,7 +132,7 @@ export const PRAddToolbar = ({props, isAddPage=false, handleReject, handleApprov
         <Button
           color="primary"
           variant="outlined"
-          onClick={(event) => {handleBackButton(event)}}
+          onClick={(event) => { handleBackButton(event) }}
           sx={{ mr: 4 }}
         >
           Retour
@@ -159,42 +159,42 @@ export const PRAddToolbar = ({props, isAddPage=false, handleReject, handleApprov
             'aria-labelledby': 'action-btn',
           }}
         >
-          {(!purchaseRequestStatus || purchaseRequestStatus==='0') && <MenuItem 
-            onClick={(event) => handleSaveAsDraft(event,0)}
+          {(!purchaseRequestStatus || purchaseRequestStatus === '0') && <MenuItem
+            onClick={(event) => handleSaveAsDraft(event, 0)}
           >
             <AssignmentReturnedIcon />
             Enregistrer comme brouillon
           </MenuItem>}
-          { !isAddPage && (!purchaseRequestStatus || purchaseRequestStatus!=='0' ) && <MenuItem 
+          {!isAddPage && (!purchaseRequestStatus || purchaseRequestStatus !== '0') && <MenuItem
             onClick={(event) => handlePrint(event)}
           >
             <PrintIcon />
             Imprimer la demande
           </MenuItem>}
-          { !isAddPage && (purchaseRequestStatus ==='1' ) && UXAccess.hasProvisionRejectAccess() && <MenuItem 
+          {!isAddPage && (purchaseRequestStatus === '1') && UXAccess.hasProvisionRejectAccess() && <MenuItem
             onClick={handleReject}
           >
             <CancelIcon />
             Rejecter la demande
           </MenuItem>}
-          { !isAddPage && UXAccess.hasPurchaseRequestApproveAccess() && (!purchaseRequestStatus || purchaseRequestStatus==='9' ) && <MenuItem 
+          {!isAddPage && UXAccess.hasPurchaseRequestApproveAccess() && (!purchaseRequestStatus || purchaseRequestStatus === '9') && <MenuItem
             onClick={handleAddPurchaseOrder}
           >
-            <PositiveIcon />
+            <PostAddIcon />
             Générer un bon de commande
           </MenuItem>}
         </StyledMenu>
-        { (!purchaseRequestStatus || purchaseRequestStatus==='0') && <Button
+        {(!purchaseRequestStatus || purchaseRequestStatus === '0') && <Button
           color="info"
           variant="contained"
           form="add-purchase-request-form"
-          type = "submit"
+          type="submit"
           startIcon={(<PositiveIcon />)}
           sx={{ mr: 1 }}
         >
           Confirmer
         </Button>}
-        { !isAddPage && UXAccess.hasPurchaseRequestApproveAccess() && (purchaseRequestStatus ==='1') && <Button
+        {!isAddPage && UXAccess.hasPurchaseRequestApproveAccess() && (purchaseRequestStatus === '1') && <Button
           color="info"
           variant="contained"
           onClick={handleApprove}
@@ -214,6 +214,6 @@ export const PRAddToolbar = ({props, isAddPage=false, handleReject, handleApprov
       </Card>
     </Box>*/}
   </Box>)
-  
+
 }
-  
+
