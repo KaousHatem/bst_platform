@@ -122,7 +122,7 @@ export const theme = createTheme({
           borderBottom: 'none',
           '& .MuiTableCell-root': {
             borderBottom: 'none',
-            fontSize: '12px',
+            fontSize: '10px',
             fontWeight: 600,
             lineHeight: 1,
             letterSpacing: 0.5,
@@ -132,6 +132,16 @@ export const theme = createTheme({
             paddingTop: 4,
             paddingBottom: 4
           }
+        }
+      }
+    },
+    MuiTableBody: {
+      styleOverrides: {
+        root: {
+          '& .MuiTableCell-root': {
+            fontSize: '10px',
+            letterSpacing: 0.5,
+          },
         }
       }
     }
@@ -203,7 +213,7 @@ export const theme = createTheme({
       secondary: '#65748B',
       disabled: 'rgba(55, 65, 81, 0.48)'
     }
-    
+
   },
   shape: {
     borderRadius: 8
