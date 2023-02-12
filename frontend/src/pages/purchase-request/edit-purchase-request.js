@@ -342,7 +342,6 @@ const EditPurchaseRequest = () => {
                           sx={{
                             my: 2
                           }}
-                          // value={provisionValue}
                           defaultValue={purchaseRequest.provision.id}
                           onChange={handleProvisionChange}
                           disabled={selecetedProducts.length !== 0}
@@ -374,7 +373,7 @@ const EditPurchaseRequest = () => {
                           sx={{
                             my: 2
                           }} >
-                          {purchaseRequest.created_by.username}
+                          {purchaseRequest.created_by.fullname}
                         </Typography>
                       </Grid>
                       <Grid item
@@ -398,7 +397,7 @@ const EditPurchaseRequest = () => {
                           sx={{
                             my: 2
                           }} >
-                          {purchaseRequest.approved_by === null && "_" || purchaseRequest.approved_by.username}
+                          {purchaseRequest.approved_by === null && "_" || purchaseRequest.approved_by.fullname}
                         </Typography>
                       </Grid>
                       <Grid item
