@@ -293,7 +293,7 @@ const EditReceipt = () => {
                       sx={{
                           my: 2
                         }} >
-                        {receipt.created_by.username}
+                        {receipt.created_by.fullname}
                       </Typography>
                     </Grid>
                     {receipt.do ? 
