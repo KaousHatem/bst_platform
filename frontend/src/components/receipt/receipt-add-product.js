@@ -220,7 +220,7 @@ export const ReceiptAddProduct = ({selectedProducts,setSelectedProducts, setAllC
               </TableRow>
             </TableHead>
             <TableBody>
-              {selectedProducts.slice(0, limit).map((product) => { return (
+              {selectedProducts.slice(page * limit, page * limit + limit).map((product) => { return (
                 product.quantityLeft > 0 &&
                 <TableRow
                   hover
@@ -281,7 +281,7 @@ export const ReceiptAddProduct = ({selectedProducts,setSelectedProducts, setAllC
         onRowsPerPageChange={handleLimitChange}
         page={page}
         rowsPerPage={limit}
-        rowsPerPageOptions={[5, 10, 25]}
+        rowsPerPageOptions={[5, 10, 25, 50]}
       />
       <Snackbar open={quantityOpen} 
       onClose={handleClose}>
