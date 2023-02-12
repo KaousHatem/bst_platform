@@ -244,11 +244,13 @@ export const PRListResults = ({ purchaseReqList, ...rest }) => {
                   <TableCell>
                     {purchaseRequest.provision.ref}
                   </TableCell>
-                  <TableCell>
+                  <TableCell sx={{
+                    width: '40%'
+                  }}>
                     {purchaseRequest.provision.destination.name}
                   </TableCell>
                   <TableCell>
-                    {purchaseRequest.created_by.username}
+                    {purchaseRequest.created_by.fullname}
                   </TableCell>
                   <TableCell align="center">
                     <Label
@@ -301,7 +303,7 @@ export const PRListResults = ({ purchaseReqList, ...rest }) => {
                 <TableRow>
                   <TableCell colSpan={7}
                     align="center" >
-                    Aucune demande d`&apos;`achat existe
+                    Aucune demande d&apos;achat existe
                   </TableCell>
                 </TableRow>
               }
