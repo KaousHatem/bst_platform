@@ -70,7 +70,7 @@ class UnitConversion(models.Model):
 class Store(models.Model):
     location = models.ForeignKey(
         Location, on_delete=models.DO_NOTHING, related_name="store")
-    name = models.CharField(max_length=20)
+    name = models.CharField(max_length=225)
     store_manager = models.ForeignKey(
         CustomUser, on_delete=models.DO_NOTHING, related_name="store", null=True)
     _open = models.BooleanField(default=True)

@@ -323,7 +323,7 @@ class ProvisionViewSet(RoleFilterModelViewSet):
     def destroy(self, request, pk):
         qs = Provision.objects.filter(id=pk)
         if not qs.exists():
-            return Resonse({}, status=404)
+            return Response({}, status=404)
         obj = qs.first()
         print(obj.id)
         if obj.status != '0':
@@ -954,6 +954,7 @@ class StoreViewSet(ModelViewSet):
             serializer.is_valid(raise_exception=True)
 
         except:
+            print({'message': serializer.errors})
             return Response({'message': serializer.errors}, status=400)
 
         return super(StoreViewSet, self).create(request)
@@ -967,6 +968,7 @@ class StoreViewSet(ModelViewSet):
             serializer.is_valid(raise_exception=True)
 
         except:
+            print({'message': serializer.errors})
             return Response({'message': serializer.errors}, status=400)
 
         return super(StoreViewSet, self).update(request, pk)
