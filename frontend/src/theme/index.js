@@ -139,7 +139,7 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           '& .MuiTableCell-root': {
-            fontSize: '10px',
+            fontSize: '0.8vw',
             letterSpacing: 0.5,
           },
         }
