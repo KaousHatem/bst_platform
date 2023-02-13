@@ -30,21 +30,21 @@ import { getInitials } from '../../utils/get-initials';
 import { Positive as PositiveIcon } from '../../icons/positive';
 
 
-import {ThreeDots as ThreeDotsIcon} from '../../icons/three-dots'
-import {Edit as EditIcon} from '../../icons/edit'
-import {Delete as DeleteIcon} from '../../icons/delete'
+import { ThreeDots as ThreeDotsIcon } from '../../icons/three-dots'
+import { Edit as EditIcon } from '../../icons/edit'
+import { Delete as DeleteIcon } from '../../icons/delete'
 import Label from '../Label';
 
 import ProductProvider from '../../services/product-provider'
 
 
-export const PRProductAddDialog = ({open,  handleClickOpen, setOpen, allProvisionProducts, selectedProducts, setSelectedProducts, productInPurchase,setDoneModeProducts}) => {
+export const PRProductAddDialog = ({ open, handleClickOpen, setOpen, allProvisionProducts, selectedProducts, setSelectedProducts, productInPurchase, setDoneModeProducts }) => {
 
   const [products, setProducts] = useState(allProvisionProducts)
   // const [searched, setSearched] = useState('')
   // const [allProducts, setAllProducts] = useState([])
 
-  const [selectedProductIds, setSelectedProductIds] = useState(selectedProducts.map((row => {return(row.id)})));
+  const [selectedProductIds, setSelectedProductIds] = useState(selectedProducts.map((row => { return (row.id) })));
 
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
@@ -64,23 +64,25 @@ export const PRProductAddDialog = ({open,  handleClickOpen, setOpen, allProvisio
   };
 
   const handleAddProductToProvision = () => {
-    const newSelectedProduct = selectedProductIds.filter((i)=>{
-                          return !selectedProducts.map((product)=>{
-                                    return product.productProvision.id})
-                          .includes(i)})
-                        .map((i)=>{
-                          const productProvision = allProvisionProducts.find((row)=>{return row.id === i})
-                          return {
-                            productProvision: productProvision,
-                            quantity: productProvision.quantity,
-                            unit: productProvision.unit.ref
-                          }
-                        })
+    const newSelectedProduct = selectedProductIds.filter((i) => {
+      return !selectedProducts.map((product) => {
+        return product.productProvision.id
+      })
+        .includes(i)
+    })
+      .map((i) => {
+        const productProvision = allProvisionProducts.find((row) => { return row.id === i })
+        return {
+          productProvision: productProvision,
+          quantity: productProvision.quantity,
+          unit: productProvision.unit.ref
+        }
+      })
 
 
-    setSelectedProducts((oldSelectedProducts)=>{return [...oldSelectedProducts, ...newSelectedProduct]})
-    
-    setDoneModeProducts((oldSelectedProducts)=>{return [...oldSelectedProducts, ...newSelectedProduct.map((product)=>{return product.productProvision.id}) ]})
+    setSelectedProducts((oldSelectedProducts) => { return [...oldSelectedProducts, ...newSelectedProduct] })
+
+    setDoneModeProducts((oldSelectedProducts) => { return [...oldSelectedProducts, ...newSelectedProduct.map((product) => { return product.productProvision.id })] })
 
     // setSelectedProducts([...selectedProducts,...selectedProductIds.filter((i) => {return !selectedProducts.map((product)=>{
     //   return product.id
@@ -96,6 +98,18 @@ export const PRProductAddDialog = ({open,  handleClickOpen, setOpen, allProvisio
     setPage(0)
     setOpen(false);
   }
+
+  const handleSelectAll = (event) => {
+    let newSelectedProductIds;
+
+    if (event.target.checked) {
+      newSelectedProductIds = products.map((product) => product.id);
+    } else {
+      newSelectedProductIds = [];
+    }
+
+    setSelectedProductIds(newSelectedProductIds);
+  };
 
   const handleSelectOne = (event, id) => {
     const selectedIndex = selectedProductIds.indexOf(id);
@@ -126,7 +140,7 @@ export const PRProductAddDialog = ({open,  handleClickOpen, setOpen, allProvisio
   //     setNotFound(true)
   //   }
   //   console.log(notFound)
-    
+
   // }
 
   const handleCheckInPurchase = (event, product) => {
@@ -137,22 +151,22 @@ export const PRProductAddDialog = ({open,  handleClickOpen, setOpen, allProvisio
 
   useEffect(() => {
     setProducts(allProvisionProducts)
-  },[allProvisionProducts])
+  }, [allProvisionProducts])
 
-  useEffect(()=>{
-    setSelectedProductIds(selectedProducts.map((row => {return(row.productProvision.id)})))
+  useEffect(() => {
+    setSelectedProductIds(selectedProducts.map((row => { return (row.productProvision.id) })))
 
   }, [selectedProducts])
 
-  return(
-    <Dialog open={open} 
-    onClose={handleClose}>
+  return (
+    <Dialog open={open}
+      onClose={handleClose}>
       <DialogTitle>AJOUTER ARTICLE</DialogTitle>
-      <DialogContent>   
-        
+      <DialogContent>
+
         <Table
           sx={{
-            my:3
+            my: 3
           }}
         >
           <TableHead
@@ -162,8 +176,16 @@ export const PRProductAddDialog = ({open,  handleClickOpen, setOpen, allProvisio
             }}
           >
             <TableRow>
-              <TableCell align="center">
-                -
+              <TableCell padding="checkbox">
+                <Checkbox
+                  checked={selectedProductIds.length === products.length}
+                  color="primary"
+                  indeterminate={
+                    selectedProductIds.length > 0
+                    && selectedProductIds.length < products.length
+                  }
+                  onChange={handleSelectAll}
+                />
               </TableCell>
               <TableCell>
                 Sku
@@ -177,21 +199,21 @@ export const PRProductAddDialog = ({open,  handleClickOpen, setOpen, allProvisio
             </TableRow>
           </TableHead>
           <TableBody>
-            {products.slice(page*limit, page*limit+limit).map((product) => (
+            {products.slice(page * limit, page * limit + limit).map((product) => (
               <TableRow
                 hover
                 key={product.id}
                 selected={selectedProductIds.indexOf(product.id) !== -1}
-                
+
               >
                 <TableCell padding="checkbox">
                   <Checkbox
                     checked={selectedProductIds.indexOf(product.id) !== -1}
                     onChange={(event) => handleSelectOne(event, product.id)}
                     value="true"
-                    disabled = {productInPurchase.includes(product.id)}
+                    disabled={productInPurchase.includes(product.id)}
                   />
-                  
+
                 </TableCell>
                 <TableCell>
                   {product.product.sku}
@@ -207,19 +229,19 @@ export const PRProductAddDialog = ({open,  handleClickOpen, setOpen, allProvisio
           </TableBody>
         </Table>
         <TablePagination
-        component="div"
-        count={products.length}
-        onPageChange={handlePageChange}
-        page={page}
-        rowsPerPage={limit}
-        rowsPerPageOptions={-1}
-      />
+          component="div"
+          count={products.length}
+          onPageChange={handlePageChange}
+          page={page}
+          rowsPerPage={limit}
+          rowsPerPageOptions={-1}
+        />
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Annuler</Button>
         {<Button onClick={handleAddProductToProvision}>Ajouter</Button>}
       </DialogActions>
     </Dialog>
-    )
+  )
 
 }
