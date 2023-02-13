@@ -49,10 +49,10 @@ export const DashboardNavbar = (props) => {
       <DashboardNavbarRoot
         sx={{
           left: {
-            lg: 200
+            lg: 300
           },
           width: {
-            lg: 'calc(100% - 200px)'
+            lg: 'calc(100% - 300px)'
           }
         }}
         {...other}>

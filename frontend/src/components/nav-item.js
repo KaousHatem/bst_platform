@@ -19,7 +19,7 @@ export const NavItem = (props) => {
       }}
       {...others}
     >
-      { href && <NextLink
+      {href && <NextLink
         href={href}
         passHref
       >
@@ -28,14 +28,14 @@ export const NavItem = (props) => {
           disableRipple
           sx={{
             display: 'flex',
-            flexDirection: 'column',
+            flexDirection: 'row',
             backgroundColor: active && 'rgba(255,255,255, 0.08)',
             borderRadius: 1,
             color: active ? 'secondary.main' : 'neutral.300',
             fontWeight: active && 'fontWeightBold',
-            justifyContent: 'center',
+            // justifyContent: 'center',
             px: 3,
-            textAlign: 'center',
+            // textAlign: 'center',
             textDecoration: 'None',
             textTransform: 'none',
             width: '100%',
@@ -47,32 +47,35 @@ export const NavItem = (props) => {
           <IconButton
             sx={{
               '&:hover': {
-                  background: 'none',
+                background: 'none',
               },
             }}
           >
             {icon}
           </IconButton>
-            
-          <Box sx={{ flexGrow: 1 }}>
+
+          <Box sx={{
+            flexGrow: 1,
+            alignSelf: 'center'
+          }}>
             {title}
           </Box>
         </Box>
-      </NextLink> || 
-      
-      <Box
+      </NextLink> ||
+
+        <Box
           component="a"
           disableRipple
           sx={{
             display: 'flex',
-            flexDirection: 'column',
+            flexDirection: 'row',
             backgroundColor: active && 'rgba(255,255,255, 0.08)',
             borderRadius: 1,
             color: active ? 'secondary.main' : 'neutral.300',
             fontWeight: active && 'fontWeightBold',
-            justifyContent: 'center',
+            // justifyContent: 'space-between',
             px: 3,
-            textAlign: 'center',
+            // textAlign: 'center',
             textDecoration: 'None',
             textTransform: 'none',
             width: '100%',
@@ -84,19 +87,22 @@ export const NavItem = (props) => {
           <IconButton
             sx={{
               '&:hover': {
-                  background: 'none',
+                background: 'none',
               },
             }}
           >
             {icon}
           </IconButton>
-            
-          <Box sx={{ flexGrow: 1 }}>
+
+          <Box sx={{
+            flexGrow: 1,
+            alignSelf: 'center'
+          }}>
             {title}
           </Box>
         </Box>
-    }
-     
+      }
+
     </ListItem>
   );
 };

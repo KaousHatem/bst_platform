@@ -7,10 +7,11 @@ import { DashboardSidebar } from './dashboard-sidebar';
 const DashboardLayoutRoot = styled('div')(({ theme }) => ({
   display: 'flex',
   flex: '1 1 auto',
-  maxWidth: '100%',
+  maxWidth: `calc(100% - 300px)`,
+  marginLeft: "300px",
   paddingTop: 64,
   [theme.breakpoints.up('lg')]: {
-    paddingLeft: 200
+    // paddingLeft: 200
   }
 }));
 

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
-import { Box, Button,Avatar, Divider, Drawer, Typography, useMediaQuery, Popover, ListItem, MenuList, MenuItem } from '@mui/material';
+import { Box, Button, Avatar, Divider, Drawer, Typography, useMediaQuery, Popover, ListItem, MenuList, MenuItem } from '@mui/material';
 import { UserCircle as UserCircleIcon } from '../icons/user-circle';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { ChartBar as ChartBarIcon } from '../icons/chart-bar';
@@ -16,11 +16,11 @@ import { Users as UsersIcon } from '../icons/users';
 import { XCircle as XCircleIcon } from '../icons/x-circle';
 import { ChartHistBar as ChartHistBarIcon } from '../icons/chart-hist';
 import { Box as BoxIcon } from '../icons/box';
-import { Trucks as TrucksIcon} from '../icons/trucks';
-import { Copy as CopyIcon} from '../icons/copy';
-import { Exit as ExitIcon} from '../icons/exit';
-import { Logout as LogoutIcon} from '../icons/logout';
-import { Project as ProjectIcon} from '../icons/project';
+import { Trucks as TrucksIcon } from '../icons/trucks';
+import { Copy as CopyIcon } from '../icons/copy';
+import { Exit as ExitIcon } from '../icons/exit';
+import { Logout as LogoutIcon } from '../icons/logout';
+import { Project as ProjectIcon } from '../icons/project';
 import { Logo } from './logo';
 import { NavItem } from './nav-item';
 import { SubNavItem } from './sub-nav-item';
@@ -36,7 +36,7 @@ export const DashboardSidebar = (props) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorEl1, setAnchorEl1] = useState(null);
   const [anchorElLog, setAnchorElLog] = useState(null);
-  
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -91,14 +91,14 @@ export const DashboardSidebar = (props) => {
     [router.asPath]
   );
 
-  const handleLgout = (e,href) => {
+  const handleLgout = (e, href) => {
     console.log(href)
-    if(href==='/login'){
+    if (href === '/login') {
       AuthProvider.logout()
     }
-    
+
   }
-  
+
 
   const content = (
     <>
@@ -110,7 +110,7 @@ export const DashboardSidebar = (props) => {
         }}
       >
         <div>
-          
+
           <Box sx={{ px: 2 }}>
             <Box
               sx={{
@@ -129,8 +129,8 @@ export const DashboardSidebar = (props) => {
                 height: 100,
                 width: 100,
                 ml: 1
-              }}/>
-              
+              }} />
+
             </Box>
           </Box>
         </div>
@@ -143,7 +143,7 @@ export const DashboardSidebar = (props) => {
         <Box sx={{ flexGrow: 1 }}>
           <NavItem
             key='Tableau de Bord'
-            icon={(<ChartHistBarIcon  fontSize="large"/>)}
+            icon={(<ChartHistBarIcon fontSize="large" />)}
             href="/"
             title='Tableau de Bord'
           />
@@ -158,7 +158,7 @@ export const DashboardSidebar = (props) => {
           <Popover
             id={id}
             sx={{
-              ml:1.5
+              ml: 1.5
             }}
             open={openPop1}
             anchorEl={anchorEl1}
@@ -176,21 +176,21 @@ export const DashboardSidebar = (props) => {
           >
             <Box
               sx={{
-                backgroundColor:'neutral.900',
+                backgroundColor: 'neutral.900',
                 color: '#FFFFFF',
 
               }}
             >
-            <MenuList>
-              { UXAccess.hasProductAccess() && <SubNavItem href='/products' 
-                title='Articles'/>}
-              { UXAccess.hasProductAccess() && <SubNavItem href='/category' 
-                title='Categories'/> }
-              <SubNavItem href={UXAccess.hasStoreAccess() ? '/store' : '/stock'} 
-                title='Inventaire'/>
-            </MenuList>
+              <MenuList>
+                {UXAccess.hasProductAccess() && <SubNavItem href='/products'
+                  title='Articles' />}
+                {UXAccess.hasProductAccess() && <SubNavItem href='/category'
+                  title='Categories' />}
+                <SubNavItem href={UXAccess.hasStoreAccess() ? '/store' : '/stock'}
+                  title='Inventaire' />
+              </MenuList>
             </Box>
-            
+
           </Popover>
 
 
@@ -206,7 +206,7 @@ export const DashboardSidebar = (props) => {
           <Popover
             id={idLog}
             sx={{
-              ml:1.5
+              ml: 1.5
             }}
             open={openPopLog}
             anchorEl={anchorElLog}
@@ -224,25 +224,25 @@ export const DashboardSidebar = (props) => {
           >
             <Box
               sx={{
-                backgroundColor:'neutral.900',
+                backgroundColor: 'neutral.900',
                 color: '#FFFFFF',
 
               }}
             >
-            <MenuList>
-              <SubNavItem href='/provision' 
-                title='Approvisionnement'/>
-              { UXAccess.hasPOAccess() && <SubNavItem href='/purchase-request' 
-                title='Achat'/>}
-              <SubNavItem href='/purchase-order' 
-                title='Bon de commande'/>
-              <SubNavItem href='/receipt' 
-                title='Bon de reception'/>
-              { UXAccess.hasSupplierAccess() && <SubNavItem href='/supplier' 
-                title='Fournisseur'/>}
-            </MenuList>
+              <MenuList>
+                <SubNavItem href='/provision'
+                  title='Approvisionnement' />
+                {UXAccess.hasPOAccess() && <SubNavItem href='/purchase-request'
+                  title='Achat' />}
+                <SubNavItem href='/purchase-order'
+                  title='Bon de commande' />
+                <SubNavItem href='/receipt'
+                  title='Bon de reception' />
+                {UXAccess.hasSupplierAccess() && <SubNavItem href='/supplier'
+                  title='Fournisseur' />}
+              </MenuList>
             </Box>
-            
+
           </Popover>
 
 
@@ -254,12 +254,12 @@ export const DashboardSidebar = (props) => {
             aria-describedby={id}
             onClick={handleClick}
           />
-              
-        }
+
+          }
           <Popover
             id={id}
             sx={{
-              ml:1.5
+              ml: 1.5
             }}
             open={openPop}
             anchorEl={anchorEl}
@@ -277,25 +277,25 @@ export const DashboardSidebar = (props) => {
           >
             <Box
               sx={{
-                width:100,
-                backgroundColor:'neutral.900',
+                width: 100,
+                backgroundColor: 'neutral.900',
                 color: '#FFFFFF',
 
               }}
             >
-            <MenuList>
-            <SubNavItem href='/project/location' 
-              title='Sites'/>
-            </MenuList>
+              <MenuList>
+                <SubNavItem href='/project/location'
+                  title='Sites' />
+              </MenuList>
             </Box>
-            
+
           </Popover>
           <NavItem
             key='Se Deconnecter'
             icon={(<LogoutIcon fontSize="large" />)}
             href="/login"
             title='Se Deconnecter'
-            onClick={()=>{AuthProvider.logout()}}
+            onClick={() => { AuthProvider.logout() }}
           />
         </Box>
       </Box>
@@ -311,7 +311,7 @@ export const DashboardSidebar = (props) => {
           sx: {
             backgroundColor: 'neutral.900',
             color: '#FFFFFF',
-            width: 200
+            width: '300px'
           }
         }}
         variant="permanent"
@@ -330,7 +330,7 @@ export const DashboardSidebar = (props) => {
         sx: {
           backgroundColor: 'neutral.900',
           color: '#FFFFFF',
-          width: 280
+          width: 320
         }
       }}
       sx={{ zIndex: (theme) => theme.zIndex.appBar + 100 }}
