@@ -2,7 +2,7 @@ from rest_framework.viewsets import ModelViewSet
 from .serializers import (
     CreateUserSerializer, CustomUser, LoginSerializer, UpdatePasswordSerializer,
     CustomUserSerializer, UserActivities, UserActivitiesSerializer, GroupSerializer,
-    ActivateSerializer, CustomUserSignSerializer,CustomUserListSerializer
+    ActivateSerializer, CustomUserSignSerializer, CustomUserListSerializer
 )
 from rest_framework.response import Response
 from rest_framework import status
@@ -25,31 +25,34 @@ def add_user_activity(user, action):
         action=action
     )
 
+
 class CreateUserView(ModelViewSet):
-    http_method_names = ["post","put"]
+    http_method_names = ["post", "put"]
     queryset = CustomUser.objects.all()
     serializer_class = CreateUserSerializer
     permission_classes = (IsAuthenticatedCustom, )
 
     def create(self, request):
         valid_request = self.serializer_class(data=request.data)
-        
+
         if self.queryset.filter(username=request.data['username']):
             return Response(
-                    {'message':"username already exists"},
-                    status=status.HTTP_409_CONFLICT
-                )
+                {'message': "username already exists"},
+                status=status.HTTP_409_CONFLICT
+            )
 
         valid_request.is_valid(raise_exception=True)
 
         user_data = dict(valid_request.validated_data)
 
-        user_data['location'] = Location.objects.get(pk=valid_request.validated_data.get('location'))
+        user_data['location'] = Location.objects.get(
+            pk=valid_request.validated_data.get('location'))
 
         user = CustomUser.objects.create(**user_data)
         user.set_password(valid_request.validated_data['password'])
 
-        access = get_access_token({"user_id": user.id, "user_username": user.username}, 99999)
+        access = get_access_token(
+            {"user_id": user.id, "user_username": user.username}, 99999)
         user.private_key = access
 
         user.save()
@@ -66,12 +69,13 @@ class CreateUserView(ModelViewSet):
         checkUser = self.queryset.get(username=request.data['username'])
         if checkUser and checkUser.id != int(pk):
             return Response(
-                    {'message':"username already exists"},
-                    status=status.HTTP_409_CONFLICT
-                )
+                {'message': "username already exists"},
+                status=status.HTTP_409_CONFLICT
+            )
         valid_request.is_valid(raise_exception=True)
-        user_data = dict(valid_request.validated_data)    
-        user_data['location'] = Location.objects.get(pk=valid_request.validated_data.get('location'))
+        user_data = dict(valid_request.validated_data)
+        user_data['location'] = Location.objects.get(
+            pk=valid_request.validated_data.get('location'))
         user = CustomUser.objects.get(id=pk)
         user.username = user_data['username']
         user.fullname = user_data['fullname']
@@ -87,6 +91,7 @@ class CreateUserView(ModelViewSet):
             status=status.HTTP_200_OK
         )
 
+
 class ActivateUserView(ModelViewSet):
     http_method_names = ["put"]
     queryset = CustomUser.objects.all()
@@ -98,18 +103,17 @@ class ActivateUserView(ModelViewSet):
         valid_request.is_valid(raise_exception=True)
         user = CustomUser.objects.get(id=pk)
         user.is_active = valid_request.validated_data['is_active']
-        
+
         user.save()
-        
-        add_user_activity(request.user, "activate "+user.username+" user "+str(user.is_active))
+
+        add_user_activity(request.user, "activate " +
+                          user.username+" user "+str(user.is_active))
         # print(request.data)
 
         return Response(
             {"success": "User Updated successfully"},
             status=status.HTTP_200_OK
         )
-
-
 
 
 class LoginView(ModelViewSet):
@@ -155,7 +159,8 @@ class LoginView(ModelViewSet):
         role = user.role
         if user.is_superuser:
             role = "1"
-        return Response({"access": access,"role":role})
+        return Response({"access": access, "role": role, "fullname": user.fullname})
+
 
 class UpdatePasswordView(ModelViewSet):
     serializer_class = UpdatePasswordSerializer
@@ -181,6 +186,7 @@ class UpdatePasswordView(ModelViewSet):
 
         return Response({"success": "User password updated"})
 
+
 class MeView(ModelViewSet):
     serializer_class = CustomUserSerializer
     http_method_names = ["get"]
@@ -201,7 +207,7 @@ class UserActivitiesView(ModelViewSet):
 
 class UsersView(ModelViewSet):
     serializer_class = CustomUserSerializer
-    http_method_names = ["get","delete"]
+    http_method_names = ["get", "delete"]
     queryset = CustomUser.objects.all()
     # permission_classes = (IsAuthenticatedCustom, )
 
@@ -210,24 +216,23 @@ class UsersView(ModelViewSet):
         data = self.serializer_class(users, many=True).data
         return Response(data)
 
-    @action(detail=False, methods=['get'],serializer_class=CustomUserListSerializer)
+    @action(detail=False, methods=['get'], serializer_class=CustomUserListSerializer)
     def short(self, request):
         users = self.queryset.filter(is_superuser=False)
         data = self.serializer_class(users, many=True).data
-          
 
         return Response(data, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=['get'],serializer_class=CustomUserSignSerializer)
+    @action(detail=True, methods=['get'], serializer_class=CustomUserSignSerializer)
     def signature(self, request, pk, *args, **kwargs):
         user = self.get_object()
-        
-        if user.private_key==None:
-            access = get_access_token({"user_id": user.id, "user_username": user.username}, 99999)
+
+        if user.private_key == None:
+            access = get_access_token(
+                {"user_id": user.id, "user_username": user.username}, 99999)
             user.private_key = access
             user.save()
         serializer = self.serializer_class(user)
-            
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -236,7 +241,3 @@ class GroupView(ModelViewSet):
     serializer_class = GroupSerializer
     queryset = Group.objects.all()
     permission_classes = (IsAuthenticatedCustom, )
-
-
-
-
