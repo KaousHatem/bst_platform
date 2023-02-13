@@ -39,7 +39,6 @@ class AuthProvider {
 
     logout() {
         localStorage.clear()
-        // localStorage.removeItem('role')
     }
 }
 
