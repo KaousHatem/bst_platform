@@ -148,13 +148,13 @@ export const POListResults = ({ purchaseOrderList, ...rest }) => {
                   </TableCell>
                   <TableCell align="center"
                     sx={{
-                      width: '10%'
+                      width: '9%'
                     }}>
                     {purchaseOrder.purchaseRequest.provision.ref}
                   </TableCell >
                   {UXAccess.hasRefPRinPO() && <TableCell align="center"
                     sx={{
-                      width: '10%'
+                      width: '9%'
                     }}>
                     {purchaseOrder.purchaseRequest.ref}
                   </TableCell>}
