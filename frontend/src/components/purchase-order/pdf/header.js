@@ -220,6 +220,7 @@ const Header = ({ purchaseOrder, pages, page }) => {
                     </View>
                     <View style={styles.subHeaderContent} >
                         <Text>{purchaseOrder.purchaseRequest.provision.destination.name}</Text>
+                        <Text>{purchaseOrder.purchaseRequest.provision.destination.address}</Text>
                         <Text>{purchaseOrder.purchaseRequest.provision.destination.city} {purchaseOrder.purchaseRequest.provision.destination.codePostal}</Text>
                         {/*<Text>0556 75 34 93</Text>*/}
                     </View>
