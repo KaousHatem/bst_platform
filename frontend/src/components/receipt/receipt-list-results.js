@@ -134,22 +134,35 @@ export const ReceiptListResults = ({ receiptList, ...rest }) => {
                   key={receipt.id}
                   selected={selectedReceiptIds.indexOf(receipt.id) !== -1}
                 >
-                  <TableCell>
+                  <TableCell sx={{
+                    width: '9%',
+                  }}>
                     {receipt.ref}
                   </TableCell>
-                  <TableCell align="center">
+                  <TableCell align="center"
+                    sx={{
+                      width: '10%',
+                    }}>
                     {format(new Date(receipt.created_on), 'dd-MM-yyyy')}
                   </TableCell>
-                  <TableCell align="center">
+                  <TableCell align="center"
+                    sx={{
+                      width: '9%',
+                    }}>
                     {receipt.purchaseOrder.ref}
                   </TableCell>
-                  <TableCell>
+                  <TableCell
+                    sx={{
+                      width: '10%',
+                    }}>
                     {format(new Date(receipt.purchaseOrder.created_on), 'dd-MM-yyyy')}
                   </TableCell>
                   <TableCell>
-                    {receipt.created_by.username}
+                    {receipt.created_by.fullname}
                   </TableCell>
-                  <TableCell>
+                  <TableCell sx={{
+                    width: '40%'
+                  }}>
                     {receipt.purchaseOrder.purchaseRequest.provision.destination.name}
                   </TableCell>
                   <TableCell
