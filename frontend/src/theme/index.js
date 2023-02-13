@@ -123,6 +123,9 @@ export const theme = createTheme({
           '& .MuiTableCell-root': {
             borderBottom: 'none',
             fontSize: '10px',
+            '@media (min-width:900px)': {
+              fontSize: '0.8vw',
+            },
             fontWeight: 600,
             lineHeight: 1,
             letterSpacing: 0.5,
@@ -139,7 +142,10 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           '& .MuiTableCell-root': {
-            fontSize: '0.8vw',
+            fontSize: '12px',
+            '@media (min-width:900px)': {
+              fontSize: '0.8vw',
+            },
             letterSpacing: 0.5,
           },
         }
