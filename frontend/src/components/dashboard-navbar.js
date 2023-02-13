@@ -3,7 +3,16 @@ import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
-import { AppBar, Avatar, Badge, Box, IconButton, Toolbar, Tooltip } from '@mui/material';
+import {
+  AppBar,
+  Avatar,
+  Badge,
+  Box,
+  IconButton,
+  Toolbar,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import { Bell as BellIcon } from '../icons/bell';
@@ -13,6 +22,7 @@ import UXAccess from '../utils/ux-access';
 
 const DashboardNavbarRoot = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
+  color: theme.palette.text.primary,
   boxShadow: theme.shadows[3]
 }));
 
@@ -65,21 +75,19 @@ export const DashboardNavbar = (props) => {
           >
             <MenuIcon fontSize="small" />
           </IconButton>
-          <Tooltip title="Search">
-            <IconButton sx={{ ml: 1 }}>
-              <SearchIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            {localStorage.getItem('fullname')}
+          </Typography>
           <Box sx={{ flexGrow: 1 }} />
-          { UXAccess.hasUserAccess() && 
-          <Tooltip title="Contacts">
-              <IconButton href="/user"  
-              sx={{ ml: 1 }}>
+          {UXAccess.hasUserAccess() &&
+            <Tooltip title="Contacts">
+              <IconButton href="/user"
+                sx={{ ml: 1 }}>
                 <UsersIcon fontSize="small" />
               </IconButton>
-          </Tooltip>
+            </Tooltip>
           }
-          
+
           <Tooltip title="Notification">
             <IconButton sx={{ ml: 1 }}>
               <Badge
