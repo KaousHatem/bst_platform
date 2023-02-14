@@ -81,7 +81,7 @@ const PurchaseOrderPage = () => {
                 page={page + 1} />
               <Body purchaseOrder={purchaseOrder}
                 page={page}
-                length="15"
+                length={15}
               />
               {page + 1 == pages && <Footer />}
               <StaticFooter />
