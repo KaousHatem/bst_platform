@@ -21,6 +21,10 @@ from project.urls import router as router_project
 from user_control.urls import router as router_user
 
 
+from django.conf import settings
+from django.conf.urls.static import static
+
+
 router = DefaultRouter()
 router.registry.extend(router_logistics.registry)
 router.registry.extend(router_project.registry)
@@ -31,3 +35,8 @@ urlpatterns = [
     path('api/', include(router.urls)),
 
 ]
+
+
+if bool(settings.DEBUG):
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)

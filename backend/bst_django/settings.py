@@ -22,10 +22,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECRET_KEY = 'django-insecure-q*qk&%9*&toco*rob08rp4_y+v*+4-*-8o@x*uafp*fh!6rm6_'
-SECRET_KEY = os.environ.get("SECRET_KEY","django-insecure-q*qk&%9*&toco*rob08rp4_y+v*+4-*-8o@x*uafp*fh!6rm6_")
+SECRET_KEY = os.environ.get(
+    "SECRET_KEY", "django-insecure-q*qk&%9*&toco*rob08rp4_y+v*+4-*-8o@x*uafp*fh!6rm6_")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-
 
 
 DEBUG = int(os.environ.get("DEBUG", default=1))
@@ -34,7 +34,8 @@ DEBUG = int(os.environ.get("DEBUG", default=1))
 
 # 'DJANGO_ALLOWED_HOSTS' should be a single string of hosts with a space between each.
 # For example: 'DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]'
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS",'127.0.0.1 localhost 164.92.167.240').split(" ")
+ALLOWED_HOSTS = os.environ.get(
+    "DJANGO_ALLOWED_HOSTS", '127.0.0.1 localhost 164.92.167.240').split(" ")
 # ALLOWED_HOSTS = ['127.0.0.1']
 
 
@@ -42,12 +43,12 @@ AUTH_USER_MODEL = "user_control.CustomUser"
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-       'rest_framework.authentication.TokenAuthentication',
-   ),
-    
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+
     'EXCEPTION_HANDLER': 'bst_django.permissions.custom_exception_handler',
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
-}  
+}
 
 # Application definition
 
@@ -66,7 +67,7 @@ INSTALLED_APPS = [
     'project',
     'finance',
 
-    
+
 ]
 
 MIDDLEWARE = [
@@ -97,7 +98,7 @@ TEMPLATES = [
         },
     },
 ]
-CORS_ALLOW_ALL_ORIGINS=True
+CORS_ALLOW_ALL_ORIGINS = True
 
 WSGI_APPLICATION = 'bst_django.wsgi.application'
 
@@ -154,11 +155,13 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "mediafiles"
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 
 
 # APPEND_SLASH=False

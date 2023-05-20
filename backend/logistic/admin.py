@@ -2,29 +2,33 @@ from django.contrib import admin
 
 # Register your models here.
 from .models import (
-	StockIn, 
-	StockOut,
-	StockInit,
-	Transfer,
-	Stock, 
-	Store, 
-	Unit, 
-	Product, 
-	Category, 
-	PurchaseRequest,
-	UnitConversion, 
-	PurchaseReqProductRel, 
-	Provision, 
-	ProvisionProductRel,
-	PurchaseOrder,
-	PurchaseOrderProductRel,
-	Receipt,
-	ReceiptProductRel,
-	Supplier,
-	StockMovement
+    StockIn,
+    StockOut,
+    StockInit,
+    Transfer,
+    TransferProductRel,
+    Stock,
+    Store,
+    Unit,
+    Product,
+    Category,
+    PurchaseRequest,
+    UnitConversion,
+    PurchaseReqProductRel,
+    Provision,
+    ProvisionProductRel,
+    PurchaseOrder,
+    PurchaseOrderProductRel,
+    Receipt,
+    ReceiptProductRel,
+    Supplier,
+    StockMovement,
+    TransferDocument,
+    StockInDocument,
+    StockOutDocument
+
 
 )
-
 
 
 admin.site.register(UnitConversion)
@@ -46,4 +50,25 @@ admin.site.register(StockOut)
 admin.site.register(StockInit)
 admin.site.register(Supplier)
 admin.site.register(Transfer)
+# admin.site.register(TransferProductRel)
 admin.site.register(StockMovement)
+
+
+@admin.register(TransferProductRel)
+class TransferProductRelAdmin(admin.ModelAdmin):
+    list_display = ('transfer', 'product', 'quantity',)
+
+
+@admin.register(TransferDocument)
+class TransferProductRelAdmin(admin.ModelAdmin):
+    list_display = ('transfer', 'file',)
+
+
+@admin.register(StockInDocument)
+class StockInDocumentAdmin(admin.ModelAdmin):
+    list_display = ('ref', 'created_by', 'created_on', 'status',)
+
+
+@admin.register(StockOutDocument)
+class StockOutDocumentAdmin(admin.ModelAdmin):
+    list_display = ('ref', 'created_by', 'created_on', 'status',)

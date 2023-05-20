@@ -58,6 +58,7 @@ from .role_filters import provision_role_filters, po_role_filters, receipt_role_
 
 from .serializers import (
     ProductSerializer,
+    ProductListSerializer,
     ProvisionSerializer,
     CategorySerializer,
     ProvisionProductSerializer,
@@ -239,6 +240,11 @@ class ProductViewSet(ModelViewSet):
 
     def get_queryset(self):
         return Product.objects.all()
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return ProductListSerializer
+        return super().get_serializer_class()
 
     @action(detail=False, methods=['get'])
     def last(self, request):
@@ -842,7 +848,6 @@ class ReceiptProductViewSet(ModelViewSet):
         return super().get_serializer_class()
 
     def create_stock_in(self, id):
-        print("ok")
         receiptProduct = ReceiptProductRetreiveSerializer(
             self.queryset.get(id=id))
         provisionProduct = receiptProduct.data['purchaseOrderProduct']['purchaseProduct']['provisionProduct']
@@ -868,8 +873,8 @@ class ReceiptProductViewSet(ModelViewSet):
             'source': '0',
             'created_by': CustomUser.objects.first().id,
             'source_id': receiptProduct.data['id'],
+
         }
-        print(data)
 
         serializer = StockInSerializer(data=data)
 
@@ -891,6 +896,7 @@ class ReceiptProductViewSet(ModelViewSet):
             return Response({'message': serializer.errors}, status=400)
 
         result = super(ReceiptProductViewSet, self).create(request)
+
         if isinstance(result.data, dict):
             result_data = [result.data]
         else:

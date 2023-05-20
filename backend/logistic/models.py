@@ -1,3 +1,4 @@
+import os
 from django.db import models
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
@@ -81,19 +82,25 @@ class Store(models.Model):
 
 
 class Transfer(models.Model):
+    STATUS = (
+        ('1', _("NEW")),
+        ('999', _("COMPLETED")),
+    )
     ref = models.CharField(max_length=20, unique=True, null=True)
     source = models.ForeignKey(
         Store, on_delete=models.DO_NOTHING, related_name="source")
     target = models.ForeignKey(
         Store, on_delete=models.DO_NOTHING, related_name="target")
-    product = models.ForeignKey(Product, on_delete=models.DO_NOTHING)
-    quantity = models.FloatField()
-    price = models.FloatField(null=True)
-    unit = models.ForeignKey(
-        Unit, on_delete=models.CASCADE, null=True, blank=True,)
-    created_by = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING)
+    status = models.CharField(
+        _("status"), max_length=220, default="1", choices=STATUS)
+
+    created_by = models.ForeignKey(
+        CustomUser, on_delete=models.DO_NOTHING, related_name='transfer_created_by')
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
+    received_by = models.ForeignKey(
+        CustomUser, on_delete=models.DO_NOTHING, related_name='transfer_received_by', null=True)
+    received_on = models.DateTimeField(null=True)
 
     def save(self, *args, **kwargs):
         today = datetime.datetime.now()
@@ -105,6 +112,35 @@ class Transfer(models.Model):
         else:
             self.ref = str(1).zfill(4) + '/' + str(today.year)
         super(Transfer, self).save(*args, **kwargs)
+
+
+class TransferProductRel(models.Model):
+    transfer = models.ForeignKey(
+        Transfer, related_name='products', on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.DO_NOTHING)
+    quantity = models.FloatField()
+    price = models.FloatField(null=True)
+    unit = models.ForeignKey(
+        Unit, on_delete=models.CASCADE, null=True, blank=True,)
+
+
+def _upload_to(instance, filename):
+    name, extension = os.path.splitext(filename)
+    file = "{}_{}".format(name, extension)
+    return "documents/{}/{}".format(instance.__class__.__name__, file)
+
+
+# def transfer_directory_path(instance, filename):
+#     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
+#     return 'documents/transfer/{1}'.format(filename)
+
+
+class TransferDocument(models.Model):
+    transfer = models.ForeignKey(
+        Transfer, related_name='document', on_delete=models.CASCADE)
+    file = models.FileField(
+        upload_to=_upload_to, blank=True, null=True)
+    created_on = models.DateTimeField(auto_now_add=True)
 
 
 class Stock(models.Model):
@@ -191,13 +227,84 @@ class StockInit(models.Model):
     # 	super(StockIn, self).delete(*args, **kwargs)
 
 
+def _upload_to_stock_in(instance, filename):
+    name, extension = os.path.splitext(filename)
+    file = "{}_{}".format(name, extension)
+    return "documents/{}/{}".format(instance.__class__.__name__, file)
+
+
+class StockInDocument(models.Model):
+    SOURCE = (
+        ('0', _("PURCHASE")),
+        ('1', _("CASH_PURCHASE")),
+        ('2', _("TRANSFER")),
+        ('3', _("OTHER")),
+    )
+
+    STATUS = (
+        ('1', _("NEW")),
+        ('999', _("COMPLETED")),
+    )
+    ref = models.CharField(max_length=20, unique=True, null=True)
+    source = models.CharField(_("source"), max_length=22, choices=SOURCE)
+    source_id = models.CharField(max_length=50, null=True)
+    created_by = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING)
+    created_on = models.DateTimeField(auto_now_add=True)
+    updated_on = models.DateTimeField(auto_now=True)
+    store = models.ForeignKey(
+        Store, on_delete=models.DO_NOTHING, related_name="stock_in_documents", null=True)
+    note = models.CharField(max_length=500, null=True, blank=True)
+    status = models.CharField(
+        _("status"), max_length=220, default="new", choices=STATUS)
+
+    def save(self, *args, **kwargs):
+        today = datetime.datetime.now()
+
+        if not self.pk:
+            if StockInDocument.objects.filter(~Q(ref=None)):
+                last_ref = StockInDocument.objects.filter(~Q(ref=None)).order_by(
+                    'ref').last().ref.split('/')[0]
+                last_ref_int = int(last_ref)
+                self.ref = str(last_ref_int+1).zfill(4) + '/' + str(today.year)
+            else:
+                self.ref = str(1).zfill(4) + '/' + str(today.year)
+
+        super(StockInDocument, self).save(*args, **kwargs)
+
+
+class StockInDocumentProductRel(models.Model):
+    stock_in_document = models.ForeignKey(
+        StockInDocument, related_name="products", on_delete=models.DO_NOTHING)
+    product = models.ForeignKey(
+        Product, on_delete=models.DO_NOTHING, null=True)
+    quantity = models.FloatField(null=True)
+    price = models.FloatField(null=True)
+    unit = models.ForeignKey(Unit, on_delete=models.DO_NOTHING, null=True)
+
+
+class StockInDocumentSourceFile(models.Model):
+    stock_in_document = models.ForeignKey(
+        StockInDocument, related_name="source_file", on_delete=models.DO_NOTHING)
+    file = models.FileField(
+        upload_to=_upload_to_stock_in)
+    created_on = models.DateTimeField(auto_now_add=True)
+
+
+class StockInDocumentFile(models.Model):
+    stock_in_document = models.ForeignKey(
+        StockInDocument, related_name="file", on_delete=models.DO_NOTHING)
+    file = models.FileField(
+        upload_to=_upload_to_stock_in)
+    created_on = models.DateTimeField(auto_now_add=True)
+
+
 class StockIn(models.Model):
 
     SOURCE = (
         ('0', _("PURCHASE")),
         ('1', _("CASH_PURCHASE")),
         ('2', _("TRANSFER")),
-        ('2', _("OTHER")),
+        ('3', _("OTHER")),
     )
     ref = models.CharField(max_length=20, unique=True, null=True)
     stock = models.ForeignKey(
@@ -253,6 +360,75 @@ class StockIn(models.Model):
         super(StockIn, self).delete(*args, **kwargs)
 
 
+def _upload_to_stock_out(instance, filename):
+    name, extension = os.path.splitext(filename)
+    file = "{}_{}".format(name, extension)
+    return "documents/{}/{}".format(instance.__class__.__name__, file)
+
+
+class StockOutDocument(models.Model):
+    TARGET = (
+        ('3', _("TO_PROJECT")),
+        ('4', _("OTHER")),
+    )
+
+    STATUS = (
+        ('1', _("NEW")),
+        ('999', _("COMPLETED")),
+    )
+    ref = models.CharField(max_length=20, unique=True, null=True)
+    target = models.CharField(_("TARGET"), max_length=22, choices=TARGET)
+    target_detail = models.CharField(max_length=220, null=True, blank=True)
+    created_by = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING)
+    created_on = models.DateTimeField(auto_now_add=True)
+    updated_on = models.DateTimeField(auto_now=True)
+    store = models.ForeignKey(
+        Store, on_delete=models.DO_NOTHING, related_name="stock_out_documents", null=True)
+    note = models.CharField(max_length=500, null=True, blank=True)
+    status = models.CharField(
+        _("status"), max_length=220, default="new", choices=STATUS)
+
+    def save(self, *args, **kwargs):
+        today = datetime.datetime.now()
+
+        if not self.pk:
+            if StockOutDocument.objects.filter(~Q(ref=None)):
+                last_ref = StockOutDocument.objects.filter(~Q(ref=None)).order_by(
+                    'ref').last().ref.split('/')[0]
+                last_ref_int = int(last_ref)
+                self.ref = str(last_ref_int+1).zfill(4) + '/' + str(today.year)
+            else:
+                self.ref = str(1).zfill(4) + '/' + str(today.year)
+
+        super(StockOutDocument, self).save(*args, **kwargs)
+
+
+class StockOutDocumentProductRel(models.Model):
+    stock_out_document = models.ForeignKey(
+        StockOutDocument, related_name="products", on_delete=models.DO_NOTHING)
+    product = models.ForeignKey(
+        Product, on_delete=models.DO_NOTHING, null=True)
+    quantity = models.FloatField(null=True)
+    price = models.FloatField(null=True)
+    unit = models.ForeignKey(Unit, on_delete=models.DO_NOTHING, null=True)
+
+
+# class StockOutDocumentTargetFile(models.Model):
+#     stock_out_document = models.ForeignKey(
+#         StockOutDocument, related_name="target_file", on_delete=models.DO_NOTHING)
+#     file = models.FileField(
+#         upload_to=_upload_to_stock_out)
+#     created_on = models.DateTimeField(auto_now_add=True)
+
+
+class StockOutDocumentFile(models.Model):
+    stock_out_document = models.ForeignKey(
+        StockOutDocument, related_name="file", on_delete=models.DO_NOTHING)
+    file = models.FileField(
+        upload_to=_upload_to_stock_out)
+    created_on = models.DateTimeField(auto_now_add=True)
+
+
 class StockOut(models.Model):
 
     TARGET = (
@@ -278,21 +454,24 @@ class StockOut(models.Model):
 
     def save(self, *args, **kwargs):
         today = datetime.datetime.now()
-        if StockOut.objects.filter(~Q(ref=None)):
-            last_ref = StockOut.objects.filter(
-                ~Q(ref=None)).order_by('ref').last().ref.split('/')[0]
-            last_ref_int = int(last_ref)
-            self.ref = str(last_ref_int+1).zfill(4) + '/' + str(today.year)
-        else:
-            self.ref = str(1).zfill(4) + '/' + str(today.year)
+        if not self.pk:
+            if StockOut.objects.filter(~Q(ref=None)):
+                last_ref = StockOut.objects.filter(
+                    ~Q(ref=None)).order_by('ref').last().ref.split('/')[0]
+                last_ref_int = int(last_ref)
+                self.ref = str(last_ref_int+1).zfill(4) + '/' + str(today.year)
+            else:
+                self.ref = str(1).zfill(4) + '/' + str(today.year)
         if not self.pk:
             stock = self.stock
             stock.quantity = stock.quantity - self.quantity
             stock.save()
-        super(StockOut, self).save(*args, **kwargs)
-        stockOut = StockMovement.objects.create(
-            movement_type='1', movement_id=int(self.pk), stock=self.stock)
-        stockOut.save()
+            super(StockOut, self).save(*args, **kwargs)
+            stockOut = StockMovement.objects.create(
+                movement_type='1', movement_id=int(self.pk), stock=self.stock)
+            stockOut.save()
+        else:
+            super(StockOut, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         stock = self.stock
@@ -536,3 +715,88 @@ class ReceiptProductRel(models.Model):
     quantity_accepted = models.FloatField(null=True, blank=True)
     conformity = models.BooleanField(default=True, null=True, blank=True)
     note = models.TextField(null=True, blank=True)
+
+
+class ProformaInvoiceRequest(models.Model):
+    STATUS = (
+        ('1', _("NEW")),
+        ('999', _("RECEIVED")),
+    )
+
+    ref = models.CharField(max_length=20, unique=True, null=True)
+    status = models.CharField(
+        _("status"), max_length=220, default="1", choices=STATUS)
+
+    created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    created_on = models.DateTimeField(auto_now_add=True)
+    updated_on = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+
+        if self.ref == None:
+            today = datetime.datetime.now()
+            if ProformaInvoiceRequest.objects.filter(~Q(ref=None)):
+                last_ref = ProformaInvoiceRequest.objects.filter(
+                    ~Q(ref=None)).order_by('ref').last().ref.split('/')[0]
+                last_ref_int = int(last_ref)
+                self.ref = str(last_ref_int+1).zfill(4) + '/' + str(today.year)
+            else:
+                self.ref = str(1).zfill(4) + '/' + str(today.year)
+
+        super(ProformaInvoiceRequest, self).save(*args, **kwargs)
+
+
+class ProformaInvoiceRequestProductRel(models.Model):
+    proformaInvoiceRequest = models.ForeignKey(
+        ProformaInvoiceRequest, related_name='products', on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.FloatField()
+    unit = models.ForeignKey(
+        Unit, on_delete=models.CASCADE, null=True, blank=True,)
+
+
+def user_directory_path(instance, filename):
+    # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
+    return 'documents/proforma_invoice/{0}'.format(filename)
+
+
+class ProformaInvoice(models.Model):
+    ref = models.CharField(max_length=20, unique=True, null=True)
+    proformaRequest = models.ForeignKey(
+        ProformaInvoiceRequest, related_name='proformaInvoice', on_delete=models.CASCADE)
+    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
+    tax_including = models.BooleanField(default=True)
+    tax_rate = models.FloatField(null=True)
+
+    created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    created_on = models.DateTimeField(auto_now_add=True)
+    updated_on = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+
+        if self.ref == None:
+            today = datetime.datetime.now()
+            if ProformaInvoice.objects.filter(~Q(ref=None)):
+                last_ref = ProformaInvoice.objects.filter(
+                    ~Q(ref=None)).order_by('ref').last().ref.split('/')[0]
+                last_ref_int = int(last_ref)
+                self.ref = str(last_ref_int+1).zfill(4) + '/' + str(today.year)
+            else:
+                self.ref = str(1).zfill(4) + '/' + str(today.year)
+
+        super(ProformaInvoice, self).save(*args, **kwargs)
+
+
+class ProformaInvoiceDocument(models.Model):
+    proformaInvoice = models.OneToOneField(
+        ProformaInvoice, related_name='document', on_delete=models.CASCADE)
+    file = models.FileField(
+        upload_to=user_directory_path, blank=True, null=True)
+
+
+class ProformaInvoiceProductRel(models.Model):
+    proformaInvoice = models.ForeignKey(
+        ProformaInvoice, related_name='products', on_delete=models.CASCADE)
+    proformaInvoiceRequestProduct = models.ForeignKey(
+        ProformaInvoiceRequestProductRel, on_delete=models.CASCADE)
+    price = models.FloatField()
