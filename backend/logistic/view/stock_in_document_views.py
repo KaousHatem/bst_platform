@@ -156,35 +156,41 @@ class StockInDocumentProductViewSet(ModelViewSet):
     def get_serializer_class(self):
         return super().get_serializer_class()
 
-    # def create_stock_movement(self, transferProduct):
-    #     print("create_stock_movement")
-    #     transferId = transferProduct['transfer']
-    #     productId = transferProduct['product']
+    def create_stock_movement(self, StockInDocumentProduct):
+        print("create_stock_movement")
+        stockInDocumentId = StockInDocumentProduct['stock_in_document']
+        productId = StockInDocumentProduct['product']
 
-    #     transfer = Transfer.objects.get(id=transferId)
-    #     print(transfer)
-    #     sourceStore = transfer.source
+        stockInDocument = StockInDocument.objects.get(id=stockInDocumentId)
+        print(stockInDocument)
+        store = stockInDocument.store
 
-    #     sourceStock = Stock.objects.filter(
-    #         product=productId, store=sourceStore.id)
-    #     print(sourceStock)
-    #     sourceData = {
-    #         'stock': sourceStock[0].id,
-    #         'quantity': transferProduct['quantity'],
-    #         'target': '2',
-    #         'created_by': transfer.created_by.id,
-    #         'transfer': transfer.id,
-    #         'price': sourceStock[0].price
-    #     }
+        stock = Stock.objects.filter(
+            product=productId, store=store.id)
+        if len(stock) == 0:
+            serializer = StockSerializer(
+                data={'product': productId, 'store': store.id})
+            serializer.is_valid()
+            serializer.save()
+            stock = [Stock.objects.get(id=serializer.data['id'])]
 
-    #     serializer = StockOutSerializer(data=sourceData)
-    #     try:
-    #         serializer.is_valid(raise_exception=True)
+        data = {
+            'stock': stock[0].id,
+            'quantity': StockInDocumentProduct['quantity'],
+            'source': stockInDocument.source,
+            'created_by': stockInDocument.created_by.id,
+            'source_id': stockInDocument.id,
+            'price': StockInDocumentProduct['price']
+        }
 
-    #     except:
-    #         print(serializer.errors)
+        serializer = StockInSerializer(data=data)
+        try:
+            serializer.is_valid(raise_exception=True)
 
-    #     serializer.save()
+        except:
+            print(serializer.errors)
+
+        serializer.save()
 
     def create(self, request, *args, **kwargs):
 
@@ -200,6 +206,6 @@ class StockInDocumentProductViewSet(ModelViewSet):
 
         result = super().create(request, *args, **kwargs)
 
-        # for transferProduct in result.data:
-        #     self.create_stock_movement(transferProduct)
+        for StockInDocumentProduct in result.data:
+            self.create_stock_movement(StockInDocumentProduct)
         return result

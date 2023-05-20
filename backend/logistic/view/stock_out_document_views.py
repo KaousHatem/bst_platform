@@ -135,35 +135,35 @@ class StockOutDocumentProductViewSet(ModelViewSet):
     def get_serializer_class(self):
         return super().get_serializer_class()
 
-    # def create_stock_movement(self, transferProduct):
-    #     print("create_stock_movement")
-    #     transferId = transferProduct['transfer']
-    #     productId = transferProduct['product']
+    def create_stock_movement(self, stockOutDocumentProduct):
+        print("create_stock_movement")
+        stockOutDocumentId = stockOutDocumentProduct['stock_out_document']
+        productId = stockOutDocumentProduct['product']
 
-    #     transfer = Transfer.objects.get(id=transferId)
-    #     print(transfer)
-    #     sourceStore = transfer.source
+        stockOutDocument = StockOutDocument.objects.get(id=stockOutDocumentId)
+        print(stockOutDocument)
+        store = stockOutDocument.store
 
-    #     sourceStock = Stock.objects.filter(
-    #         product=productId, store=sourceStore.id)
-    #     print(sourceStock)
-    #     sourceData = {
-    #         'stock': sourceStock[0].id,
-    #         'quantity': transferProduct['quantity'],
-    #         'target': '2',
-    #         'created_by': transfer.created_by.id,
-    #         'transfer': transfer.id,
-    #         'price': sourceStock[0].price
-    #     }
+        stock = Stock.objects.filter(
+            product=productId, store=store.id)
+        print(stock)
+        data = {
+            'stock': stock[0].id,
+            'quantity': stockOutDocumentProduct['quantity'],
+            'target': stockOutDocument.target,
+            'created_by': stockOutDocument.created_by.id,
+            'stockOutDocument': stockOutDocument.id,
+            'price': stock[0].price
+        }
 
-    #     serializer = StockOutSerializer(data=sourceData)
-    #     try:
-    #         serializer.is_valid(raise_exception=True)
+        serializer = StockOutSerializer(data=data)
+        try:
+            serializer.is_valid(raise_exception=True)
 
-    #     except:
-    #         print(serializer.errors)
+        except:
+            print(serializer.errors)
 
-    #     serializer.save()
+        serializer.save()
 
     def create(self, request, *args, **kwargs):
 
@@ -177,8 +177,8 @@ class StockOutDocumentProductViewSet(ModelViewSet):
             print(serializers.errors)
             return Response({'message': serializers.errors}, status=400)
 
-        result = super().create(request, *args, **kwargs)
+        response = super().create(request, *args, **kwargs)
 
-        # for transferProduct in result.data:
-        #     self.create_stock_movement(transferProduct)
-        return result
+        for stockOutDocumentProduct in response.data:
+            self.create_stock_movement(stockOutDocumentProduct)
+        return response

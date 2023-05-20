@@ -444,6 +444,8 @@ class StockOut(models.Model):
     target_detail = models.CharField(max_length=220, null=True, blank=True)
     transfer = models.ForeignKey(
         Transfer, on_delete=models.DO_NOTHING, null=True)
+    stockOutDocument = models.ForeignKey(
+        StockOutDocument, on_delete=models.DO_NOTHING, null=True)
     created_by = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING)
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)

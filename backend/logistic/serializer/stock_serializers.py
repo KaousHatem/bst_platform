@@ -3,6 +3,7 @@ from rest_framework import serializers
 from ..models import (
     Stock,
     Product,
+    StockInDocument,
     Transfer,
     Unit,
     Store,
@@ -100,6 +101,9 @@ class StockMovement(serializers.ModelSerializer):
                 unit = transfer.products.get(
                     product_id=stock_in.stock.product.id).unit.ref
             else:
+                stockInDocument = StockInDocument.objects.get(
+                    id=stock_in.source_id)
+                source_ref = stockInDocument.ref
                 unit = stock_in.stock.product.base_unit.ref
             print(stock_in.price)
             if stock_in.price != None:
@@ -119,15 +123,16 @@ class StockMovement(serializers.ModelSerializer):
             stock_out = StockOut.objects.get(id=obj.movement_id)
             target_ref = ""
             unit = ""
-            if stock_out.target == "3":
-                target_ref = stock_out.target_detail
-                unit = stock_out.stock.product.base_unit.ref
-            else:
+            if stock_out.target == "2":
                 transfer = stock_out.transfer
                 target_ref = transfer.ref
 
                 unit = transfer.products.get(
                     product_id=stock_out.stock.product.id).unit.ref
+
+            else:
+                target_ref = stock_out.stockOutDocument.ref
+                unit = stock_out.stock.product.base_unit.ref
             total_price = stock_out.price * stock_out.quantity
             data = {
                 "id": stock_out.id,
