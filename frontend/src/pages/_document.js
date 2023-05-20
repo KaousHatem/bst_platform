@@ -31,19 +31,19 @@ class CustomDocument extends Document {
           />
           <link
             rel="icon"
-            href="/favicon.ico"
+            href="/static/logo.png"
           />
           <link
             rel="icon"
             type="image/png"
             sizes="32x32"
-            href="/favicon-32x32.png"
+            href="/static/logo.png"
           />
           <link
             rel="icon"
             type="image/png"
             sizes="16x16"
-            href="/favicon-16x16.png"
+            href="/static/logo.png"
           />
           <meta
             name="theme-color"
@@ -51,8 +51,8 @@ class CustomDocument extends Document {
           />
         </Head>
         <body>
-        <Main />
-        <NextScript />
+          <Main />
+          <NextScript />
         </body>
       </Html>
     );

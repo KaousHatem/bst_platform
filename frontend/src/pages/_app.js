@@ -21,7 +21,7 @@ const App = (props) => {
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [authorized, setAuthorized] = useState(false);
-  
+
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
 
   const getLayout = Component.getLayout ?? ((page) => page);
@@ -39,27 +39,27 @@ const App = (props) => {
 
     // unsubscribe from events in useEffect return function
     return () => {
-        router.events.off('routeChangeStart', hideContent);
-        router.events.off('routeChangeComplete', authCheck);
+      router.events.off('routeChangeStart', hideContent);
+      router.events.off('routeChangeComplete', authCheck);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  async function authCheck(url){
+  async function authCheck(url) {
     // redirect to login page if accessing a private page and not logged in 
     const publicPaths = ['/login'];
     const path = url.split('?')[0];
     const response = await UserProvider.getMeUser()
     if ((!response && !publicPaths.includes(path))) {
 
-        setAuthorized(false);
-        router.push({
-            pathname: '/login',
-            query: { returnUrl: router.asPath }
-        });
+      setAuthorized(false);
+      router.push({
+        pathname: '/login',
+        query: { returnUrl: router.asPath }
+      });
     } else {
-        setAuthorized(true);
+      setAuthorized(true);
     }
   }
 
@@ -67,7 +67,7 @@ const App = (props) => {
     <CacheProvider value={emotionCache}>
       <Head>
         <title>
-          Material Kit Pro
+          EURL BST PLATFORM
         </title>
         <meta
           name="viewport"

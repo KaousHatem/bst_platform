@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import { Box, Container, Grid } from '@mui/material';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import { Budget } from '../components/dashboard/budget';
 import { LatestOrders } from '../components/dashboard/latest-orders';
 import { LatestProducts } from '../components/dashboard/latest-products';
@@ -18,11 +18,11 @@ import { useRouter } from 'next/router';
 const Dashboard = (props) => {
 
 
-  
-    return(<>
+
+  return (<>
     <Head>
       <title>
-        Dashboard | Material Kit
+        Dashboard | Eurl BST Platform
       </title>
     </Head>
     <Box
@@ -113,9 +113,9 @@ const Dashboard = (props) => {
       </Container>
     </Box>
   </>)
-    }
-  
-  
+}
+
+
 
 
 Dashboard.getLayout = (page) => (

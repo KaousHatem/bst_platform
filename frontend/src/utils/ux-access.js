@@ -2,10 +2,10 @@
 
 
 
-const ROLES_LIST={
+const ROLES_LIST = {
 	ADMIN: '1',
-  	LOGISTIC_ADMIN: '2',
-  	STOCK_MANAGER: '3',
+	LOGISTIC_ADMIN: '2',
+	STOCK_MANAGER: '3',
 }
 
 class UXAccess {
@@ -20,7 +20,7 @@ class UXAccess {
 	}
 
 	hasProductAccess = () => {
-		const ROLES_ACCESS = [ROLES_LIST.ADMIN,ROLES_LIST.LOGISTIC_ADMIN]
+		const ROLES_ACCESS = [ROLES_LIST.ADMIN, ROLES_LIST.LOGISTIC_ADMIN]
 		const role = localStorage.getItem('role')
 
 		return ROLES_ACCESS.includes(role)
@@ -28,7 +28,7 @@ class UXAccess {
 	}
 
 	hasCategoryAccess = () => {
-		const ROLES_ACCESS = [ROLES_LIST.ADMIN,ROLES_LIST.LOGISTIC_ADMIN]
+		const ROLES_ACCESS = [ROLES_LIST.ADMIN, ROLES_LIST.LOGISTIC_ADMIN]
 		const role = localStorage.getItem('role')
 
 		return ROLES_ACCESS.includes(role)
@@ -36,7 +36,7 @@ class UXAccess {
 	}
 
 	hasProvisionApproveAccess = () => {
-		const ROLES_ACCESS = [ROLES_LIST.ADMIN,ROLES_LIST.LOGISTIC_ADMIN]
+		const ROLES_ACCESS = [ROLES_LIST.ADMIN, ROLES_LIST.LOGISTIC_ADMIN]
 		const role = localStorage.getItem('role')
 
 		return ROLES_ACCESS.includes(role)
@@ -44,7 +44,7 @@ class UXAccess {
 	}
 
 	hasProvisionRejectAccess = () => {
-		const ROLES_ACCESS = [ROLES_LIST.ADMIN,ROLES_LIST.LOGISTIC_ADMIN]
+		const ROLES_ACCESS = [ROLES_LIST.ADMIN, ROLES_LIST.LOGISTIC_ADMIN]
 		const role = localStorage.getItem('role')
 
 		return ROLES_ACCESS.includes(role)
@@ -52,7 +52,7 @@ class UXAccess {
 	}
 
 	hasAllLocationAccess = () => {
-		const ROLES_ACCESS = [ROLES_LIST.ADMIN,ROLES_LIST.LOGISTIC_ADMIN]
+		const ROLES_ACCESS = [ROLES_LIST.ADMIN, ROLES_LIST.LOGISTIC_ADMIN]
 		const role = localStorage.getItem('role')
 
 		return ROLES_ACCESS.includes(role)
@@ -68,7 +68,7 @@ class UXAccess {
 	}
 
 	hasRefPRinPO = () => {
-		const ROLES_ACCESS = [ROLES_LIST.ADMIN,ROLES_LIST.LOGISTIC_ADMIN]
+		const ROLES_ACCESS = [ROLES_LIST.ADMIN, ROLES_LIST.LOGISTIC_ADMIN]
 		const role = localStorage.getItem('role')
 
 		return ROLES_ACCESS.includes(role)
@@ -76,7 +76,7 @@ class UXAccess {
 	}
 
 	hasAccessToPrice = () => {
-		const ROLES_ACCESS = [ROLES_LIST.ADMIN,ROLES_LIST.LOGISTIC_ADMIN]
+		const ROLES_ACCESS = [ROLES_LIST.ADMIN, ROLES_LIST.LOGISTIC_ADMIN]
 		const role = localStorage.getItem('role')
 
 		return ROLES_ACCESS.includes(role)
@@ -84,7 +84,7 @@ class UXAccess {
 	}
 
 	hasPOupdateAccess = () => {
-		const ROLES_ACCESS = [ROLES_LIST.ADMIN,ROLES_LIST.LOGISTIC_ADMIN]
+		const ROLES_ACCESS = [ROLES_LIST.ADMIN, ROLES_LIST.LOGISTIC_ADMIN]
 		const role = localStorage.getItem('role')
 
 		return ROLES_ACCESS.includes(role)
@@ -92,26 +92,60 @@ class UXAccess {
 	}
 
 	hasPOAccess = () => {
-		const ROLES_ACCESS = [ROLES_LIST.ADMIN,ROLES_LIST.LOGISTIC_ADMIN]
+		const ROLES_ACCESS = [ROLES_LIST.ADMIN, ROLES_LIST.LOGISTIC_ADMIN]
 		const role = localStorage.getItem('role')
 
 		return ROLES_ACCESS.includes(role)
 	}
 
 	hasSupplierAccess = () => {
-		const ROLES_ACCESS = [ROLES_LIST.ADMIN,ROLES_LIST.LOGISTIC_ADMIN]
+		const ROLES_ACCESS = [ROLES_LIST.ADMIN, ROLES_LIST.LOGISTIC_ADMIN]
 		const role = localStorage.getItem('role')
 
 		return ROLES_ACCESS.includes(role)
 	}
 
 	hasStoreAccess = () => {
-		const ROLES_ACCESS = [ROLES_LIST.ADMIN,ROLES_LIST.LOGISTIC_ADMIN]
+		const ROLES_ACCESS = [ROLES_LIST.ADMIN, ROLES_LIST.LOGISTIC_ADMIN]
 		const role = localStorage.getItem('role')
 
 		return ROLES_ACCESS.includes(role)
 	}
 
+	hasProformaRequest = () => {
+		const ROLES_ACCESS = [ROLES_LIST.ADMIN, ROLES_LIST.LOGISTIC_ADMIN]
+		const role = localStorage.getItem('role')
+
+		return ROLES_ACCESS.includes(role)
+	}
+
+	hasProformaInvoice = () => {
+		const ROLES_ACCESS = [ROLES_LIST.ADMIN, ROLES_LIST.LOGISTIC_ADMIN]
+		const role = localStorage.getItem('role')
+
+		return ROLES_ACCESS.includes(role)
+	}
+
+
+	hasTransferReceiveAccess = (userLocation, targetLocation) => {
+		const ROLES_ACCESS = [ROLES_LIST.ADMIN, ROLES_LIST.LOGISTIC_ADMIN]
+		const ROLES_ACCESS_CONDITIONNAL = [ROLES_LIST.STOCK_MANAGER]
+		const role = localStorage.getItem('role')
+		if (ROLES_ACCESS.includes(role)) {
+			return true
+		} else if (ROLES_ACCESS_CONDITIONNAL.includes(role)) {
+			return userLocation === targetLocation
+		}
+		return false
+	}
+
+	hasStockInDocumentAccess = () => {
+		const ROLES_ACCESS = [ROLES_LIST.STOCK_MANAGER]
+		const role = localStorage.getItem('role')
+		console.log(role)
+
+		return ROLES_ACCESS.includes(role)
+	}
 
 
 

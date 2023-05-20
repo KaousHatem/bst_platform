@@ -188,6 +188,13 @@ export const DashboardSidebar = (props) => {
                   title='Categories' />}
                 <SubNavItem href={UXAccess.hasStoreAccess() ? '/store' : '/stock'}
                   title='Inventaire' />
+                <SubNavItem href='/transfer'
+                  title='Transfert'
+                />
+                {UXAccess.hasStockInDocumentAccess() && <SubNavItem href='/stock-in'
+                  title="Bon d'entré" />}
+                  {UXAccess.hasStockInDocumentAccess() && <SubNavItem href='/stock-out'
+                  title="Bon de sortie" />}
               </MenuList>
             </Box>
 
@@ -240,6 +247,10 @@ export const DashboardSidebar = (props) => {
                   title='Bon de reception' />
                 {UXAccess.hasSupplierAccess() && <SubNavItem href='/supplier'
                   title='Fournisseur' />}
+                {UXAccess.hasProformaRequest() && <SubNavItem href='/proforma-request'
+                  title='Demande Facture Proforma' />}
+                {UXAccess.hasProformaInvoice() && <SubNavItem href='/proforma-invoice'
+                  title='Facture Proforma' />}
               </MenuList>
             </Box>
 

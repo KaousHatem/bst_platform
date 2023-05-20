@@ -100,7 +100,7 @@ const EditProvision = () => {
         return {
           product: product.data.id,
           provision: provisionId,
-          unit: product.unit,
+          unit: product.unit.ref,
           quantity: product.quantity
         }
       })
@@ -117,7 +117,7 @@ const EditProvision = () => {
           id: product.provisionProductId,
           product: product.data.id,
           provision: provisionId,
-          unit: product.unit,
+          unit: product.unit.ref,
           quantity: product.quantity
         }
       })
@@ -232,7 +232,7 @@ const EditProvision = () => {
               data: provisionProduct.product,
               quantity: provisionProduct.quantity,
               provisionProductId: provisionProduct.id,
-              unit: provisionProduct.unit.ref
+              unit: provisionProduct.unit
             })
           }))
           setProducts(responses[1].data.provisionProducts.map((provisionProduct) => {
@@ -240,7 +240,7 @@ const EditProvision = () => {
               data: provisionProduct.product,
               quantity: provisionProduct.quantity,
               provisionProductId: provisionProduct.id,
-              unit: provisionProduct.unit.ref
+              unit: provisionProduct.unit
             })
           }))
         }

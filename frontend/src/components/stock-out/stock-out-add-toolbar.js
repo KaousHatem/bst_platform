@@ -75,7 +75,11 @@ export const StockOutAddToolbar = ({props}) => {
   const router = useRouter();
 
   const handleBackButton = (e) => {
-    router.back()
+    // router.back()
+    const data = {
+      pathname: '/stock-out/',
+  }
+  router.push(data);
   }
 
   

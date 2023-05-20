@@ -96,7 +96,7 @@ const PurchaseRequestPage = () => {
                                 page={page + 1} />
                             <Body purchaseRequest={purchaseRequest}
                                 page={page}
-                                length="20" />
+                                length={20} />
                             {page + 1 == pages && <Footer creator={creator}
                                 approver={approver}
                                 purchaseRequest={purchaseRequest} />}

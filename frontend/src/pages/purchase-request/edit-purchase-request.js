@@ -90,8 +90,6 @@ const EditPurchaseRequest = () => {
   const handleOnSubmit = (e, status) => {
 
     e.preventDefault();
-    console.log(provisionValue)
-    console.log(purchaseRequest.provision.id)
     const data = {
       provision: provisionValue === undefined && purchaseRequest.provision.id || provisionValue,
       status: status,

@@ -256,7 +256,7 @@ export const ProductListResults = ({ product, categories, ...rest }) => {
                   <TableCell
                     align="center"
                   >
-                    {product.base_unit === '' && '-' || product.base_unit}
+                    {product.base_unit === '' && '-' || product.base_unit.ref}
                   </TableCell>
                   <TableCell>
                     {product.description === null && '-' || product.description}

@@ -253,21 +253,21 @@ export const ProvisionAddProduct = ({ selectedProducts, setSelectedProducts, set
                         fullWidth
                         name="unit"
                         margin="normal"
-                        defaultValue={product.unit}
+                        defaultValue={product.unit.ref}
                         onChange={event => handleUnitChange(event, product)}
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
                       >
                         <MenuItem
-                          key={product.data.base_unit}
-                          value={product.data.base_unit}>{product.data.base_unit}</MenuItem>
+                          key={product.data.base_unit.ref}
+                          value={product.data.base_unit.ref}>{product.data.base_unit.ref}</MenuItem>
 
                         {product.data.unit_conversions && product.data.unit_conversions.map((unit) => (
                           <MenuItem
                             key={unit.to_unit.ref}
                             value={unit.to_unit.ref} >{unit.to_unit.ref}</MenuItem>))}
                       </Select> ||
-                      product.unit
+                      product.unit.ref
                     }
 
 

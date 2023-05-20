@@ -75,7 +75,11 @@ export const StockInAddToolbar = ({props}) => {
   const router = useRouter();
 
   const handleBackButton = (e) => {
-    router.back()
+    // router.back()
+    const data = {
+      pathname: '/stock-in/',
+  }
+  router.push(data);
   }
 
   
