@@ -307,7 +307,7 @@ const EditStockInDocument = () => {
                                                         />
                                                         <Button
                                                             component="span" >
-                                                            Ajouter le bon d'entré accusé
+                                                            Ajouter le bon d&apos;entré accusé
                                                         </Button>
                                                     </InputLabel>
                                                 </Grid>
@@ -333,7 +333,7 @@ const EditStockInDocument = () => {
                                                 mt: '20px',
                                             }}
                                         >
-                                            le bon d'entré accusé
+                                            le bon d&apos;entré accusé
                                         </InputLabel>
                                             <StockInDocumentFile
 

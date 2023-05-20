@@ -70,7 +70,7 @@ const Footer = () => {
 
             </View>
             <View style={styles.VisaLogistic}>
-                <Text style={styles.text}>L'ENTREPRISE</Text>
+                <Text style={styles.text}>L&apos;ENTREPRISE</Text>
             </View>
         </View>
     );

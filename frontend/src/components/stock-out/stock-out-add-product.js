@@ -239,27 +239,7 @@ export const StockOutAddProduct = ({ selectedProducts, setSelectedProducts, setA
                   <TableCell
                     align="center"
                   >
-                    {isAdd && !savedModeProducts.includes(selectedProducts.indexOf(product)) &&
-                      <Select
-                        fullWidth
-                        name="unit"
-                        margin="normal"
-                        defaultValue={product.unit.ref}
-                        onChange={event => handleUnitChange(event, product)}
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                      >
-                        <MenuItem
-                          key={product.data.base_unit.ref}
-                          value={product.data.base_unit.ref}>{product.data.base_unit.ref}</MenuItem>
-
-                        {product.data.unit_conversions && product.data.unit_conversions.map((unit) => (
-                          <MenuItem
-                            key={unit.to_unit.ref}
-                            value={unit.to_unit.ref} >{unit.to_unit.ref}</MenuItem>))}
-                      </Select> ||
-                      product.unit.ref
-                    }
+                    {product.unit.ref}
 
 
                   </TableCell>
@@ -279,17 +259,7 @@ export const StockOutAddProduct = ({ selectedProducts, setSelectedProducts, setA
                     }
                   </TableCell>
                   <TableCell align="center">
-                    {isAdd && !savedModeProducts.includes(selectedProducts.indexOf(product)) &&
-                      <TextField
-                        inputStyle={{ textAlign: 'center' }}
-                        sx={{
-                          width: '10ch'
-                        }}
-                        defaultValue={product.price}
-                        onChange={event => handlePriceChange(event, product)}
-                      /> ||
-                      product.price
-                    }
+                    {product.price}
                   </TableCell>
                   {isAdd && <TableCell
                   >

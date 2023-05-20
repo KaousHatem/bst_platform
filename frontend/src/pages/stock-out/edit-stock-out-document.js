@@ -331,7 +331,7 @@ const EditStockOutDocument = () => {
                                                 mt: '20px',
                                             }}
                                         >
-                                            le bon d'entré accusé
+                                            le bon de sortie accusé
                                         </InputLabel>
                                             <StockOutDocumentFile
 
