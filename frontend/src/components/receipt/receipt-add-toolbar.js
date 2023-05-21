@@ -70,10 +70,10 @@ const StyledMenu = styled((props) => (
   },
 }));
 
-export const ReceiptAddToolbar = ({props, isAdd = false ,id, confirmed=false }) => {
+export const ReceiptAddToolbar = ({ props, isAdd = false, id, confirmed = false }) => {
 
   const router = useRouter();
-  
+
   const [anchorEl, setAnchorEl] = useState(null);
   const menuOpen = Boolean(anchorEl);
 
@@ -86,13 +86,13 @@ export const ReceiptAddToolbar = ({props, isAdd = false ,id, confirmed=false }) 
   };
 
   const handlePrint = () => {
-    if(id){
-      const url = '/receipt/print?id='+id
+    if (id) {
+      const url = '/receipt/print?id=' + id
       window.open(url, "_blank")
     }
   }
 
-  
+
 
 
   const handleBackButton = (e) => {
@@ -100,7 +100,7 @@ export const ReceiptAddToolbar = ({props, isAdd = false ,id, confirmed=false }) 
   }
 
 
-  return(<Box {...props}>
+  return (<Box {...props}>
     <Box
       sx={{
         alignItems: 'center',
@@ -120,12 +120,12 @@ export const ReceiptAddToolbar = ({props, isAdd = false ,id, confirmed=false }) 
         <Button
           color="primary"
           variant="outlined"
-          onClick={(event) => {handleBackButton(event)}}
+          onClick={(event) => { handleBackButton(event) }}
           sx={{ mr: 4 }}
         >
           Retour
         </Button>
-        { !isAdd && <> <Button
+        {!isAdd && <> <Button
           id='action-btn'
           color="primary"
           variant="contained"
@@ -138,49 +138,49 @@ export const ReceiptAddToolbar = ({props, isAdd = false ,id, confirmed=false }) 
         >
           Action
         </Button>
-        <StyledMenu
-          id="action-menu"
-          anchorEl={anchorEl}
-          open={menuOpen}
-          onClose={handleCloseMenu}
-          MenuListProps={{
-            'aria-labelledby': 'action-btn',
-          }}
-        > 
-          <MenuItem onClick={(event) => handlePrint(event)} >
-            <PrintIcon />
-            Imprimer le bon de reception
-          </MenuItem>
+          <StyledMenu
+            id="action-menu"
+            anchorEl={anchorEl}
+            open={menuOpen}
+            onClose={handleCloseMenu}
+            MenuListProps={{
+              'aria-labelledby': 'action-btn',
+            }}
+          >
+            <MenuItem onClick={(event) => handlePrint(event)} >
+              <PrintIcon />
+              Imprimer le bon de reception
+            </MenuItem>
 
-        </StyledMenu>
+          </StyledMenu>
         </>
-      }
-        { (isAdd && UXAccess.hasPOupdateAccess() && !confirmed) && <Button
+        }
+        {(isAdd && !confirmed) && <Button
           color="info"
           variant="contained"
           form="add-receipt-form"
-          type = "submit"
+          type="submit"
           startIcon={(<PositiveIcon />)}
           sx={{ mr: 1 }}
         >
           Confirmer la reception
         </Button>}
 
-        { (!isAdd && UXAccess.hasPOupdateAccess() && !confirmed) && <Button
+        {(!isAdd && !confirmed) && <Button
           color="info"
           variant="contained"
           form="edit-receipt-form"
-          type = "submit"
+          type="submit"
           sx={{ mr: 1 }}
         >
           Confirmer
         </Button>}
 
-        
-        
+
+
       </Box>
     </Box>
   </Box>)
-  
+
 }
-  
+
