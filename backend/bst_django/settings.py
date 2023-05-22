@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
+    'storages',
     'user_control',
     'logistic',
     'django_filters',
@@ -137,6 +138,45 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+USE_SPACES = True
+
+if USE_SPACES:
+    # settings
+
+    AWS_ACCESS_KEY_ID = os.environ.get(
+        'AWS_ACCESS_KEY_ID', "DO00DZJRY3F7AKCF6HR2")
+    AWS_SECRET_ACCESS_KEY = os.environ.get(
+        'AWS_SECRET_ACCESS_KEY', "h7KSoUv+0LRrzM5bGMf9L5OUiHu6OpEYUOmWXypgpf8")
+    AWS_STORAGE_BUCKET_NAME = os.environ.get(
+        'AWS_STORAGE_BUCKET_NAME', "bst-platform")
+
+    AWS_S3_ENDPOINT_URL = 'https://bst-platform.fra1.digitaloceanspaces.com'
+
+    AWS_S3_OBJECT_PARAMETERS = {
+        'CacheControl': 'max-age=86400',
+    }
+
+    AWS_DEFAULT_ACL = 'public-read'
+
+    AWS_S3_SIGNATURE_VERSION = 's3v4'
+
+    STATIC_URL = 'https://%s/%s/' % (AWS_S3_ENDPOINT_URL, 'staticfiles')
+
+    MEDIA_URL = 'https://%s/%s/' % (AWS_S3_ENDPOINT_URL, 'mediafiles')
+
+    STATICFILES_STORAGE = 'bst_django.custom_storages.StaticStorage'
+
+    DEFAULT_FILE_STORAGE = 'bst_django.custom_storages.MediaStorage'
+
+else:
+
+    STATIC_URL = 'static/'
+    STATIC_ROOT = BASE_DIR / "staticfiles"
+
+    MEDIA_URL = "/media/"
+    MEDIA_ROOT = BASE_DIR / "mediafiles"
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
@@ -152,11 +192,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / "staticfiles"
-
-MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "mediafiles"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field

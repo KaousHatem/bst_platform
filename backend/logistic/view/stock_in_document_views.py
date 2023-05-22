@@ -145,7 +145,7 @@ class StockInDocumentFileViewSet(ModelViewSet):
 class StockInDocumentProductViewSet(ModelViewSet):
     queryset = StockInDocumentProductRel.objects.all()
     serializer_class = StockInDocumentProductSerializer
-    # permission_classes = [HasPermission]
+    permission_classes = [HasPermission]
 
     def get_serializer(self, *args, **kwargs):
         if isinstance(kwargs.get('data', {}), list):

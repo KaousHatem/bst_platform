@@ -119,7 +119,7 @@ from .filter.stock_filters import StockFilter
 class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    # permission_classes=[HasPermission]
+    permission_classes = [HasPermission]
 
     @action(detail=False, methods=['get'])
     def last(self, request):
@@ -175,13 +175,13 @@ class CategoryViewSet(ModelViewSet):
 class UnitViewSet(ModelViewSet):
     queryset = Unit.objects.all()
     serializer_class = UnitSerializer
-    # permission_classes = [HasPermission]
+    permission_classes = [HasPermission]
 
 
 class UnitConversionViewSet(ModelViewSet):
     queryset = UnitConversion.objects.all()
     serializer_class = UnitConversionSerializer
-    # permission_classes = [HasPermission]
+    permission_classes = [HasPermission]
 
     def get_serializer(self, *args, **kwargs):
         if isinstance(kwargs.get('data', {}), list):
@@ -233,7 +233,7 @@ class UnitConversionViewSet(ModelViewSet):
 class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    # permission_classes=[HasPermission]
+    permission_classes = [HasPermission]
     filterset_class = (ProductFilter)
     # permission_classes=[IsStockManagerReadOnly]
     # parser_classes = [p.CSVParser]
@@ -272,7 +272,7 @@ class ProductViewSet(ModelViewSet):
 class ProductBulkViewSet(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    # permission_classes = [HasPermission]
+    permission_classes = [HasPermission]
     parser_classes = [p.CSVParser]
 
     def get_queryset(self):
