@@ -272,11 +272,24 @@ class ProductViewSet(ModelViewSet):
 class ProductBulkViewSet(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    permission_classes = [HasPermission]
+    # permission_classes = [HasPermission]
     parser_classes = [p.CSVParser]
 
     def get_queryset(self):
         return Product.objects.all()
+
+    def list(self, request, *args, **kwargs):
+        response = HttpResponse(content_type='text/csv')
+
+        writer = csv.writer(response)
+        writer.writerow(['sku', 'name', 'base_unit', 'category'])
+        for product in self.queryset:
+            writer.writerow([product.sku, product.name,
+                            product.base_unit.ref, product.category.name])
+
+        response['Content-Disposition'] = 'attachement; filename="products.csv"'
+
+        return response
 
     def create(self, request, *args, **kwargs):
         rows_data = request.data
