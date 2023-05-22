@@ -138,19 +138,20 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-USE_SPACES = True
+USE_SPACES = os.environ.get('USE_SPACES') == 'TRUE'
 
 if USE_SPACES:
     # settings
 
     AWS_ACCESS_KEY_ID = os.environ.get(
-        'AWS_ACCESS_KEY_ID', "DO00DZJRY3F7AKCF6HR2")
+        'AWS_ACCESS_KEY_ID')
     AWS_SECRET_ACCESS_KEY = os.environ.get(
-        'AWS_SECRET_ACCESS_KEY', "h7KSoUv+0LRrzM5bGMf9L5OUiHu6OpEYUOmWXypgpf8")
+        'AWS_SECRET_ACCESS_KEY')
     AWS_STORAGE_BUCKET_NAME = os.environ.get(
-        'AWS_STORAGE_BUCKET_NAME', "bst-platform")
+        'AWS_STORAGE_BUCKET_NAME')
 
-    AWS_S3_ENDPOINT_URL = 'https://bst-platform.fra1.digitaloceanspaces.com'
+    AWS_S3_ENDPOINT_URL = os.environ.get(
+        'AWS_S3_ENDPOINT_URL')
 
     AWS_S3_OBJECT_PARAMETERS = {
         'CacheControl': 'max-age=86400',
