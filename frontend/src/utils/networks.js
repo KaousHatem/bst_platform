@@ -37,6 +37,8 @@ export const supplierUrl = BaseUrl + 'logistic/supplier/'
 
 export const receiptUrl = BaseUrl + 'logistic/receipt/'
 export const receiptProductUrl = BaseUrl + 'logistic/receipt-product/'
+export const receiptDocumentUrl = BaseUrl + 'logistic/receipt-document/'
+
 export const storeUrl = BaseUrl + 'logistic/store/'
 
 export const stockUrl = BaseUrl + 'logistic/stock/'

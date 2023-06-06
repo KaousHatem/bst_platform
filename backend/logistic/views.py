@@ -802,7 +802,10 @@ class ReceiptViewSet(RoleFilterModelViewSet):
     def get_role_id(self, request):
         token = request.META.get('HTTP_AUTHORIZATION')
         user = decodeJWT(token)
-        if user.is_superuser:
+        if user:
+            if user.is_superuser:
+                return 1
+        else:
             return 1
         return user.role
 

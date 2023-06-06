@@ -25,7 +25,8 @@ from .models import (
     StockMovement,
     TransferDocument,
     StockInDocument,
-    StockOutDocument
+    StockOutDocument,
+    ReceiptDocument
 
 
 )
@@ -72,3 +73,8 @@ class StockInDocumentAdmin(admin.ModelAdmin):
 @admin.register(StockOutDocument)
 class StockOutDocumentAdmin(admin.ModelAdmin):
     list_display = ('ref', 'created_by', 'created_on', 'status',)
+
+
+@admin.register(ReceiptDocument)
+class ReceiptDocumentAdmin(admin.ModelAdmin):
+    list_display = ('id', 'file', 'created_on', 'receipt',)

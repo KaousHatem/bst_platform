@@ -50,6 +50,10 @@ from .view.stock_out_document_views import (
 
 )
 
+from .view.receipt_document_views import (
+    ReceiptDocumentViewSet
+)
+
 from rest_framework.routers import DefaultRouter
 
 
@@ -106,7 +110,7 @@ router.register(r'logistic/stock-out-document-file',
                 StockOutDocumentFileViewSet)
 router.register(r'logistic/stock-out-document-product',
                 StockOutDocumentProductViewSet)
-
+router.register(r'logistic/receipt-document', ReceiptDocumentViewSet)
 urlpatterns = [
     path("logistic/", include(router.urls)),
 

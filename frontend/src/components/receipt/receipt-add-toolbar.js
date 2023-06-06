@@ -13,6 +13,8 @@ import {
   Menu,
   MenuItem
 } from '@mui/material';
+import Divider from '@mui/material/Divider';
+
 import { styled, alpha } from '@mui/material/styles';
 import { Download as DownloadIcon } from '../../icons/download';
 import { Search as SearchIcon } from '../../icons/search';
@@ -24,6 +26,8 @@ import PrintIcon from '@mui/icons-material/Print';
 import CancelIcon from '@mui/icons-material/Cancel';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import ReceiptIcon from '@mui/icons-material/Receipt';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import ClearIcon from '@mui/icons-material/Clear';
 
 import UXAccess from '../../utils/ux-access'
 
@@ -70,7 +74,7 @@ const StyledMenu = styled((props) => (
   },
 }));
 
-export const ReceiptAddToolbar = ({ props, isAdd = false, id, confirmed = false }) => {
+export const ReceiptAddToolbar = ({ props, isAdd = false, id, confirmed = false, handleAttachOpen, signedDocument, handleDeleteAttachedFile }) => {
 
   const router = useRouter();
 
@@ -86,10 +90,17 @@ export const ReceiptAddToolbar = ({ props, isAdd = false, id, confirmed = false 
   };
 
   const handlePrint = () => {
-    if (id) {
+    if (signedDocument) {
+      const url = signedDocument.file
+      window.open(url, "_blank")
+    } else if (id) {
       const url = '/receipt/print?id=' + id
       window.open(url, "_blank")
     }
+  }
+
+  const handleAttach = (e) => {
+    handleAttachOpen()
   }
 
 
@@ -151,6 +162,18 @@ export const ReceiptAddToolbar = ({ props, isAdd = false, id, confirmed = false 
               <PrintIcon />
               Imprimer le bon de reception
             </MenuItem>
+            {!signedDocument && <MenuItem onClick={(event) => handleAttach(event)} >
+              <CloudUploadIcon />
+              Attacher le bon de reception signé
+            </MenuItem>}
+            {signedDocument && UXAccess.hasAccessDeleteAttachedFile &&
+              <>
+                <Divider variant="middle" />
+                <MenuItem onClick={(event) => handleDeleteAttachedFile(event)} >
+                  <ClearIcon />
+                  Supprimer le bon de reception signé
+                </MenuItem>
+              </>}
 
           </StyledMenu>
         </>

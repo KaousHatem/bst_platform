@@ -719,6 +719,25 @@ class ReceiptProductRel(models.Model):
     note = models.TextField(null=True, blank=True)
 
 
+def _upload_receipt_to(instance, filename):
+    name, extension = os.path.splitext(filename)
+    file = "{}_{}_{}".format(instance.receipt.ref.replace('/', '_'),
+                             instance.created_on, extension)
+    return "documents/{}/{}".format(instance.__class__.__name__, file)
+
+
+class ReceiptDocument(models.Model):
+    receipt = models.OneToOneField(
+        Receipt, related_name='document', on_delete=models.CASCADE)
+    created_on = models.DateTimeField(auto_now_add=True)
+    file = models.FileField(
+        upload_to=_upload_receipt_to)
+
+    def delete(self, *args, **kwargs):
+        self.file.delete()
+        super(ReceiptDocument, self).delete(*args, **kwargs)
+
+
 class ProformaInvoiceRequest(models.Model):
     STATUS = (
         ('1', _("NEW")),

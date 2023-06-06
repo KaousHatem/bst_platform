@@ -12,6 +12,7 @@ from ..models import (
     Supplier,
     Receipt,
     ReceiptProductRel,
+    ReceiptDocument,
 
 )
 
@@ -222,24 +223,23 @@ class ReceiptProductRetreiveSerializer(serializers.ModelSerializer):
         }
 
 
+class ReceiptDocumentSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ReceiptDocument
+        fields = '__all__'
+
+
 class ReceiptRetreiveSerializer(serializers.ModelSerializer):
     created_by = CustomUserListSerializer(read_only=True, required=False)
     purchaseOrder = PurchaseOrderRetreiveSerializer()
     receiptProducts = ReceiptProductRetreiveSerializer(
         many=True, read_only=True)
+    document = ReceiptDocumentSerializer(read_only=True)
 
     class Meta:
         model = Receipt
-        fields = [
-            'id',
-            'ref',
-            'created_by',
-            'invoice',
-            'do',
-            'purchaseOrder',
-            'created_on',
-            'receiptProducts',
-        ]
+        fields = '__all__'
         extra_kwargs = {
             'ref': {
                 'required': False
@@ -255,7 +255,8 @@ class ReceiptRetreiveSerializer(serializers.ModelSerializer):
             },
             'created_on': {
                 'read_only': True
-            }
+            },
+
         }
 
 
