@@ -43,7 +43,7 @@ export const ProvisionRejectDialog = ({ rejectOpen, handleRejectClose, handleRej
             <DialogTitle>ANNULER LA DEMANDE D&apos;APPRO</DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    Veuillez confirmer l'annullation de la demande d&apos;appro
+                    Veuillez confirmer l&apos;annullation de la demande d&apos;appro
                 </DialogContentText>
                 <form id="reject-provision-form"
                     onSubmit={e => { handleReject(e) }}>
