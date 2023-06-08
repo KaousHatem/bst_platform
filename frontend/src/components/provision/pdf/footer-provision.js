@@ -110,7 +110,7 @@ const FooterProvision = ({ value, provision, creator, approver }) => {
                             src={cancelLogo.src} />
 
                     </View>
-                    <Text style={[styles.text, styles.noteText]}>Motif: {provision.note} why it is always me, I told about this issue. It is always you</Text>
+                    <Text style={[styles.text, styles.noteText]}>Motif: {provision.note}</Text>
                 </View>}
 
         </View >
