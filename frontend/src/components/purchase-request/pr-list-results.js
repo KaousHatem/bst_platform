@@ -39,7 +39,7 @@ export const PRListResults = ({ purchaseReqList, ...rest }) => {
     0: "Brouillon",
     1: "Nouveau",
     4: "Annulé",
-    9: "Apprové",
+    9: "Approuvé",
   }
 
   const status_style = {
@@ -214,10 +214,10 @@ export const PRListResults = ({ purchaseReqList, ...rest }) => {
                   Destination
                 </TableCell>
                 <TableCell>
-                  Cree par
+                  Créée le
                 </TableCell>
                 <TableCell>
-                  Status
+                  Statut
                 </TableCell>
                 <TableCell align="center">
                   <ThreeDotsIcon />

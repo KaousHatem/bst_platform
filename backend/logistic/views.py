@@ -1,3 +1,5 @@
+import datetime
+
 from django.shortcuts import render
 from django.http import HttpResponse, Http404, JsonResponse, HttpResponseRedirect, FileResponse
 # from django.http import FileResponse
@@ -61,6 +63,7 @@ from .serializers import (
     ProductListSerializer,
     ProvisionSerializer,
     CategorySerializer,
+    ProvisionPartialUpdateSerializer,
     ProvisionProductSerializer,
     PurchaseRequestSerializer,
     PurchaseRequestListingSerializer,
@@ -309,7 +312,7 @@ class ProductBulkViewSet(ModelViewSet):
 class ProvisionViewSet(RoleFilterModelViewSet):
     queryset = Provision.objects.all().order_by('-created_on')
     serializer_class = ProvisionSerializer
-    permission_classes = [HasPermission]
+    # permission_classes = [HasPermission]
     role_filter_classes = [provision_role_filters.UserRoleFilter,
                            provision_role_filters.LogisticAdminRoleFilter, provision_role_filters.AdminRoleFilter]
     filterset_class = (ProvisionFilter)
@@ -317,10 +320,19 @@ class ProvisionViewSet(RoleFilterModelViewSet):
     # def get_queryset(self):
     #     return Provision.objects.all()
 
+    def get_serializer_class(self):
+        if self.action == 'partial_update':
+            return ProvisionPartialUpdateSerializer
+
+        return super().get_serializer_class()
+
     def get_role_id(self, request):
         token = request.META.get('HTTP_AUTHORIZATION')
         user = decodeJWT(token)
-        if user.is_superuser:
+        if user:
+            if user.is_superuser:
+                return 1
+        else:
             return 1
         return user.role
 
@@ -350,11 +362,37 @@ class ProvisionViewSet(RoleFilterModelViewSet):
         obj.delete()
         return Response({'message': "Provision removed"}, status=200)
 
-    def update(self, request, pk=None):
-        instance = self.get_object()
-        if instance.status != '0' and instance.status == request.data['status']:
-            return Response({'message': "Only Draft provision can be edited"}, status=400)
-        return super(ProvisionViewSet, self).update(request, pk)
+    def update(self, request, pk=None, *args, **kwargs):
+        partial = kwargs.get('partial', False)
+        if partial:
+            print(request.data)
+            return super(ProvisionViewSet, self).update(request, pk, *args, **kwargs)
+        else:
+            instance = self.get_object()
+            if instance.status != '0' and instance.status == request.data['status']:
+                return Response({'message': "Only Draft provision can be edited"}, status=400)
+            return super(ProvisionViewSet, self).update(request, pk, *args, **kwargs)
+
+    def partial_update(self, request, pk):
+
+        if request.data:
+            if 'status' in request.data:
+
+                if request.data['status'] == '4':
+
+                    token = request.META.get('HTTP_AUTHORIZATION')
+                    user = decodeJWT(token)
+                    if user:
+
+                        request.data['dropped_by'] = user.id
+
+                        request.data['dropped_on'] = datetime.datetime.now()
+
+                    else:
+                        return Response({'message': "unauthorized request"}, status=401)
+        print(datetime.datetime.now())
+        print(request.data)
+        return super().partial_update(request, pk)
 
     @action(methods=['put'], detail=True, serializer_class=ProvisionSerializer)
     def approve(self, request, pk=None):

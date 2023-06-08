@@ -505,6 +505,11 @@ class Provision(models.Model):
     updated_on = models.DateTimeField(auto_now=True)
     approved_on = models.DateTimeField(null=True, blank=True)
 
+    dropped_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE,
+                                   related_name='provision_dropped_by', null=True, blank=True, default=None)
+    dropped_on = models.DateTimeField(null=True, blank=True)
+    note = models.TextField(null=True, blank=True)
+
     __original_status = None
     __ref = None
 
@@ -573,7 +578,8 @@ class PurchaseRequest(models.Model):
         _("status"), max_length=220, default="new", choices=STATUS)
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
-    provision = models.ForeignKey(Provision, on_delete=models.CASCADE)
+    provision = models.ForeignKey(
+        Provision, related_name='purchase_request', on_delete=models.CASCADE)
     is_approved = models.BooleanField(default=False)
     created_by = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, related_name='purchase_created_by',)

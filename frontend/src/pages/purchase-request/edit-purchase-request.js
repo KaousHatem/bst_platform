@@ -365,7 +365,7 @@ const EditPurchaseRequest = () => {
                       <Grid item
                         xs={4}>
                         <InputLabel>
-                          Cree par
+                          Créée par
                         </InputLabel>
                         <Typography
                           sx={{
@@ -377,19 +377,19 @@ const EditPurchaseRequest = () => {
                       <Grid item
                         xs={3}>
                         <InputLabel>
-                          Cree en
+                          Créee le
                         </InputLabel>
                         <Typography
                           sx={{
                             my: 2
                           }} >
-                          {format(new Date(purchaseRequest.created_on), 'yyyy-MM-dd hh:mm')}
+                          {format(new Date(purchaseRequest.created_on), 'dd/MM/yyyy hh:mm')}
                         </Typography>
                       </Grid>
                       <Grid item
                         xs={5}>
                         <InputLabel>
-                          Apprové par
+                          Approuvé par
                         </InputLabel>
                         <Typography
                           sx={{
@@ -401,13 +401,13 @@ const EditPurchaseRequest = () => {
                       <Grid item
                         xs={4}>
                         <InputLabel>
-                          Apprové en
+                          Approuvé le
                         </InputLabel>
                         <Typography
                           sx={{
                             my: 2
                           }} >
-                          {purchaseRequest.approved_on === null && "_" || format(new Date(purchaseRequest.approved_on), 'yyyy-MM-dd hh:mm')}
+                          {purchaseRequest.approved_on === null && "_" || format(new Date(purchaseRequest.approved_on), 'dd/MM/yyyy hh:mm')}
                         </Typography>
                       </Grid>
                       <Grid item
@@ -419,7 +419,7 @@ const EditPurchaseRequest = () => {
                           sx={{
                             my: 2
                           }} >
-                          {purchaseRequest.provision.delay}
+                          {format(new Date(purchaseRequest.provision.delay), 'dd/MM/yyyy hh:mm')}
                         </Typography>
                       </Grid>
 

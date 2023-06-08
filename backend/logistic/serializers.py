@@ -273,6 +273,12 @@ class ProvisionProductListingPurchaseSerializer(serializers.ModelSerializer):
         ]
 
 
+class ProvisionPartialUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Provision
+        fields = '__all__'
+
+
 class ProvisionSerializer(serializers.ModelSerializer):
     provisionProducts = ProvisionProductListingSerializer(
         many=True, read_only=True)
@@ -282,6 +288,7 @@ class ProvisionSerializer(serializers.ModelSerializer):
         queryset=Location.objects.all(), slug_field='name')
     created_by = CustomUserListSerializer(read_only=True, required=False)
     approved_by = CustomUserListSerializer(read_only=True, required=False)
+    dropped_by = CustomUserListSerializer(required=False)
 
     class Meta:
         model = Provision
@@ -296,7 +303,11 @@ class ProvisionSerializer(serializers.ModelSerializer):
             'provisionProducts',
             'created_by',
             'approved_by',
-            'approved_on'
+            'approved_on',
+            'dropped_by',
+            'dropped_on',
+            'note',
+            'purchase_request'
         ]
         extra_kwargs = {
             'provisionProducts': {
@@ -310,7 +321,16 @@ class ProvisionSerializer(serializers.ModelSerializer):
             },
             'approved_on': {
                 'read_only': True
-            }
+            },
+            'note': {
+                'required': False
+            },
+            'dropped_on': {
+                'required': False
+            },
+            'purchase_request': {
+                'read_only': True,
+            },
         }
 
     def create(self, validated_data):

@@ -1,25 +1,26 @@
-import {provisionUrl,provisionApproveUrl, provisionOnlyApprovedUrl} from '../utils/networks'
+import { provisionUrl, provisionApproveUrl, provisionOnlyApprovedUrl } from '../utils/networks'
 import axios from "axios";
 
 
 
 class ProvisionProvider {
 
-    
 
 
-    getProvisions(pk=-1) {
+
+    getProvisions(pk = -1) {
         const token = localStorage.getItem('auth')
-        
+
         const config = {
-        headers: {
-        Authorization: `Bearer ${token}`
-        }}
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
         var url = provisionUrl
         //const headers = new Headers({ 'Content-Type': 'application/json',})
-        if(pk !== -1){
+        if (pk !== -1) {
             url = provisionUrl + pk
-            
+
         }
         return axios
             .get(url, config)
@@ -36,12 +37,13 @@ class ProvisionProvider {
 
     getOnlyApprovedProvisions() {
         const token = localStorage.getItem('auth')
-        
+
         const config = {
-        headers: {
-        Authorization: `Bearer ${token}`
-        }}
-        
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+
         return axios
             .get(provisionOnlyApprovedUrl, config)
             .then(response => {
@@ -57,14 +59,15 @@ class ProvisionProvider {
 
     getProductInPurchase(pk) {
         const token = localStorage.getItem('auth')
-        
+
         const config = {
-        headers: {
-        Authorization: `Bearer ${token}`
-        }}
-        
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+
         return axios
-            .get(provisionUrl+pk+'/get_product_in_purchase', config)
+            .get(provisionUrl + pk + '/get_product_in_purchase', config)
             .then(response => {
                 if (response.status < 200 || response.status >= 300) {
                     throw new Error(response.statusText);
@@ -76,15 +79,16 @@ class ProvisionProvider {
             });
     }
 
-    deleteProvision(pk){
+    deleteProvision(pk) {
         const token = localStorage.getItem('auth')
-        
+
         const config = {
-        headers: {
-        Authorization: `Bearer ${token}`
-        }}
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
         return axios
-            .delete(provisionUrl+pk, config)
+            .delete(provisionUrl + pk, config)
             .then(response => {
                 if (response.status < 200 || response.status >= 300) {
                     throw new Error(response.statusText);
@@ -98,11 +102,12 @@ class ProvisionProvider {
 
     addProvision(data) {
         const token = localStorage.getItem('auth')
-        
+
         const config = {
-        headers: {
-        Authorization: `Bearer ${token}`
-        }}
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
         return axios
             .post(provisionUrl, data, config)
             .then(response => {
@@ -117,35 +122,58 @@ class ProvisionProvider {
     }
 
     approveProvision(pk) {
-    const token = localStorage.getItem('auth')
-    
-    const config = {
-    headers: {
-    Authorization: `Bearer ${token}`
-    }}
+        const token = localStorage.getItem('auth')
 
-    return axios
-        .put(provisionUrl+pk+'/approve/',{} , config)
-        .then(response => {
-            if (response.status < 200 || response.status >= 300) {
-                throw new Error(response.statusText);
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`
             }
-            return response;
-        })
-        .catch((error) => {
-            throw new Error()
-        })
+        }
+
+        return axios
+            .put(provisionUrl + pk + '/approve/', {}, config)
+            .then(response => {
+                if (response.status < 200 || response.status >= 300) {
+                    throw new Error(response.statusText);
+                }
+                return response;
+            })
+            .catch((error) => {
+                throw new Error()
+            })
     }
 
-    editProvision(data,pk) {
+    editProvision(data, pk) {
         const token = localStorage.getItem('auth')
-        
+
         const config = {
-        headers: {
-        Authorization: `Bearer ${token}`
-        }}
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
         return axios
-            .put(provisionUrl+pk+'/', data, config)
+            .put(provisionUrl + pk + '/', data, config)
+            .then(response => {
+                if (response.status < 200 || response.status >= 300) {
+                    throw new Error(response.statusText);
+                }
+                return response;
+            })
+            .catch((error) => {
+                throw new Error()
+            })
+    }
+
+    partialEditProvision(data, pk) {
+        const token = localStorage.getItem('auth')
+
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+        return axios
+            .patch(provisionUrl + pk + '/', data, config)
             .then(response => {
                 if (response.status < 200 || response.status >= 300) {
                     throw new Error(response.statusText);
@@ -158,9 +186,9 @@ class ProvisionProvider {
     }
 
     // getLastProduct() {
-            
+
     //     //const headers = new Headers({ 'Content-Type': 'application/json',})
-        
+
     //     return axios
     //         .get(lastProductUrl)
     //         .then(response => {

@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, Image } from '@react-pdf/renderer';
 import ItemsTable from './items-table'
 import bstLogo from '../../../../public/static/bst-logo.jpg'
+import cancelLogo from '../../../../public/static/cancel.png'
+
 import { format } from 'date-fns'
 
 
@@ -27,6 +29,8 @@ const styles = StyleSheet.create({
     },
     VisaLogistic: {
         marginLeft: 'auto',
+        display: 'flex',
+        maxWidth: 200,
     },
     chop: {
         display: 'flex',
@@ -38,6 +42,7 @@ const styles = StyleSheet.create({
         border: '3 solid #04006e',
         borderRadius: 10,
     },
+
     qrCode: {
         height: 75,
         width: 75,
@@ -45,7 +50,21 @@ const styles = StyleSheet.create({
     logo: {
         height: 30,
         width: 30
+    },
+
+    chopCancel: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'flex-start',
+        // height: 75,
+        width: 128
+
+    },
+    noteText: {
+        fontSize: 8,
     }
+
 
 
 });
@@ -73,7 +92,7 @@ const FooterProvision = ({ value, provision, creator, approver }) => {
                 </View>
 
             </View>
-            <View style={styles.VisaLogistic}>
+            {provision.status !== "4" ? <View style={styles.VisaLogistic}>
                 <Text style={styles.text}>St. Logistique</Text>
                 <Text style={styles.text}>Date: {provision.approved_on !== null && getDate(provision.approved_on)}</Text>
                 {provision.approved_by !== null && <View style={styles.chop}>
@@ -82,8 +101,19 @@ const FooterProvision = ({ value, provision, creator, approver }) => {
                     <Image style={styles.logo}
                         src={bstLogo.src} />
                 </View>}
-            </View>
-        </View>
+            </View> :
+                <View style={styles.VisaLogistic}>
+                    <Text style={styles.text}>St. Logistique</Text>
+                    <Text style={styles.text}>Date: {provision.dropped_on !== null && getDate(provision.dropped_on)}</Text>
+                    <View style={styles.chopCancel}>
+                        <Image
+                            src={cancelLogo.src} />
+
+                    </View>
+                    <Text style={[styles.text, styles.noteText]}>Motif: {provision.note} why it is always me, I told about this issue. It is always you</Text>
+                </View>}
+
+        </View >
     );
 
 }

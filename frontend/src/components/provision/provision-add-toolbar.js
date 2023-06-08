@@ -69,10 +69,10 @@ const StyledMenu = styled((props) => (
   },
 }));
 
-export const ProvisionAddToolbar = ({props, isAddPage=false, handleReject, handleApprove , provisionStatus, provisionId , handleSaveAsDraft}) => {
+export const ProvisionAddToolbar = ({ props, isAddPage = false, handleRejectOpen, handleApprove, provisionStatus, provisionId, handleSaveAsDraft, hasPurchaseRequest = false, }) => {
 
   const router = useRouter();
-  
+
   const [anchorEl, setAnchorEl] = useState(null);
   const menuOpen = Boolean(anchorEl);
 
@@ -85,25 +85,25 @@ export const ProvisionAddToolbar = ({props, isAddPage=false, handleReject, handl
   };
 
   const handlePrint = () => {
-    if(provisionId){
-      const url = '/provision/print-provision?id='+provisionId
+    if (provisionId) {
+      const url = '/provision/print-provision?id=' + provisionId
       window.open(url, "_blank")
     }
-    
+
   }
 
   const handleAddPurchaseRequest = () => {
-    if(provisionId){
+    if (provisionId) {
       const data = {
-       pathname: '/purchase-request/add-purchase-request',
-       query:{'provisionId':provisionId}
+        pathname: '/purchase-request/add-purchase-request',
+        query: { 'provisionId': provisionId }
       }
       router.push(data);
     }
   }
 
 
-  return(<Box {...props}>
+  return (<Box {...props}>
     <Box
       sx={{
         alignItems: 'center',
@@ -123,7 +123,7 @@ export const ProvisionAddToolbar = ({props, isAddPage=false, handleReject, handl
         <Button
           color="primary"
           variant="outlined"
-          href = '/provision'
+          href='/provision'
           sx={{ mr: 4 }}
         >
           Retour
@@ -150,48 +150,49 @@ export const ProvisionAddToolbar = ({props, isAddPage=false, handleReject, handl
             'aria-labelledby': 'action-btn',
           }}
         >
-          {(!provisionStatus || provisionStatus==='0') && <MenuItem 
-            onClick={(event) => handleSaveAsDraft(event,0)}
+          {(!provisionStatus || provisionStatus === '0') && <MenuItem
+            onClick={(event) => handleSaveAsDraft(event, 0)}
           >
             <AssignmentReturnedIcon />
             Enregistrer comme brouillon
           </MenuItem>}
-          { !isAddPage && (!provisionStatus || provisionStatus!=='0' ) && <MenuItem 
+          {!isAddPage && (!provisionStatus || provisionStatus !== '0') && <MenuItem
             onClick={(event) => handlePrint(event)}
           >
             <PrintIcon />
             Imprimer la demande
           </MenuItem>}
-          { !isAddPage && (provisionStatus!=='0' && provisionStatus!=="9" && provisionStatus!=="4") && UXAccess.hasProvisionRejectAccess() && <MenuItem 
-            onClick={handleReject}
+          {!isAddPage && !hasPurchaseRequest && (provisionStatus !== '0' && provisionStatus !== "4") && UXAccess.hasProvisionRejectAccess() && <MenuItem
+            onClick={handleRejectOpen}
           >
             <CancelIcon />
-            Rejecter la demande
+            Annuler la demande
           </MenuItem>}
-        { !isAddPage && (provisionStatus!=='0' && provisionStatus!=="1" && provisionStatus!=="4") &&  <MenuItem 
+          {!isAddPage && !hasPurchaseRequest && (provisionStatus !== '0' && provisionStatus !== "1" && provisionStatus !== "4") && UXAccess.hasProvisionApproveAccess() && <MenuItem
             onClick={handleAddPurchaseRequest}
           >
             <InsertDriveFileIcon />
             Creer une demande d&apos;achat
           </MenuItem>}
+
         </StyledMenu>
-        { (!provisionStatus || provisionStatus==='0') && <Button
+        {(!provisionStatus || provisionStatus === '0') && <Button
           color="info"
           variant="contained"
           form="add-provision-form"
-          type = "submit"
+          type="submit"
           startIcon={(<PositiveIcon />)}
           sx={{ mr: 1 }}
         >
           Confirmer
         </Button>}
-        { !isAddPage && UXAccess.hasProvisionApproveAccess() &&  (provisionStatus!=='0' && provisionStatus!=='4' && provisionStatus!=='9') && <Button
+        {!isAddPage && UXAccess.hasProvisionApproveAccess() && (provisionStatus !== '0' && provisionStatus !== '4' && provisionStatus !== '9') && <Button
           color="info"
           variant="contained"
           onClick={handleApprove}
           sx={{ mr: 1 }}
         >
-          Approver
+          Approuver
         </Button>}
       </Box>
     </Box>
@@ -205,6 +206,6 @@ export const ProvisionAddToolbar = ({props, isAddPage=false, handleReject, handl
       </Card>
     </Box>*/}
   </Box>)
-  
+
 }
-  
+

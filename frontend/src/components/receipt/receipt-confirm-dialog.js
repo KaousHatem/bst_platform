@@ -35,14 +35,14 @@ import { getInitials } from '../../utils/get-initials';
 import { Positive as PositiveIcon } from '../../icons/positive';
 
 
-import {ThreeDots as ThreeDotsIcon} from '../../icons/three-dots'
-import {Edit as EditIcon} from '../../icons/edit'
-import {Delete as DeleteIcon} from '../../icons/delete'
+import { ThreeDots as ThreeDotsIcon } from '../../icons/three-dots'
+import { Edit as EditIcon } from '../../icons/edit'
+import { Delete as DeleteIcon } from '../../icons/delete'
 import Label from '../Label';
 
 
 
-export const ReceiptConfirmDialog = ({product, products, setProducts, open, setOpen}) => {
+export const ReceiptConfirmDialog = ({ product, products, setProducts, open, setOpen }) => {
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
@@ -55,21 +55,21 @@ export const ReceiptConfirmDialog = ({product, products, setProducts, open, setO
 
 
   const handleClose = () => {
-    
+
     setOpen(false);
   };
 
   const handleConfirm = (e) => {
-    
+
     let newArr = [...products]
-    const index = newArr.map((p)=>{return p.id}).indexOf(product.id)
+    const index = newArr.map((p) => { return p.id }).indexOf(product.id)
     newArr[index] = {
       ...product,
-      receivedQuantity:receivedQuantity,
-      acceptedQuantity:acceptedQuantity,
-      note:note,
-      conformity:conformity,
-      received : (receivedQuantity && acceptedQuantity) ? true : false
+      receivedQuantity: receivedQuantity,
+      acceptedQuantity: acceptedQuantity,
+      note: note,
+      conformity: conformity,
+      received: (receivedQuantity && acceptedQuantity) ? true : false
 
     }
     setProducts(newArr)
@@ -90,143 +90,143 @@ export const ReceiptConfirmDialog = ({product, products, setProducts, open, setO
     setConformity(productInput.conformity)
   }
 
-  useEffect(()=>{
-    if(open){
+  useEffect(() => {
+    if (open) {
       receiptProductUpdate(product)
 
     }
-  },[open])
+  }, [open])
 
 
-  return(
+  return (
     <Dialog
-    fullWidth={true}
-    maxWidth='sm'
-    
-    scroll="body"
+      fullWidth={true}
+      maxWidth='sm'
 
-    open={open} 
-    onClose={handleClose}>
+      scroll="body"
+
+      open={open}
+      onClose={handleClose}>
       <DialogTitle>CONFIRMER ARTICLE</DialogTitle>
       <DialogContent
-      sx={{
-        m:'15px'
-      }} 
-      >   
-        
-          <Grid 
+        sx={{
+          m: '15px'
+        }}
+      >
 
-          container 
-          spacing={2} 
-          >
+        <Grid
 
-            <Grid item
-              xs={6}>
-              <InputLabel>
-                SKU
-              </InputLabel>
-              <Typography
+          container
+          spacing={2}
+        >
+
+          <Grid item
+            xs={6}>
+            <InputLabel>
+              SKU
+            </InputLabel>
+            <Typography
               sx={{
-                  // my: 2
-                }} >
-                {product.sku}
-              </Typography>
-            </Grid>
-            <Grid item
-              xs={6}>
-              <InputLabel>
-                DESIGNATION
-              </InputLabel>
-              <Typography
+                // my: 2
+              }} >
+              {product.sku}
+            </Typography>
+          </Grid>
+          <Grid item
+            xs={6}>
+            <InputLabel>
+              DESIGNATION
+            </InputLabel>
+            <Typography
               sx={{
-                  // my: 2
-                }} >
-                {product.name}
-              </Typography>
-            </Grid>
-            <Grid item
-              xs={4}>
-              <InputLabel>
-                QUANTITE
-              </InputLabel>
-              <Typography
+                // my: 2
+              }} >
+              {product.name}
+            </Typography>
+          </Grid>
+          <Grid item
+            xs={4}>
+            <InputLabel>
+              QUANTITE
+            </InputLabel>
+            <Typography
               sx={{
-                  // my: 2
-                }} >
-                {product.quantity}
-              </Typography>
-            </Grid>
-            
+                // my: 2
+              }} >
+              {product.quantity}
+            </Typography>
           </Grid>
 
-          <Box
-            sx={{
-              display:'flex',
-              flexDirection:'column'
-            }}
-          >
-            <TextField
-              label="Quantité reçu"
-              // fullWidth
-              margin="normal"
-              name="receivedQuantity"
-              type="text"
-              variant="outlined"
-              value={receivedQuantity}
-              required
-              onChange={(e)=>{setReceivedQuantity(e.target.value)}}
-            />
-            <TextField
-              label="Quantité accepté"
-              // fullWidth
-              margin="normal"
-              name="acceptedQuantity"
-              type="text"
-              variant="outlined"
-              value={acceptedQuantity}
-              required
-              onChange={(e)=>{setAcceptedQuantity(e.target.value)}}
+        </Grid>
 
-            />
-            <TextField
-              id="outlined-multiline-static"
-              label="Observation"
-              name="note"
-              margin="normal"
-              // fullWidth
-              multiline
-              rows={4}
-              value={note}
-              onChange={(e)=>{setNote(e.target.value)}}
-            />
-            
-            <ToggleButtonGroup
-                sx={{
-                  mt:'10px'
-                }}
-                value={conformity}
-                exclusive
-                onChange={handleConformity}
-                aria-label="conformity"
-              >
-                <ToggleButton value="oui" 
-                  aria-label="conforme">
-                  conforme
-                </ToggleButton>
-                <ToggleButton value="non" 
-                  aria-label="non-conforme">
-                  non conforme
-                </ToggleButton>
-              </ToggleButtonGroup>
-          </Box>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column'
+          }}
+        >
+          <TextField
+            label="Quantité reçu"
+            // fullWidth
+            margin="normal"
+            name="receivedQuantity"
+            type="text"
+            variant="outlined"
+            value={receivedQuantity}
+            required
+            onChange={(e) => { setReceivedQuantity(e.target.value) }}
+          />
+          <TextField
+            label="Quantité accepté"
+            // fullWidth
+            margin="normal"
+            name="acceptedQuantity"
+            type="text"
+            variant="outlined"
+            value={acceptedQuantity}
+            required
+            onChange={(e) => { setAcceptedQuantity(e.target.value) }}
+
+          />
+          <TextField
+            id="outlined-multiline-static"
+            label="Observation"
+            name="note"
+            margin="normal"
+            // fullWidth
+            multiline
+            rows={4}
+            value={note}
+            onChange={(e) => { setNote(e.target.value) }}
+          />
+
+          <ToggleButtonGroup
+            sx={{
+              mt: '10px'
+            }}
+            value={conformity}
+            exclusive
+            onChange={handleConformity}
+            aria-label="conformity"
+          >
+            <ToggleButton value="oui"
+              aria-label="conforme">
+              conforme
+            </ToggleButton>
+            <ToggleButton value="non"
+              aria-label="non-conforme">
+              non conforme
+            </ToggleButton>
+          </ToggleButtonGroup>
+        </Box>
 
 
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} >Annuler</Button>
-        <Button onClick={handleConfirm }>Confirmer</Button>
+        <Button onClick={handleConfirm}>Confirmer</Button>
       </DialogActions>
     </Dialog>
-    )
+  )
 
 }

@@ -128,7 +128,7 @@ export const POListResults = ({ purchaseOrderList, ...rest }) => {
                   Fournisseur
                 </TableCell>
                 <TableCell>
-                  Cree par
+                  Créé par
                 </TableCell>
                 <TableCell align="center">
                   <ThreeDotsIcon />

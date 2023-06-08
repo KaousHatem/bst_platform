@@ -51,7 +51,7 @@ export const ProvisionListResults = ({ provision_list, ...rest }) => {
     0: "Brouillon",
     1: "Nouveau",
     4: "Annulé",
-    9: "Apprové",
+    9: "Approuvé",
     99: "En Livraison",
     999: "Complète"
   }
@@ -201,13 +201,13 @@ export const ProvisionListResults = ({ provision_list, ...rest }) => {
                   Destination
                 </TableCell>
                 <TableCell>
-                  Cree Par
+                  Créée Par
                 </TableCell>
                 <TableCell>
-                  Delai
+                  Créée le
                 </TableCell>
                 <TableCell align="center" >
-                  status
+                  statut
                 </TableCell>
                 <TableCell align="center">
                   <ThreeDotsIcon />
@@ -243,7 +243,7 @@ export const ProvisionListResults = ({ provision_list, ...rest }) => {
                     {provision.created_by.fullname}
                   </TableCell>
                   <TableCell>
-                    {provision.delay}
+                    {format(new Date(provision.created_on), 'dd/MM/yyyy')}
                   </TableCell>
                   <TableCell align="center">
                     <Label
