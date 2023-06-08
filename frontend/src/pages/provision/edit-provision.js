@@ -30,6 +30,8 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 import { ProvisionAddToolbar } from '../../components/provision/provision-add-toolbar';
 import { DashboardLayout } from '../../components/dashboard-layout';
+import { ProvisionRejectDialog } from '../../components/provision/provision-reject-dialog';
+
 import frLocale from 'date-fns/locale/fr';
 import { ProvisionAddProduct } from '../../components/provision/provision-add-product';
 import { customers } from '../../__mocks__/customers';
@@ -57,6 +59,9 @@ const EditProvision = () => {
 
   const [successUpdate, setSuccessUpdate] = useState(true)
 
+  let [rejectOpen, setRejectOpen] = useState(false)
+
+
 
   const router = useRouter();
   const [provisionId, setProvisionId] = useState(router.query.provisionId)
@@ -75,6 +80,13 @@ const EditProvision = () => {
   const ALL_CONFIRMED_ERROR = "Veuillez de confirmer tous les articles"
 
 
+  const handleRejectOpen = () => {
+    setRejectOpen(true)
+  };
+
+  const handleRejectClose = () => {
+    setRejectOpen(false)
+  };
 
 
   const handleChange = (newValue) => {
@@ -187,14 +199,15 @@ const EditProvision = () => {
       })
   }
 
-  const handleReject = () => {
-    const data = {
-      destination: provision.destination,
-      delay: provision.delay,
+  const handleReject = (e) => {
+    e.preventDefault();
+    console.log('reject')
+    let data = {
       status: '4',
-      ref: null
+      note: e.target.note.value,
     }
-    ProvisionProvider.editProvision(data, provisionId).then(
+    setLoadingOpen(true)
+    ProvisionProvider.partialEditProvision(data, provisionId).then(
       (response) => {
         setLoadingOpen(false)
         router.push('/provision');
@@ -277,11 +290,12 @@ const EditProvision = () => {
         }}
       >
         {JSON.stringify(provision) !== "{}" && <Container maxWidth={false}>
-          <ProvisionAddToolbar handleReject={handleReject}
+          <ProvisionAddToolbar handleRejectOpen={handleRejectOpen}
             handleApprove={handleApprove}
             provisionStatus={provision.status}
             provisionId={provisionId}
-            handleSaveAsDraft={handleOnSubmit} />
+            handleSaveAsDraft={handleOnSubmit}
+            hasPurchaseRequest={provision.purchase_request.length !== 0} />
           <Box sx={{
             mt: 3,
             backgroundColor: "white",
@@ -363,7 +377,7 @@ const EditProvision = () => {
                       <Grid item
                         xs={3}>
                         <InputLabel>
-                          Cree par
+                          Créée par
                         </InputLabel>
                         <Typography
                           sx={{
@@ -375,19 +389,19 @@ const EditProvision = () => {
                       <Grid item
                         xs={3}>
                         <InputLabel>
-                          Cree en
+                          Créée le
                         </InputLabel>
                         <Typography
                           sx={{
                             my: 2
                           }} >
-                          {format(new Date(provision.created_on), 'yyyy-MM-dd hh:mm')}
+                          {format(new Date(provision.created_on), 'dd/MM/yyyy hh:mm')}
                         </Typography>
                       </Grid>
                       <Grid item
                         xs={3}>
                         <InputLabel>
-                          Apprové par
+                          Approuvé par
                         </InputLabel>
                         <Typography
                           sx={{
@@ -400,13 +414,13 @@ const EditProvision = () => {
                       <Grid item
                         xs={3}>
                         <InputLabel>
-                          Apprové en
+                          Approuvé le
                         </InputLabel>
                         <Typography
                           sx={{
                             my: 2
                           }} >
-                          {provision.approved_on === null && "_" || format(new Date(provision.approved_on), 'yyyy-MM-dd hh:mm')}
+                          {provision.approved_on === null && "_" || format(new Date(provision.approved_on), 'dd/MM/yyyy hh:mm')}
                         </Typography>
                       </Grid>
                     </Grid>
@@ -429,6 +443,10 @@ const EditProvision = () => {
           {errorSBText}
         </Alert>
       </Snackbar>
+      <ProvisionRejectDialog handleRejectClose={handleRejectClose}
+        rejectOpen={rejectOpen}
+        handleReject={handleReject}
+      />
     </>
   );
 };
