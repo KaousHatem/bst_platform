@@ -389,7 +389,7 @@ const EditPurchaseRequest = () => {
                       <Grid item
                         xs={5}>
                         <InputLabel>
-                          Approuvé par
+                          Approuvée par
                         </InputLabel>
                         <Typography
                           sx={{
@@ -401,7 +401,7 @@ const EditPurchaseRequest = () => {
                       <Grid item
                         xs={4}>
                         <InputLabel>
-                          Approuvé le
+                          Approuvée le
                         </InputLabel>
                         <Typography
                           sx={{

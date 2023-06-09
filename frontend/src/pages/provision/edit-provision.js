@@ -401,7 +401,7 @@ const EditProvision = () => {
                       <Grid item
                         xs={3}>
                         <InputLabel>
-                          Approuvé par
+                          Approuvée par
                         </InputLabel>
                         <Typography
                           sx={{
@@ -414,7 +414,7 @@ const EditProvision = () => {
                       <Grid item
                         xs={3}>
                         <InputLabel>
-                          Approuvé le
+                          Approuvée le
                         </InputLabel>
                         <Typography
                           sx={{
