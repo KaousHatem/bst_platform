@@ -29,6 +29,9 @@ class Unit(models.Model):
     ref = models.CharField(max_length=20, unique=True, null=True)
     name = models.CharField(max_length=220)
 
+    def __str__(self):
+        return self.ref
+
 
 class Product(models.Model):
     sku = models.CharField(max_length=20, unique=True)
@@ -41,6 +44,9 @@ class Product(models.Model):
     created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.sku
 
     class Meta:
         ordering = ('id',)
@@ -654,6 +660,9 @@ class Supplier(models.Model):
     code_postal = models.CharField(max_length=20, null=True)
     created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.name
+
 
 class PurchaseOrder(models.Model):
     STATUS = (
@@ -669,6 +678,9 @@ class PurchaseOrder(models.Model):
         PurchaseRequest, on_delete=models.DO_NOTHING)
     supplier = models.ForeignKey(Supplier, on_delete=models.DO_NOTHING)
     created_by = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING)
+
+    # def __str__(self):
+    #     return self.ref
 
     def save(self, *args, **kwargs):
         today = datetime.datetime.now()
