@@ -56,9 +56,13 @@ class TransferViewSet(RoleFilterModelViewSet):
     def get_role_id(self, request):
         token = request.META.get('HTTP_AUTHORIZATION')
         user = decodeJWT(token)
-        if user.is_superuser:
+        if user:
+
+            if user.is_superuser:
+                return 1
+            return user.role
+        else:
             return 1
-        return user.role
 
     def get_serializer_class(self):
         if self.action == 'retrieve':
@@ -125,7 +129,7 @@ class TransferViewSet(RoleFilterModelViewSet):
 
     def partial_update(self, request, pk):
         print("update transfer")
-        print(request.data)
+        # print(request.data)
         if "received_by" not in request.data:
 
             token = request.META.get('HTTP_AUTHORIZATION')
