@@ -799,9 +799,9 @@ class PurchaseOrderProductViewSet(ModelViewSet):
             return PurchaseOrderProductListingSerializer
         return super().get_serializer_class()
 
-    @action(methods=['put'], detail=False)
-    def put(self, request, *args, **kwargs):
-
+    # @action(methods=['put'], detail=False)
+    def update(self, request, pk, *args, **kwargs):
+        print('update')
         data = request.data
         serializers = PurchaseOrderProductUpdateSerializer(
             self.queryset, data=data, many=True)
