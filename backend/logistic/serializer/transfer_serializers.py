@@ -49,6 +49,7 @@ class TransferRetrieveSerializer(serializers.ModelSerializer):
     received_by = CustomUserListSerializer(read_only=True, required=False)
     source = StoreListSerializer(read_only=True)
     target = StoreListSerializer(read_only=True)
+    document = TransferDocumentSerializer(many=True, read_only=True)
 
     class Meta:
         model = Transfer
