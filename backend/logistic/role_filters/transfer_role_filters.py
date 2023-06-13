@@ -12,7 +12,7 @@ class AdminRoleFilter(RoleFilter):
 
     def get_allowed_actions(self, request, view, obj=None):
         print('queryset')
-        return ["create", "list", "retrieve", "update", "destroy"]
+        return ["create", "list", "retrieve", "update", "destroy", "partial_update"]
 
     def get_queryset(self, request, view, queryset):
         return queryset
@@ -25,7 +25,7 @@ class LogisticAdminRoleFilter(RoleFilter):
     role_id = 2
 
     def get_allowed_actions(self, request, view, obj=None):
-        return ["create", "list", "retrieve", "update", "destroy"]
+        return ["create", "list", "retrieve", "update", "destroy", "partial_update"]
 
     def get_queryset(self, request, view, queryset):
 
@@ -39,7 +39,7 @@ class UserRoleFilter(RoleFilter):
     role_id = 3
 
     def get_allowed_actions(self, request, view, obj=None):
-        return ["create", "list", "retrieve", "update", "destroy"]
+        return ["create", "list", "retrieve", "update", "destroy", "partial_update"]
 
     def get_queryset(self, request, view, queryset):
         token = request.META.get('HTTP_AUTHORIZATION')
