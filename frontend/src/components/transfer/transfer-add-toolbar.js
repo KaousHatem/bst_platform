@@ -70,7 +70,7 @@ const StyledMenu = styled((props) => (
     },
 }));
 
-export const TransferAddToolbar = ({ props, isAdd = false, id, isReceived = false, handleUploadOpen, userLocation, targetLocation }) => {
+export const TransferAddToolbar = ({ props, isAdd = false, id, isReceived = false, document, handleUploadOpen, userLocation, targetLocation }) => {
 
     const router = useRouter();
 
@@ -86,7 +86,11 @@ export const TransferAddToolbar = ({ props, isAdd = false, id, isReceived = fals
     };
 
     const handlePrint = () => {
-        if (id) {
+        if (isReceived) {
+            if (document) {
+                window.open(document.file, "_blank")
+            }
+        } else if (id) {
             console.log(id)
             const url = '/transfer/print?id=' + id
             window.open(url, "_blank")

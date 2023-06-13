@@ -225,6 +225,7 @@ const EditTransfer = () => {
                             id={transferId}
                             handleUploadOpen={handleUploadOpen}
                             isReceived={isReceived}
+                            document={transfer.document}
                             userLocation={userLocation}
                             targetLocation={transfer.target.location}
                         />
