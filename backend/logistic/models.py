@@ -411,7 +411,7 @@ class StockOutDocument(models.Model):
 
 class StockOutDocumentProductRel(models.Model):
     stock_out_document = models.ForeignKey(
-        StockOutDocument, related_name="products", on_delete=models.DO_NOTHING)
+        StockOutDocument, related_name="products", on_delete=models.CASCADE)
     product = models.ForeignKey(
         Product, on_delete=models.DO_NOTHING, null=True)
     quantity = models.FloatField(null=True)
@@ -429,7 +429,7 @@ class StockOutDocumentProductRel(models.Model):
 
 class StockOutDocumentFile(models.Model):
     stock_out_document = models.ForeignKey(
-        StockOutDocument, related_name="file", on_delete=models.DO_NOTHING)
+        StockOutDocument, related_name="file", on_delete=models.CASCADE)
     file = models.FileField(
         upload_to=_upload_to_stock_out)
     created_on = models.DateTimeField(auto_now_add=True)
