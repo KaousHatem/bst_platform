@@ -142,7 +142,7 @@ def _upload_to(instance, filename):
 
 
 class TransferDocument(models.Model):
-    transfer = models.ForeignKey(
+    transfer = models.OneToOneField(
         Transfer, related_name='document', on_delete=models.CASCADE)
     file = models.FileField(
         upload_to=_upload_to, blank=True, null=True)
@@ -440,6 +440,7 @@ class StockOut(models.Model):
     TARGET = (
         ('2', _("TRANSFER")),
         ('3', _("TO_PROJECT")),
+        ('4', _("OTHER")),
     )
     ref = models.CharField(max_length=20, unique=True, null=True)
     stock = models.ForeignKey(
