@@ -62,6 +62,13 @@ export const PurchaseOrderProduct = ({ setPurchaseProducts, purchaseProducts = [
 
 
 
+  const moneyFormat = (value) =>
+    new Intl.NumberFormat('fr-FR', {
+      style: 'currency',
+      currency: 'DZD'
+    }).format(value);
+
+
 
   const handleLimitChange = (event) => {
     setLimit(event.target.value);
@@ -130,12 +137,13 @@ export const PurchaseOrderProduct = ({ setPurchaseProducts, purchaseProducts = [
                   </TableCell>
                   {UXAccess.hasAccessToPrice() && <TableCell align="center">
                     {(product.unitPrice && !changed) &&
-                      product.unitPrice ||
+                      moneyFormat(product.unitPrice) ||
                       <TextField
                         inputStyle={{ textAlign: 'center' }}
                         sx={{
                           width: '10ch'
                         }}
+
                         value={product.unitPrice}
                         onChange={e => { updatePrice(e, product) }}
                       />
