@@ -191,7 +191,9 @@ export const ProductListResults = ({ product, categories, ...rest }) => {
       </Backdrop>
       <ProductFilter products={products}
         setFilteredProducts={setFilteredProducts}
-        categories={categories} />
+        categories={categories}
+        setPage={setPage}
+        setLimit={setLimit} />
       <PerfectScrollbar>
         <Box sx={{ minWidth: "100%" }}>
           <Table>

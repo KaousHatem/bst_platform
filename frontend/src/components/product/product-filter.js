@@ -1,4 +1,4 @@
-import { useState, useEffect,Fragment } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 import { format } from 'date-fns'
 import {
   Box,
@@ -25,9 +25,9 @@ import { Upload as UploadIcon } from '../../icons/upload';
 import { Positive as PositiveIcon } from '../../icons/positive';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 
-export const ProductFilter = ({products, setFilteredProducts, categories, ...props}) => {
+export const ProductFilter = ({ products, setFilteredProducts, categories, setPage, setLimit, ...props }) => {
 
-  const unit_text = ['-1','U','M','KG']
+  const unit_text = ['-1', 'U', 'M', 'KG']
 
   const [filterOpen, setFilterOpen] = useState(false)
   const [categoryFilterValue, setCategoryFilterValue] = useState(null)
@@ -35,14 +35,27 @@ export const ProductFilter = ({products, setFilteredProducts, categories, ...pro
 
   const handleChangeCategoryFilter = (e) => {
     setCategoryFilterValue(e.target.value)
-  } 
+  }
 
   const handleChangeUnitFilter = (e) => {
     setUnitFilterValue(e.target.value)
-  } 
+  }
 
   const handleFilterOpen = () => {
     setFilterOpen(!filterOpen)
+  }
+
+  const handleSearch = (e) => {
+
+    const filterList = products.filter((product) => {
+      return (product.name.toLowerCase().includes(e.target.value.toLowerCase()) || product.sku.toLowerCase().includes(e.target.value.toLowerCase()))
+
+    })
+    setPage(0)
+    setLimit(10)
+    setFilteredProducts(filterList)
+
+
   }
 
   const handleFilterApply = () => {
@@ -68,15 +81,15 @@ export const ProductFilter = ({products, setFilteredProducts, categories, ...pro
 
 
 
-  return(
+  return (
     <Box {...props}>
       <Box sx={{ mb: 3 }}>
         <Card >
           <CardContent>
             <Box sx={{
-              display:'flex',
-              flexDirection:'row',
-               }}>
+              display: 'flex',
+              flexDirection: 'row',
+            }}>
               <TextField
                 sx={{
                   maxWidth: 400
@@ -96,85 +109,88 @@ export const ProductFilter = ({products, setFilteredProducts, categories, ...pro
                 }}
                 placeholder="Rechercher"
                 variant="outlined"
+
+                onChange={e => { handleSearch(e) }}
+
               />
-              <Button   startIcon={<FilterAltIcon />} 
+              <Button startIcon={<FilterAltIcon />}
                 sx={{
                   ml: 'auto',
                   "&.MuiButtonBase-root:hover": {
                     bgcolor: "transparent"
                   }
                 }}
-                onClick = {handleFilterOpen}
+                onClick={handleFilterOpen}
               >
                 Filtrer
               </Button>
             </Box>
           </CardContent>
-          <Collapse in={filterOpen} 
-          timeout="auto" 
-          unmountOnExit>
+          <Collapse in={filterOpen}
+            timeout="auto"
+            unmountOnExit>
             <CardContent>
               <Box sx={{
-                display:'flex',
-                flexDirection:'column',
+                display: 'flex',
+                flexDirection: 'column',
               }} >
-                <FormControl 
-                sx={{ 
-                  m: 1,
-                  width: '30%' ,
+                <FormControl
+                  sx={{
+                    m: 1,
+                    width: '30%',
 
-                }}>
-                <InputLabel id="demo-simple-select-label">Groupe</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  variant="standard"
-                  label="Status"
-                  value={categoryFilterValue}
-                  onChange={handleChangeCategoryFilter}
-                >
-                { categories.map((category)=>(
-                    <MenuItem key={category.ref} 
-                    value={category.ref}>{category.name}</MenuItem>
-                  ))
-                  
-                }
-                </Select>
-                </FormControl >
-                <FormControl 
-                sx={{ 
-                  m: 1,
-                  width: '30%' ,
+                  }}>
+                  <InputLabel id="demo-simple-select-label">Groupe</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    variant="standard"
+                    label="Status"
+                    value={categoryFilterValue}
+                    onChange={handleChangeCategoryFilter}
+                  >
+                    {categories.map((category) => (
+                      <MenuItem key={category.ref}
+                        value={category.ref}>{category.name}</MenuItem>
+                    ))
 
-                }}>
-                <InputLabel id="demo-simple-select-label">Unité</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  variant="standard"
-                  label="Status"
-                  value={UnitFilterValue}
-                  onChange={handleChangeUnitFilter}
-                >
-                { unit_text.map((unit)=>(
-                    unit!=='-1' && <MenuItem key={unit} 
-                    value={unit}>{unit}</MenuItem>
-                  ))
-                  
-                }
-                </Select>
+                    }
+                  </Select>
                 </FormControl >
-                
+                <FormControl
+                  sx={{
+                    m: 1,
+                    width: '30%',
+
+                  }}>
+                  <InputLabel id="demo-simple-select-label">Unité</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    variant="standard"
+                    label="Status"
+                    value={UnitFilterValue}
+                    onChange={handleChangeUnitFilter}
+                  >
+                    {unit_text.map((unit) => (
+                      unit !== '-1' && <MenuItem key={unit}
+                        value={unit}>{unit}</MenuItem>
+                    ))
+
+                    }
+                  </Select>
+                </FormControl >
+
                 <Box
                   sx={{
-                      display:'flex',
-                      flexDirection:'row',
-                      alignSelf:'flex-end',
-                    }}
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignSelf: 'flex-end',
+                  }}
                 >
                   <Button
                     sx={{
-                      mr:2,
+                      mr: 2,
                     }}
                     variant="contained"
                     onClick={handleFilterApply}
@@ -183,7 +199,7 @@ export const ProductFilter = ({products, setFilteredProducts, categories, ...pro
                   </Button>
                   <Button
                     sx={{
-                      alignSelf:'flex-end'
+                      alignSelf: 'flex-end'
                     }}
                     variant="outlined"
                     onClick={handleFilterReset}
@@ -197,5 +213,5 @@ export const ProductFilter = ({products, setFilteredProducts, categories, ...pro
         </Card>
       </Box>
     </Box>
-    )
+  )
 }
