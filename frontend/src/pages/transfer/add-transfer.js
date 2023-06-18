@@ -41,7 +41,7 @@ import { TransferAddToolbar } from '../../components/transfer/transfer-add-toolb
 
 import TransferProvider from 'src/services/transfer-provider';
 import TransferProductProvider from 'src/services/transfer-product-provider'
-
+import UserProvider from 'src/services/user-provider'
 
 const AddTransfer = () => {
     const router = useRouter();
@@ -165,10 +165,34 @@ const AddTransfer = () => {
         setLoadingOpen(true)
         Promise.all([
             StoreProvider.getStores(),
+            !UXAccess.hasAllLocationAccess() && UserProvider.getMeUser()
         ])
             .then(
                 responses => {
+                    console.log(responses)
                     setStores(responses[0].data)
+
+                    if (responses[1]) {
+                        let store = responses[0].data.find(store => { return store.location == responses[1].data.location })
+                        if (store) {
+                            setSourceStore(store.id)
+
+                            StockProvider.getStocksByStore(store.id)
+                                .then(
+                                    response => {
+                                        console.log(response.data)
+                                        setStoreProducts(response.data[0].id ? response.data : [])
+                                        setLoadingOpen(false)
+                                    },
+                                    error => {
+                                        setLoadingOpen(false)
+                                        handleSBOpen(CONNECTION_ERROR)
+                                    }
+                                )
+                        }
+
+
+                    }
                     setLoadingOpen(false)
                 },
                 errors => {
@@ -250,6 +274,7 @@ const AddTransfer = () => {
                                                             id="demo-simple-select"
                                                             value={sourceStore}
                                                             defaultValue=""
+                                                            disabled={!UXAccess.hasAllLocationAccess()}
                                                             onChange={handleSourceStoreChange}
                                                             required
                                                         >
