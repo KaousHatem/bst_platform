@@ -49,6 +49,10 @@ from ..serializer.stock_in_document_serializers import (
     StockInDocumentFileSerializer,
 )
 
+from ..filter.stock_in_document_filters import (
+    StockInDocumentFilter
+)
+
 
 class StockInDocumentViewSet(RoleFilterModelViewSet):
     queryset = StockInDocument.objects.all().order_by('-created_on')
@@ -56,6 +60,7 @@ class StockInDocumentViewSet(RoleFilterModelViewSet):
     role_filter_classes = [stock_in_document_role_filters.UserRoleFilter,
                            stock_in_document_role_filters.LogisticAdminRoleFilter, stock_in_document_role_filters.AdminRoleFilter]
 
+    filterset_class = (StockInDocumentFilter)
     permission_classes = [HasPermission]
 
     def get_role_id(self, request):

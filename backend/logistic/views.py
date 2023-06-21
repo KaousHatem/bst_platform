@@ -802,6 +802,7 @@ class PurchaseOrderProductViewSet(ModelViewSet):
     @action(methods=['put'], detail=False)
     def put(self, request, *args, **kwargs):
         print('update')
+
         data = request.data
         print(data)
         serializers = PurchaseOrderProductUpdateSerializer(
