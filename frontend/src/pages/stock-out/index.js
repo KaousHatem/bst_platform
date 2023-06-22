@@ -18,6 +18,7 @@ import { StockOutListResults } from '../../components/stock-out/stock-out-list-r
 import { DashboardLayout } from '../../components/dashboard-layout';
 
 import StockOutDocumentProvider from '../../services/stock-out-document-provider';
+import StoreProvider from 'src/services/store-provider';
 
 import { CONNECTION_ERROR, AUTHORIZATION_ERROR } from '../../utils/constants'
 
@@ -34,7 +35,6 @@ class StockOutDocument extends React.Component {
         this.state = {
             stockOutDocuments: [],
             nextPageUrl: '',
-            storeId: props.router.query.id,
             loading: true,
             errorSBOpen: false,
             loadingOpen: true,
@@ -46,35 +46,23 @@ class StockOutDocument extends React.Component {
     componentDidMount() {
 
         this.setState({ loadingOpen: true, ...this.state })
-        if (this.state.storeId) {
-            if (UXAccess.hasStoreAccess()) {
-                StockOutDocumentProvider.getStockOutDocumentsByStore(this.state.storeId).then(
-                    (response) => {
-                        console.log(response.data)
-                        this.setState({ loadingOpen: false, stockOutDocuments: response.data, loading: false })
-                    },
-                    error => {
-                        this.setState({ loadingOpen: false })
-                        this.handleSBOpen(CONNECTION_ERROR)
+        Promise.all([
+            UXAccess.hasAccessAllStockInDocument() && StoreProvider.getStores(),
+            !UXAccess.hasAccessAllStockInDocument() && StockOutDocumentProvider.getStockOutDocuments()]).then(
+                (responses) => {
+                    console.log(responses)
+                    if (responses[0]) {
+                        this.setState({ loadingOpen: false, stores: responses[0].data, loading: false })
                     }
-                )
-            } else {
-                this.setState({ loadingOpen: false })
-                this.handleSBOpen(AUTHORIZATION_ERROR)
-            }
-
-
-        } else {
-            StockOutDocumentProvider.getStockOutDocuments().then(
-                (response) => {
-                    console.log(response.data)
-                    this.setState({ loadingOpen: false, stockOutDocuments: response.data, loading: false })
+                    if (responses[1]) {
+                        this.setState({ loadingOpen: false, stockOutDocuments: responses[1].data, loading: false })
+                    }
                 },
-                (error) => {
+                (errors) => {
                     this.setState({ loadingOpen: false })
                     this.handleSBOpen(CONNECTION_ERROR)
                 })
-        }
+
 
     }
 
@@ -117,8 +105,8 @@ class StockOutDocument extends React.Component {
                             }}
                         >
                             <Container maxWidth={false}>
-                                <StockOutListToolbar store={this.state.stockOutDocuments.length > 0 ? this.state.stockOutDocuments[0].store : ""} />
-                                <StockOutListResults stockOutList={this.state.stockOutDocuments} />
+                                {/* <StockOutListToolbar store={UXAccess.hasAccessAllStockOutDocument() ? "" : this.state.stockOutDocuments.length > 0 ? this.state.stockOutDocuments[0].store : ""} /> */}
+                                <StockOutListResults stockOutList={this.state.stockOutDocuments} storeList={this.state.stores} />
                             </Container>
 
                         </Box>

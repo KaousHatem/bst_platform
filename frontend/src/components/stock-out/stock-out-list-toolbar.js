@@ -48,6 +48,7 @@ export const StockOutListToolbar = (props,) => {
                         variant="contained"
                         href='stock-out/add-stock-out-document'
                         startIcon={(<PositiveIcon />)}
+                        disabled={!props.isSameLocation}
                     >
                         Ajouter un bon de sortie
                     </Button>

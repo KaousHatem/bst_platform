@@ -46,6 +46,9 @@ from ..serializer.stock_out_document_serializers import (
     StockOutDocumentProductSerializer,
     StockOutDocumentFileSerializer,
 )
+from ..filter.stock_out_document_filters import (
+    StockOutDocumentFilter
+)
 
 
 class StockOutDocumentViewSet(RoleFilterModelViewSet):
@@ -53,7 +56,7 @@ class StockOutDocumentViewSet(RoleFilterModelViewSet):
     serializer_class = StockOutDocumentSerializer
     role_filter_classes = [stock_out_document_role_filters.UserRoleFilter,
                            stock_out_document_role_filters.LogisticAdminRoleFilter, stock_out_document_role_filters.AdminRoleFilter]
-
+    filterset_class = (StockOutDocumentFilter)
     permission_classes = [HasPermission]
 
     def get_role_id(self, request):
