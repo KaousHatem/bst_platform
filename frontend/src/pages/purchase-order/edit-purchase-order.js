@@ -256,13 +256,13 @@ const EditPurchaseOrder = () => {
                       <Grid item
                         xs={4}>
                         <InputLabel>
-                          Delai
+                          Date de création
                         </InputLabel>
                         <Typography
                           sx={{
                             my: 2
                           }} >
-                          {purchaseOrder.purchaseRequest.provision.delay}
+                          {format(new Date(purchaseOrder.created_on), 'dd/MM/yyyy')}
                         </Typography>
                       </Grid>
                       <Grid item

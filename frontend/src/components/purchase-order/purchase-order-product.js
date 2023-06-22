@@ -112,12 +112,15 @@ export const PurchaseOrderProduct = ({ setPurchaseProducts, purchaseProducts = [
                   Quantité
                 </TableCell>
                 {UXAccess.hasAccessToPrice() && <TableCell align="center">
-                  Prix PU
+                  Prix Unitaire
                 </TableCell>}
+                <TableCell align="center">
+                  Prix Totale
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {purchaseProducts.slice(page * limit, page * limit + limit).map((product) => (
+              {purchaseProducts.map((product) => (
                 <TableRow
                   hover
                   key={product.id}
@@ -150,6 +153,9 @@ export const PurchaseOrderProduct = ({ setPurchaseProducts, purchaseProducts = [
                     }
 
                   </TableCell>}
+                  <TableCell align="center">
+                    {moneyFormat(product.quantity * product.unitPrice)}
+                  </TableCell>
 
                 </TableRow>
               ))}
@@ -165,7 +171,7 @@ export const PurchaseOrderProduct = ({ setPurchaseProducts, purchaseProducts = [
           </Table>
         </Box>
       </PerfectScrollbar>
-      <TablePagination
+      {/* <TablePagination
         component="div"
         count={purchaseProducts.length}
         onPageChange={handlePageChange}
@@ -173,7 +179,7 @@ export const PurchaseOrderProduct = ({ setPurchaseProducts, purchaseProducts = [
         page={page}
         rowsPerPage={limit}
         rowsPerPageOptions={[10, 25, 50]}
-      />
+      /> */}
 
 
     </Card>
