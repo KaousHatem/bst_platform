@@ -20,6 +20,8 @@ import {
 import { Positive as PositiveIcon } from '../../icons/positive';
 
 
+import UXAccess from 'src/utils/ux-access';
+
 export const StockInListToolbar = (props,) => {
 
 
@@ -41,7 +43,7 @@ export const StockInListToolbar = (props,) => {
                 >
                     Bon d&apos;entré {props.store.name}
                 </Typography>
-                <Box sx={{ m: 1 }}>
+                {!UXAccess.hasAccessAllStockInDocument() && <Box sx={{ m: 1 }}>
 
                     <Button
                         color="primary"
@@ -51,7 +53,7 @@ export const StockInListToolbar = (props,) => {
                     >
                         Ajouter un bon d&apos;entré
                     </Button>
-                </Box>
+                </Box>}
             </Box>
         </Box>
     )

@@ -43,9 +43,7 @@ class StockInDocumentProvider {
 
         var url = stockInDocumentUrl + "?store=" + storeId
 
-        if (pk !== -1) {
-            url = url + pk.toString()
-        }
+
         return axios
             .get(url, config)
             .then(response => {

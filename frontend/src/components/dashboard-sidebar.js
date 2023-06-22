@@ -191,10 +191,10 @@ export const DashboardSidebar = (props) => {
                 <SubNavItem href='/transfer'
                   title='Transfert'
                 />
-                {UXAccess.hasStockInDocumentAccess() && <SubNavItem href='/stock-in'
-                  title="Bon d'entré" />}
-                  {UXAccess.hasStockInDocumentAccess() && <SubNavItem href='/stock-out'
-                  title="Bon de sortie" />}
+                <SubNavItem href='/stock-in'
+                  title="Bon d'entré" />
+                <SubNavItem href='/stock-out'
+                  title="Bon de sortie" />
               </MenuList>
             </Box>
 
