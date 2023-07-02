@@ -89,7 +89,7 @@ const EditReceipt = () => {
 
     if (e.target.do) {
       receiptData = e.target.do.value.length ? {
-        invoice: e.target.do.value,
+        do: e.target.do.value,
         ...receiptData
       } : receiptData
     }
