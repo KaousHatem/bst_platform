@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, Image } from '@react-pdf/renderer';
+import { parseMoney } from 'src/utils/parsers'
 
 const borderColor = 'black'
 const textColor = 'black'
@@ -35,7 +36,7 @@ const styles = StyleSheet.create({
         textAlign: 'left',
         paddingHorizontal: "5px",
         height: '100%',
-        width: '76%',
+        width: '46%',
         borderRight: '1 solid ' + borderColor,
         borderBottom: '1 solid ' + borderColor,
         flexWrap: 'wrap',
@@ -59,6 +60,28 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         height: '100%',
         width: '10%',
+        borderRight: '1 solid ' + borderColor,
+        borderBottom: '1 solid ' + borderColor,
+    },
+
+    unitPrice: {
+        color: textColor,
+        display: 'flex',
+        justifyContent: "center",
+        textAlign: 'center',
+        height: '100%',
+        width: '15%',
+        borderRight: '1 solid ' + borderColor,
+        borderBottom: '1 solid ' + borderColor,
+    },
+
+    price: {
+        color: textColor,
+        display: 'flex',
+        justifyContent: "center",
+        textAlign: 'center',
+        height: '100%',
+        width: '15%',
         // borderRight: '1 solid ' + borderColor,
         borderBottom: '1 solid ' + borderColor,
     },
@@ -71,7 +94,6 @@ const styles = StyleSheet.create({
 
 
 const TableRow = ({ num, product, last = false }) => {
-
 
 
 
@@ -88,6 +110,12 @@ const TableRow = ({ num, product, last = false }) => {
             </View>
             <View style={[styles.qty, last && styles.last]}>
                 <Text>{product.quantity}</Text>
+            </View>
+            <View style={[styles.unitPrice, last && styles.last]}>
+                <Text>{parseMoney(product.price)}</Text>
+            </View>
+            <View style={[styles.price, last && styles.last]}>
+                <Text>{parseMoney(product.price * product.quantity)}</Text>
             </View>
         </View>
     );

@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         textAlign: 'center',
         height: '100%',
-        width: '76%',
+        width: '46%',
         borderRightColor: borderColor,
         borderRightWidth: 1,
     },
@@ -61,6 +61,17 @@ const styles = StyleSheet.create({
         borderRightWidth: 1,
     },
 
+    price: {
+        color: textColor,
+        display: 'flex',
+        justifyContent: "center",
+        textAlign: 'center',
+        height: '100%',
+        width: '15%',
+        borderRightColor: borderColor,
+        borderRightWidth: 1,
+    },
+
 
 });
 
@@ -80,6 +91,12 @@ const TableHeader = () => {
             </View>
             <View style={styles.qty}>
                 <Text>Quantité</Text>
+            </View>
+            <View style={styles.price}>
+                <Text>PU</Text>
+            </View>
+            <View style={styles.price}>
+                <Text>Prix</Text>
             </View>
 
         </View>

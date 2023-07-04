@@ -49,7 +49,7 @@ import Label from '../Label';
 import { TransferProductAddDialog } from './transfer-product-add-dialog';
 
 // import { ProductAddDialog } from './product-add-dialog'
-
+import { parseMoney } from 'src/utils/parsers'
 
 
 export const TransferAddProduct = ({ setError, storeProducts, selectedProducts, setSelectedProducts, isAddPage = false, ...rest }) => {
@@ -203,7 +203,7 @@ export const TransferAddProduct = ({ setError, storeProducts, selectedProducts, 
                                     <TableCell
                                         align="center"
                                     >
-                                        {product.price}
+                                        {parseMoney(product.price)}
                                     </TableCell>
                                     <TableCell
                                     >
