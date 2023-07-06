@@ -25,6 +25,8 @@ from .models import (
     StockMovement,
     TransferDocument,
     StockInDocument,
+    StockInDocumentProductRel,
+    StockInDocumentSourceFile,
     StockOutDocument,
     ReceiptDocument
 
@@ -179,6 +181,34 @@ class StockInAdmin(admin.ModelAdmin):
     @admin.display(description='Product', ordering='stock__product__sku')
     def get_product_sku(self, obj):
         return obj.stock.product.sku
+
+
+@admin.register(StockInDocumentProductRel)
+class StockInProductRelAdmin(admin.ModelAdmin):
+    list_display = ('id', 'get_stock_in_document_ref',
+                    'get_product_sku', 'quantity',)
+    # list_filter = ['stock__store__name',]
+    # search_fields = ['stock__product__sku',]
+
+    @admin.display(description='Product', ordering='stock__product__sku')
+    def get_product_sku(self, obj):
+        return obj.product.sku
+
+    @admin.display(description='stock_in_document', ordering='stock_in_document__ref')
+    def get_stock_in_document_ref(self, obj):
+        return obj.stock_in_document.ref
+
+
+@admin.register(StockInDocumentSourceFile)
+class StockInProductRelAdmin(admin.ModelAdmin):
+    list_display = ('id', 'get_stock_in_document_ref',
+                    'file', 'created_on',)
+    # list_filter = ['stock__store__name',]
+    # search_fields = ['stock__product__sku',]
+
+    @admin.display(description='stock_in_document', ordering='stock_in_document__ref')
+    def get_stock_in_document_ref(self, obj):
+        return obj.stock_in_document.ref
 
 
 @admin.register(StockOut)

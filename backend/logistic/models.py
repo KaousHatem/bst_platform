@@ -251,7 +251,7 @@ class StockInDocument(models.Model):
         ('1', _("NEW")),
         ('999', _("COMPLETED")),
     )
-    ref = models.CharField(max_length=20, unique=True, null=True)
+    ref = models.CharField(max_length=20, null=True)
     source = models.CharField(_("source"), max_length=22, choices=SOURCE)
     source_id = models.CharField(max_length=50, null=True)
     created_by = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING)
@@ -267,12 +267,19 @@ class StockInDocument(models.Model):
         today = datetime.datetime.now()
 
         if not self.pk:
-            if StockInDocument.objects.filter(~Q(ref=None)):
-                last_ref = StockInDocument.objects.filter(~Q(ref=None)).order_by(
-                    'ref').last().ref.split('/')[0]
-                last_ref_int = int(last_ref)
-                self.ref = str(last_ref_int+1).zfill(4) + '/' + str(today.year)
+            stockInDocumentsByStore = StockInDocument.objects.filter(
+                store=self.store.id)
+
+            if stockInDocumentsByStore:
+                if stockInDocumentsByStore.filter(~Q(ref=None)):
+
+                    last_ref = stockInDocumentsByStore.filter(~Q(ref=None)).order_by(
+                        'ref').last().ref.split('/')[0]
+                    last_ref_int = int(last_ref)
+                    self.ref = str(last_ref_int+1).zfill(4) + \
+                        '/' + str(today.year)
             else:
+
                 self.ref = str(1).zfill(4) + '/' + str(today.year)
 
         super(StockInDocument, self).save(*args, **kwargs)
@@ -280,7 +287,7 @@ class StockInDocument(models.Model):
 
 class StockInDocumentProductRel(models.Model):
     stock_in_document = models.ForeignKey(
-        StockInDocument, related_name="products", on_delete=models.DO_NOTHING)
+        StockInDocument, related_name="products", on_delete=models.CASCADE)
     product = models.ForeignKey(
         Product, on_delete=models.DO_NOTHING, null=True)
     quantity = models.FloatField(null=True)
@@ -290,7 +297,7 @@ class StockInDocumentProductRel(models.Model):
 
 class StockInDocumentSourceFile(models.Model):
     stock_in_document = models.ForeignKey(
-        StockInDocument, related_name="source_file", on_delete=models.DO_NOTHING)
+        StockInDocument, related_name="source_file", on_delete=models.CASCADE)
     file = models.FileField(
         upload_to=_upload_to_stock_in)
     created_on = models.DateTimeField(auto_now_add=True)
@@ -298,7 +305,7 @@ class StockInDocumentSourceFile(models.Model):
 
 class StockInDocumentFile(models.Model):
     stock_in_document = models.ForeignKey(
-        StockInDocument, related_name="file", on_delete=models.DO_NOTHING)
+        StockInDocument, related_name="file", on_delete=models.CASCADE)
     file = models.FileField(
         upload_to=_upload_to_stock_in)
     created_on = models.DateTimeField(auto_now_add=True)
