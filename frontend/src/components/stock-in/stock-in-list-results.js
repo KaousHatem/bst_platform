@@ -44,10 +44,10 @@ export const StockInListResults = ({ stockInList, storeList, ...rest }) => {
 
     const [limit, setLimit] = useState(10);
     const [page, setPage] = useState(0);
-
+    const [value, setValue] = useState(storeList ? storeList[0].id : undefined);
     const router = useRouter();
 
-    let [loading, setLoading] = useState(true)
+    let [loading, setLoading] = useState(value ? true : false)
 
     let [errorSBOpen, setErrorSBOpen] = useState(false)
     let [errorSBText, setErrorSBText] = useState("")
@@ -71,7 +71,7 @@ export const StockInListResults = ({ stockInList, storeList, ...rest }) => {
         999: ['filled', 'secondary'],
     }
 
-    const [value, setValue] = useState(storeList ? storeList[0].id : undefined);
+
 
     const handleChange = (event, newValue) => {
         console.log(newValue)
@@ -96,11 +96,15 @@ export const StockInListResults = ({ stockInList, storeList, ...rest }) => {
     }
 
     useEffect(() => {
-        setLoading(true)
-        setPage(0)
-        setLimit(10)
-        Promise.all([
-            StockInDocumentProvider.getStockInDocumentsByStore(value)]).then(
+        if (value !== undefined) {
+
+
+            setLoading(true)
+            setPage(0)
+            setLimit(10)
+            Promise.all([
+                StockInDocumentProvider.getStockInDocumentsByStore(value)
+            ]).then(
                 (responses) => {
                     console.log(responses)
                     setStockInDocuments(responses[0].data)
@@ -111,6 +115,7 @@ export const StockInListResults = ({ stockInList, storeList, ...rest }) => {
                     setLoading(false)
                     handleSBOpen(CONNECTION_ERROR)
                 })
+        }
 
     }, [value])
 
