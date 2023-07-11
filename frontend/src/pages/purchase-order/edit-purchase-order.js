@@ -89,12 +89,12 @@ const EditPurchaseOrder = () => {
       response => {
         console.log(data_product)
         setLoadingOpen(false)
-        // router.push('/purchase-order');
+        router.push('/purchase-order');
         console.log(response.data)
       },
       error => {
         setLoadingOpen(false)
-        // router.push('/purchase-order');
+        router.push('/purchase-order');
         handleSBOpen(CONNECTION_ERROR)
       })
 
