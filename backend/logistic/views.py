@@ -823,7 +823,9 @@ class PurchaseOrderProductViewSet(ModelViewSet):
                 for receiptProduct in receiptProducts:
                     stockIn = StockIn.objects.filter(
                         source_id=receiptProduct.id).first()
+                    print(stockIn)
                     if stockIn:
+
                         stockIn.price = data['unitPrice']
                         stockIn.save()
 
@@ -907,6 +909,9 @@ class ReceiptProductViewSet(ModelViewSet):
         receiptProduct = ReceiptProductRetreiveSerializer(
             self.queryset.get(id=id))
         provisionProduct = receiptProduct.data['purchaseOrderProduct']['purchaseProduct']['provisionProduct']
+
+        price = receiptProduct.data['purchaseOrderProduct']['unitPrice']
+
         product_id = provisionProduct['product']['id']
 
         location_id = provisionProduct['provision']['destination']['id']
@@ -930,7 +935,11 @@ class ReceiptProductViewSet(ModelViewSet):
             'created_by': CustomUser.objects.first().id,
             'source_id': receiptProduct.data['id'],
 
+
         }
+
+        if price:
+            data['price'] = price
 
         serializer = StockInSerializer(data=data)
 

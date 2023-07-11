@@ -190,6 +190,7 @@ class PurchaseOrderProductSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'purchaseProduct',
+            'unitPrice'
         ]
         extra_kwargs = {
             'purchaseOrder': {
