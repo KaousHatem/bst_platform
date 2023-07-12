@@ -1,4 +1,4 @@
-import { useState, useEffect,Fragment } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 import { format } from 'date-fns'
 import {
   Box,
@@ -28,10 +28,10 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 
 
 
-export const ProvisionFilter = ({provisions, setFilteredProvision, ...props}) => {
+export const ProvisionFilter = ({ provisions, setFilteredProvision, setPage, setLimit, ...props }) => {
 
   const status_text = {
-    '-1':"",
+    '-1': "",
     0: "Brouillon",
     1: "Nouveau",
     4: "Annulé",
@@ -47,17 +47,30 @@ export const ProvisionFilter = ({provisions, setFilteredProvision, ...props}) =>
 
   const handleChangeFilter = (e) => {
     setFilterValue(e.target.value)
-  } 
+  }
 
   const handleFilterOpen = () => {
     setFilterOpen(!filterOpen)
+  }
+
+  const handleSearch = (e) => {
+
+    const filterList = provisions.filter((provision) => {
+      return (provision.ref.includes(e.target.value))
+
+    })
+    setPage(0)
+    setLimit(10)
+    setFilteredProvision(filterList)
+
+
   }
 
   const handleFilterApply = () => {
 
     const filterList = provisions.filter((provision) => {
       const filter1 = filterValue === null || provision.status === filterValue
-      const filter2 = (valueDelay[0]=== null || new Date(provision.delay) >= new Date(valueDelay[0])) && ( valueDelay[1]=== null || new Date(provision.delay) <= new Date(valueDelay[1]))
+      const filter2 = (valueDelay[0] === null || new Date(provision.delay) >= new Date(valueDelay[0])) && (valueDelay[1] === null || new Date(provision.delay) <= new Date(valueDelay[1]))
 
       return filter1 && filter2
     })
@@ -75,17 +88,17 @@ export const ProvisionFilter = ({provisions, setFilteredProvision, ...props}) =>
 
   useEffect(() => {
     console.log(provisions)
-  },[provisions])
+  }, [provisions])
 
-  return (    
+  return (
     <Box {...props}>
       <Box sx={{ mb: 3 }}>
         <Card >
           <CardContent>
             <Box sx={{
-              display:'flex',
-              flexDirection:'row',
-               }}>
+              display: 'flex',
+              flexDirection: 'row',
+            }}>
               <TextField
                 sx={{
                   maxWidth: 400
@@ -105,57 +118,58 @@ export const ProvisionFilter = ({provisions, setFilteredProvision, ...props}) =>
                 }}
                 placeholder="Rechercher"
                 variant="outlined"
+                onChange={e => { handleSearch(e) }}
               />
-              <Button   startIcon={<FilterAltIcon />} 
+              <Button startIcon={<FilterAltIcon />}
                 sx={{
                   ml: 'auto',
                   "&.MuiButtonBase-root:hover": {
                     bgcolor: "transparent"
                   }
                 }}
-                onClick = {handleFilterOpen}
+                onClick={handleFilterOpen}
               >
                 Filtrer
               </Button>
             </Box>
           </CardContent>
-          <Collapse in={filterOpen} 
-          timeout="auto" 
-          unmountOnExit>
+          <Collapse in={filterOpen}
+            timeout="auto"
+            unmountOnExit>
             <CardContent>
               <Box sx={{
-                display:'flex',
-                flexDirection:'column',
+                display: 'flex',
+                flexDirection: 'column',
               }} >
-                <FormControl 
-                sx={{ 
-                  m: 1,
-                  width: '30%' ,
+                <FormControl
+                  sx={{
+                    m: 1,
+                    width: '30%',
 
-                }}>
-                <InputLabel id="demo-simple-select-label">Status</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  variant="standard"
-                  label="Status"
-                  value={filterValue}
-                  onChange={handleChangeFilter}
-                >
-                { Object.keys(status_text).map((key)=>(
-                    key!=='-1' && <MenuItem value={key}>{status_text[key]}</MenuItem>
-                  ))
-                  
-                }
-                </Select>
+                  }}>
+                  <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    variant="standard"
+                    label="Status"
+                    value={filterValue}
+                    onChange={handleChangeFilter}
+                  >
+                    {Object.keys(status_text).map((key) => (
+                      key !== '-1' && <MenuItem value={key}>{status_text[key]}</MenuItem>
+                    ))
+
+                    }
+                  </Select>
                 </FormControl >
-                <InputLabel sx={{m:2}} >Delai</InputLabel>
+                <InputLabel sx={{ m: 2 }} >Delai</InputLabel>
                 <DateRangePicker
                   startText="Debut"
                   endText="Fin"
                   value={valueDelay}
                   onChange={(newValue) => {
-                    setValueDelay([newValue[0]!==null && format(newValue[0],'yyyy-MM-dd'),newValue[1]!==null && format(newValue[1],'yyyy-MM-dd') || null]);
+                    setValueDelay([newValue[0] !== null && format(newValue[0], 'yyyy-MM-dd'), newValue[1] !== null && format(newValue[1], 'yyyy-MM-dd') || null]);
                   }}
                   renderInput={(startProps, endProps) => (
                     <Fragment>
@@ -167,14 +181,14 @@ export const ProvisionFilter = ({provisions, setFilteredProvision, ...props}) =>
                 />
                 <Box
                   sx={{
-                      display:'flex',
-                      flexDirection:'row',
-                      alignSelf:'flex-end',
-                    }}
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignSelf: 'flex-end',
+                  }}
                 >
                   <Button
                     sx={{
-                      mr:2,
+                      mr: 2,
                     }}
                     variant="contained"
                     onClick={handleFilterApply}
@@ -183,7 +197,7 @@ export const ProvisionFilter = ({provisions, setFilteredProvision, ...props}) =>
                   </Button>
                   <Button
                     sx={{
-                      alignSelf:'flex-end'
+                      alignSelf: 'flex-end'
                     }}
                     variant="outlined"
                     onClick={handleFilterReset}
@@ -191,9 +205,9 @@ export const ProvisionFilter = ({provisions, setFilteredProvision, ...props}) =>
                     reset
                   </Button>
                 </Box>
-                  
-               
-                
+
+
+
               </Box>
             </CardContent>
           </Collapse>
@@ -202,4 +216,3 @@ export const ProvisionFilter = ({provisions, setFilteredProvision, ...props}) =>
     </Box>
   )
 }
-  

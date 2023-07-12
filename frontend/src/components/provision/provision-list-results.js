@@ -172,7 +172,9 @@ export const ProvisionListResults = ({ provision_list, ...rest }) => {
         <CircularProgress color="inherit" />
       </Backdrop>
       {provisions.length !== 0 && <ProvisionFilter provisions={provisions}
-        setFilteredProvision={setFilteredProvision} />}
+        setFilteredProvision={setFilteredProvision}
+        setPage={setPage}
+        setLimit={setLimit} />}
       <PerfectScrollbar>
         <Box sx={{ minWidth: "100%" }}>
           <Table>
