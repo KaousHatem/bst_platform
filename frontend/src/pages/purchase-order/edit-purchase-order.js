@@ -94,7 +94,7 @@ const EditPurchaseOrder = () => {
       },
       error => {
         setLoadingOpen(false)
-        router.push('/purchase-order');
+        // router.push('/purchase-order');
         handleSBOpen(CONNECTION_ERROR)
       })
 
