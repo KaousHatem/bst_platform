@@ -27,6 +27,7 @@ import { View as ViewIcon } from '../../icons/view'
 
 import PurchaseOrderProvider from '../../services/purchase-order-provider'
 
+import { PurchaseOrderFilter } from './po-filter'
 
 // import {PRDeleteDialog} from './pr-delete-dialog'
 // import {PRApproveDialog} from './pr-approve-dialog'
@@ -46,6 +47,8 @@ export const POListResults = ({ purchaseOrderList, ...rest }) => {
   const [page, setPage] = useState(0);
 
   const [purchaseOrders, setPurchaseOrders] = useState(purchaseOrderList)
+  const [filteredPurchaseOrder, setFilteredPurchaseOrder] = useState(purchaseOrderList)
+
   const router = useRouter();
 
 
@@ -104,6 +107,10 @@ export const POListResults = ({ purchaseOrderList, ...rest }) => {
 
   return (
     <Box {...rest}>
+      {purchaseOrders.length !== 0 && <PurchaseOrderFilter purchaseOrders={purchaseOrders}
+        setFilteredPurchaseOrder={setFilteredPurchaseOrder}
+        setPage={setPage}
+        setLimit={setLimit} />}
       <PerfectScrollbar>
         <Box sx={{ minWidth: "100%" }} >
           <Table>
@@ -136,7 +143,7 @@ export const POListResults = ({ purchaseOrderList, ...rest }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {purchaseOrders.slice(page * limit, page * limit + limit).map((purchaseOrder) => (
+              {filteredPurchaseOrder.slice(page * limit, page * limit + limit).map((purchaseOrder) => (
                 <TableRow
                   hover
                   key={purchaseOrder.id}
@@ -191,7 +198,7 @@ export const POListResults = ({ purchaseOrderList, ...rest }) => {
                   </TableCell>
                 </TableRow>
               ))}
-              {purchaseOrders.length === 0 &&
+              {filteredPurchaseOrder.length === 0 &&
                 <TableRow>
                   <TableCell colSpan={7}
                     align="center" >
@@ -205,7 +212,7 @@ export const POListResults = ({ purchaseOrderList, ...rest }) => {
       </PerfectScrollbar>
       <TablePagination
         component="div"
-        count={purchaseOrders.length}
+        count={filteredPurchaseOrder.length}
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleLimitChange}
         page={page}
