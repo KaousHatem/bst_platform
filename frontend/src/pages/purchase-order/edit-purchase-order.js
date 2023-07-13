@@ -80,7 +80,7 @@ const EditPurchaseOrder = () => {
     ).map(product => {
       return {
         id: product.id,
-        unitPrice: parseFloat(product.unitPrice + ".0")
+        unitPrice: product.unitPrice
       }
     })
     console.log(data_product)
@@ -94,6 +94,7 @@ const EditPurchaseOrder = () => {
       },
       error => {
         setLoadingOpen(false)
+        console.log(error)
         // router.push('/purchase-order');
         handleSBOpen(CONNECTION_ERROR)
       })
