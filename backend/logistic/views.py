@@ -815,15 +815,15 @@ class PurchaseOrderProductViewSet(ModelViewSet):
             print(serializers.errors)
             return Response({'message': serializers.errors}, status=400)
 
+        serializers.save()
         try:
-            serializers.save()
+
             for data in serializers.data:
                 purchaseOrderProductRel = self.queryset.get(id=data['id'])
                 receiptProducts = purchaseOrderProductRel.received.all()
                 for receiptProduct in receiptProducts:
                     stockIn = StockIn.objects.filter(
                         source_id=receiptProduct.id).first()
-                    print(stockIn)
                     if stockIn:
 
                         stockIn.price = data['unitPrice']

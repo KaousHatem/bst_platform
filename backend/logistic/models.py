@@ -148,6 +148,10 @@ class TransferDocument(models.Model):
         upload_to=_upload_to, blank=True, null=True)
     created_on = models.DateTimeField(auto_now_add=True)
 
+    def delete(self, *args, **kwargs):
+        self.file.delete()
+        super(TransferDocument, self).delete(*args, **kwargs)
+
 
 class Stock(models.Model):
     store = models.ForeignKey(
@@ -839,6 +843,10 @@ class ProformaInvoiceDocument(models.Model):
         ProformaInvoice, related_name='document', on_delete=models.CASCADE)
     file = models.FileField(
         upload_to=user_directory_path, blank=True, null=True)
+
+    def delete(self, *args, **kwargs):
+        self.file.delete()
+        super(ProformaInvoiceDocument, self).delete(*args, **kwargs)
 
 
 class ProformaInvoiceProductRel(models.Model):
