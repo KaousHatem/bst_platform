@@ -25,6 +25,7 @@ import { Edit as EditIcon } from '../../icons/edit'
 import { Delete as DeleteIcon } from '../../icons/delete'
 import { View as ViewIcon } from '../../icons/view'
 
+import { ReceiptFilter } from './receipt-filter'
 
 import UXAccess from '../../utils/ux-access'
 
@@ -42,6 +43,9 @@ export const ReceiptListResults = ({ receiptList, ...rest }) => {
   const [page, setPage] = useState(0);
 
   const [receipts, SetReceipts] = useState(receiptList)
+  const [filteredReceipt, setFilteredReceipt] = useState(receiptList)
+
+
   const router = useRouter();
 
   const handleSelectAll = (event) => {
@@ -96,6 +100,10 @@ export const ReceiptListResults = ({ receiptList, ...rest }) => {
 
   return (
     <Box {...rest}>
+      {receipts.length !== 0 && <ReceiptFilter receipts={receipts}
+        setFilteredReceipt={setFilteredReceipt}
+        setPage={setPage}
+        setLimit={setLimit} />}
       <PerfectScrollbar>
         <Box sx={{ minWidth: "100%" }} >
           <Table>
@@ -128,7 +136,7 @@ export const ReceiptListResults = ({ receiptList, ...rest }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {receipts.slice(page * limit, page * limit + limit).map((receipt) => (
+              {filteredReceipt.slice(page * limit, page * limit + limit).map((receipt) => (
                 <TableRow
                   hover
                   key={receipt.id}
@@ -187,7 +195,7 @@ export const ReceiptListResults = ({ receiptList, ...rest }) => {
                   </TableCell>
                 </TableRow>
               ))}
-              {receipts.length === 0 &&
+              {filteredReceipt.length === 0 &&
                 <TableRow>
                   <TableCell colSpan={7}
                     align="center" >
@@ -201,7 +209,7 @@ export const ReceiptListResults = ({ receiptList, ...rest }) => {
       </PerfectScrollbar>
       <TablePagination
         component="div"
-        count={receipts.length}
+        count={filteredReceipt.length}
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleLimitChange}
         page={page}
