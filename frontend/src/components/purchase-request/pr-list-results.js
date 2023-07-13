@@ -31,6 +31,8 @@ import PRProductProvider from '../../services/pr-product-provider'
 import { PRDeleteDialog } from './pr-delete-dialog'
 import { PRApproveDialog } from './pr-approve-dialog'
 
+import { PurchaseRequestFilter } from './pr-filter'
+
 import Label from '../Label';
 
 export const PRListResults = ({ purchaseReqList, ...rest }) => {
@@ -62,6 +64,8 @@ export const PRListResults = ({ purchaseReqList, ...rest }) => {
   const [page, setPage] = useState(0);
 
   const [purchaseRequests, setPurchaseRequests] = useState(purchaseReqList)
+  const [filteredPurchaseRequest, setFilteredPurchaseRequest] = useState(purchaseReqList)
+
   const router = useRouter();
 
   const [deleteOpen, setDeleteOpen] = useState(false)
@@ -185,6 +189,10 @@ export const PRListResults = ({ purchaseReqList, ...rest }) => {
 
   return (
     <Box {...rest}>
+      {purchaseRequests.length !== 0 && <PurchaseRequestFilter purchaseRequests={purchaseRequests}
+        setFilteredPurchaseRequest={setFilteredPurchaseRequest}
+        setPage={setPage}
+        setLimit={setLimit} />}
       <PerfectScrollbar>
         <Box sx={{ minWidth: "100%" }} >
           <Table>
@@ -225,7 +233,7 @@ export const PRListResults = ({ purchaseReqList, ...rest }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {purchaseRequests.slice(page * limit, page * limit + limit).map((purchaseRequest) => (
+              {filteredPurchaseRequest.slice(page * limit, page * limit + limit).map((purchaseRequest) => (
                 <TableRow
                   hover
                   key={purchaseRequest.id}
@@ -299,7 +307,7 @@ export const PRListResults = ({ purchaseReqList, ...rest }) => {
                   </TableCell>
                 </TableRow>
               ))}
-              {purchaseRequests.length === 0 &&
+              {filteredPurchaseRequest.length === 0 &&
                 <TableRow>
                   <TableCell colSpan={7}
                     align="center" >
@@ -313,7 +321,7 @@ export const PRListResults = ({ purchaseReqList, ...rest }) => {
       </PerfectScrollbar>
       <TablePagination
         component="div"
-        count={purchaseRequests.length}
+        count={filteredPurchaseRequest.length}
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleLimitChange}
         page={page}
