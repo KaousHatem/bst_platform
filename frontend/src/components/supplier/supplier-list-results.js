@@ -30,6 +30,7 @@ import { View as ViewIcon } from '../../icons/view'
 import SupplierProvider from '../../services/supplier-provider'
 
 import { SupplierDeleteDialog } from './supplier-delete-dialog'
+import { SupplierFilter } from './supplier-filter'
 
 export const SupplierListResults = ({ supplierList, ...rest }) => {
   const [selectedSupplierIds, setSelectedSupplierIds] = useState([]);
@@ -37,6 +38,8 @@ export const SupplierListResults = ({ supplierList, ...rest }) => {
   const [page, setPage] = useState(0);
 
   const [suppliers, setSuppliers] = useState(supplierList)
+  const [filteredSupplier, setFilteredSupplier] = useState(supplierList)
+
   const router = useRouter();
 
   const [deleteOpen, setDeleteOpen] = useState(false)
@@ -144,6 +147,10 @@ export const SupplierListResults = ({ supplierList, ...rest }) => {
       >
         <CircularProgress color="inherit" />
       </Backdrop>
+      {suppliers.length !== 0 && <SupplierFilter suppliers={suppliers}
+        setFilteredSupplier={setFilteredSupplier}
+        setPage={setPage}
+        setLimit={setLimit} />}
       <PerfectScrollbar>
         <Box sx={{ minWidth: "100%" }} >
           <Table>
@@ -181,7 +188,7 @@ export const SupplierListResults = ({ supplierList, ...rest }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {suppliers.slice(page * limit, page * limit + limit).map((supplier) => (
+              {filteredSupplier.slice(page * limit, page * limit + limit).map((supplier) => (
                 <TableRow
                   hover
                   key={supplier.id}
@@ -235,7 +242,7 @@ export const SupplierListResults = ({ supplierList, ...rest }) => {
                   </TableCell>
                 </TableRow>
               ))}
-              {suppliers.length === 0 &&
+              {filteredSupplier.length === 0 &&
                 <TableRow>
                   <TableCell colSpan={7}
                     align="center" >
@@ -249,7 +256,7 @@ export const SupplierListResults = ({ supplierList, ...rest }) => {
       </PerfectScrollbar>
       <TablePagination
         component="div"
-        count={suppliers.length}
+        count={filteredSupplier.length}
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleLimitChange}
         page={page}
