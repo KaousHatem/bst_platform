@@ -5,6 +5,8 @@ from .models import (
     StockIn,
     StockOut,
     StockInit,
+    StockOutDocumentFile,
+    StockOutDocumentProductRel,
     Transfer,
     TransferProductRel,
     Stock,
@@ -297,6 +299,34 @@ class StockInDocumentAdmin(admin.ModelAdmin):
 @admin.register(StockOutDocument)
 class StockOutDocumentAdmin(admin.ModelAdmin):
     list_display = ('ref', 'created_by', 'created_on', 'status',)
+
+
+@admin.register(StockOutDocumentProductRel)
+class StockOutProductRelAdmin(admin.ModelAdmin):
+    list_display = ('id', 'get_stock_out_document_ref',
+                    'get_product_sku', 'quantity',)
+    # list_filter = ['stock__store__name',]
+    # search_fields = ['stock__product__sku',]
+
+    @admin.display(description='Product', ordering='stock__product__sku')
+    def get_product_sku(self, obj):
+        return obj.product.sku
+
+    @admin.display(description='stock_out_document', ordering='stock_out_document__ref')
+    def get_stock_out_document_ref(self, obj):
+        return obj.stock_out_document.ref
+
+
+@admin.register(StockOutDocumentFile)
+class StockOutDocumentFileAdmin(admin.ModelAdmin):
+    list_display = ('id', 'get_stock_out_document_ref',
+                    'file', 'created_on',)
+    # list_filter = ['stock__store__name',]
+    # search_fields = ['stock__product__sku',]
+
+    @admin.display(description='stock_out_document', ordering='stock_out_document__ref')
+    def get_stock_out_document_ref(self, obj):
+        return obj.stock_out_document.ref
 
 
 @admin.register(ReceiptDocument)
