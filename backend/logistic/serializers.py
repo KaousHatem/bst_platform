@@ -651,7 +651,6 @@ class PurchaseOrderProductListSerializer(serializers.ListSerializer):
         ret = []
         for product_id, data in data_mapping.items():
             product = product_mapping.get(product_id, None)
-            print(data)
             if product is None:
                 ret.append(self.child.create(data))
             else:
