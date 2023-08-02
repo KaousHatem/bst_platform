@@ -125,7 +125,7 @@ const AddPurchaseOrder = () => {
         }).map(product => {
           return {
             id: product.id,
-            unitPrice: parseFloat(purchaseProducts.find(purchaseProduct => { return purchaseProduct.id === product.purchaseProduct.id }).unitPrice + ".0")
+            unitPrice: purchaseProducts.find(purchaseProduct => { return purchaseProduct.id === product.purchaseProduct.id }).unitPrice
           }
         })
 
