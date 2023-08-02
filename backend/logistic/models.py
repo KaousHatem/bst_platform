@@ -351,6 +351,7 @@ class StockIn(models.Model):
         if not self.pk:
             stock = self.stock
             if self.price:
+
                 stock.price = round((stock.price * stock.quantity + self.price *
                                     self.quantity)/(stock.quantity+self.quantity), 2)
 
@@ -365,8 +366,11 @@ class StockIn(models.Model):
         else:
             if self.price:
                 stock = self.stock
-                stock.price = round((stock.price * (stock.quantity-self.quantity) +
-                                    self.price * self.quantity)/(stock.quantity), 2)
+                if stock.quantity == 0:
+                    stock.price = self.price
+                else:
+                    stock.price = round((stock.price * (stock.quantity-self.quantity) +
+                                         self.price * self.quantity)/(stock.quantity), 2)
                 stock.save()
             super(StockIn, self).save(*args, **kwargs)
 

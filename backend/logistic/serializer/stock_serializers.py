@@ -131,7 +131,10 @@ class StockMovement(serializers.ModelSerializer):
                     product_id=stock_out.stock.product.id).unit.ref
 
             else:
-                target_ref = stock_out.stockOutDocument.ref
+                if stock_out.stockOutDocument:
+                    target_ref = stock_out.stockOutDocument.ref
+                else:
+                    target_ref = ""
                 unit = stock_out.stock.product.base_unit.ref
             total_price = stock_out.price * stock_out.quantity
             data = {
