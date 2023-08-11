@@ -642,7 +642,7 @@ class PurchaseOrderProductListSerializer(serializers.ListSerializer):
     def update(self, instance, validated_data):
 
         # Maps for id->instance and id->data item.
-
+        # print(instance)
         product_mapping = {product.id: product for product in instance}
 
         data_mapping = {item['id']: item for item in validated_data}
