@@ -700,13 +700,14 @@ class PurchaseOrder(models.Model):
 
     def save(self, *args, **kwargs):
         today = datetime.datetime.now()
-        if PurchaseOrder.objects.filter(~Q(ref=None)):
-            last_ref = PurchaseOrder.objects.filter(
-                ~Q(ref=None)).order_by('ref').last().ref.split('/')[0]
-            last_ref_int = int(last_ref)
-            self.ref = str(last_ref_int+1).zfill(4) + '/' + str(today.year)
-        else:
-            self.ref = str(1).zfill(4) + '/' + str(today.year)
+        if not self.pk:
+            if PurchaseOrder.objects.filter(~Q(ref=None)):
+                last_ref = PurchaseOrder.objects.filter(
+                    ~Q(ref=None)).order_by('ref').last().ref.split('/')[0]
+                last_ref_int = int(last_ref)
+                self.ref = str(last_ref_int+1).zfill(4) + '/' + str(today.year)
+            else:
+                self.ref = str(1).zfill(4) + '/' + str(today.year)
         super(PurchaseOrder, self).save(*args, **kwargs)
 
 
@@ -732,13 +733,14 @@ class Receipt(models.Model):
 
     def save(self, *args, **kwargs):
         today = datetime.datetime.now()
-        if Receipt.objects.filter(~Q(ref=None)):
-            last_ref = Receipt.objects.filter(~Q(ref=None)).order_by(
-                'ref').last().ref.split('/')[0]
-            last_ref_int = int(last_ref)
-            self.ref = str(last_ref_int+1).zfill(4) + '/' + str(today.year)
-        else:
-            self.ref = str(1).zfill(4) + '/' + str(today.year)
+        if not self.pk:
+            if Receipt.objects.filter(~Q(ref=None)):
+                last_ref = Receipt.objects.filter(~Q(ref=None)).order_by(
+                    'ref').last().ref.split('/')[0]
+                last_ref_int = int(last_ref)
+                self.ref = str(last_ref_int+1).zfill(4) + '/' + str(today.year)
+            else:
+                self.ref = str(1).zfill(4) + '/' + str(today.year)
         super(Receipt, self).save(*args, **kwargs)
 
 
