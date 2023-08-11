@@ -125,9 +125,11 @@ const AddPurchaseOrder = () => {
         }).map(product => {
           return {
             id: product.id,
+            purchaseOrder: response.data.id,
             unitPrice: purchaseProducts.find(purchaseProduct => { return purchaseProduct.id === product.purchaseProduct.id }).unitPrice
           }
         })
+        console.log(data_product)
 
         if (data_product.length) {
           POProductProvider.bulkUpdatePOProduct(data_product).then(
@@ -138,7 +140,6 @@ const AddPurchaseOrder = () => {
             },
             error => {
               setLoadingOpen(false)
-              router.push('/purchase-order');
               handleSBOpen(CONNECTION_ERROR)
             })
         } else {

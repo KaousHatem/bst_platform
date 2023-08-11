@@ -80,6 +80,7 @@ const EditPurchaseOrder = () => {
     ).map(product => {
       return {
         id: product.id,
+        purchaseOrder: purchaseOrderId,
         unitPrice: product.unitPrice
       }
     })
