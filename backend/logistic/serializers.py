@@ -671,6 +671,8 @@ class PurchaseOrderProductUpdateSerializer(serializers.ModelSerializer):
         model = PurchaseOrderProductRel
         fields = [
             'id',
+            'purchaseOrder',
+            'purchaseProduct',
             'unitPrice'
         ]
         list_serializer_class = PurchaseOrderProductListSerializer

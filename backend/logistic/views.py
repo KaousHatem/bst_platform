@@ -809,7 +809,7 @@ class PurchaseOrderProductViewSet(ModelViewSet):
         data = request.data
         print(data)
         serializers = PurchaseOrderProductUpdateSerializer(
-            self.queryset, data=data, many=True)
+            PurchaseOrderProductRel.objects.all(), data=data, many=True)
 
         try:
             serializers.is_valid(raise_exception=True)
