@@ -1,5 +1,5 @@
-const BaseUrl = "http://127.0.0.1:8000/api/";
-// const BaseUrl = process.env.NEXT_PUBLIC_BASE_URL_API
+// const BaseUrl = "http://127.0.0.1:8000/api/";
+const BaseUrl = process.env.NEXT_PUBLIC_BASE_URL_API;
 
 export const LoginUrl = BaseUrl + "user/login/";
 export const CreateUserUrl = BaseUrl + "user/create-user/";
