@@ -70,6 +70,12 @@ class ProvisionAdmin(admin.ModelAdmin):
     list_filter = ['status', 'destination',]
     search_fields = ['ref',]
 
+    actions = ["make_completed"]
+
+    @admin.action(description="Mark selected provisions as completed")
+    def make_completed(self, request, queryset):
+        queryset.update(status="999")
+
 
 @admin.register(ProvisionProductRel)
 class ProvisionProductRelAdmin(admin.ModelAdmin):
