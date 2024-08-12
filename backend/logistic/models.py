@@ -594,6 +594,7 @@ class PurchaseRequest(models.Model):
         ('1', _("NEW")),
         ('4', _("DROP")),
         ('9', _("APPROVED")),
+        ('999', _("COMPLETED")),
     )
     ref = models.CharField(max_length=20, unique=True, null=True)
     status = models.CharField(

@@ -94,6 +94,12 @@ class PurchaseRequestAdmin(admin.ModelAdmin):
     list_filter = ['status',]
     search_fields = ['ref',]
 
+    actions = ["make_completed"]
+
+    @admin.action(description="Mark selected purchase request as completed")
+    def make_completed(self, request, queryset):
+        queryset.update(status="999")
+
 
 @admin.register(PurchaseReqProductRel)
 class PurchaseReqProductRelAdmin(admin.ModelAdmin):
